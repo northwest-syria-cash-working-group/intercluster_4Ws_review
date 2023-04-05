@@ -1,0 +1,78 @@
+"0","edu %>% glimpse()
+"
+"1","Rows: 33,750"
+"1",""
+"1","
+"
+"1","Columns: 65"
+"1",""
+"1","
+"
+"1","$ index                                                 [3m[38;5;246m<dbl>[39m[23m 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1~
+$ hub                                                   [3m[38;5;246m<chr>[39m[23m ""Gaziantep"", ""Gaziantep"", ""Gazia~
+$ reporting_month                                       [3m[38;5;246m<chr>[39m[23m ""01. January"", ""01. January"", ""0~
+$ grant_organization_funding_partners_name_or_code      [3m[38;5;246m<dbl>[39m[23m 473, 473, 473, 473, 1019, 1019, ~
+$ implementing_partner_name_or_code                     [3m[38;5;246m<dbl>[39m[23m 473, 473, 473, 473, 1019, 1019, ~
+$ type_of_implementing_partner                          [3m[38;5;246m<chr>[39m[23m ""National NGO"", ""National NGO"", ~
+$ donor                                                 [3m[38;5;246m<chr>[39m[23m ""Other Donor/Non-UN"", ""Other Don~
+$ hrp_yes_no                                            [3m[38;5;246m<chr>[39m[23m ""No"", ""No"", ""No"", ""No"", ""No"", ""N~
+$ governorate                                           [3m[38;5;246m<chr>[39m[23m ""Idleb"", ""Idleb"", ""Idleb"", ""Idle~
+$ district                                              [3m[38;5;246m<chr>[39m[23m ""Jisr-Ash-Shugur"", ""Jisr-Ash-Shu~
+$ sub_district                                          [3m[38;5;246m<chr>[39m[23m ""Jisr-Ash-Shugur"", ""Jisr-Ash-Shu~
+$ community                                             [3m[38;5;246m<chr>[39m[23m ""Bsheiriyeh - Bello"", ""Western M~
+$ neighborhood                                          [3m[38;5;246m<chr>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, ~
+$ if_camp_please_select_the_name_of_the_camp_u_060c     [3m[38;5;246m<chr>[39m[23m ""Bsheiriyeh"", ""Western Marj Akhd~
+$ name_of_school_learning_center                        [3m[38;5;246m<chr>[39m[23m ""Bsheiriyeh"", ""Western Marj Akhd~
+$ type_of_school_learning_center                        [3m[38;5;246m<chr>[39m[23m ""Temporary Learning Space"", ""Tem~
+$ activity_modality                                     [3m[38;5;246m<chr>[39m[23m ""Remote/Distance"", ""Remote/Dista~
+$ type_of_education                                     [3m[38;5;246m<chr>[39m[23m ""Non-Formal"", ""Non-Formal"", ""Non~
+$ level_of_education                                    [3m[38;5;246m<chr>[39m[23m ""Upper Primary Education - Non-F~
+$ programme_area                                        [3m[38;5;246m<chr>[39m[23m ""1.06 Back to Learning (BTL) cam~
+$ activity                                              [3m[38;5;246m<chr>[39m[23m ""1.06.1 Conduct Back-to-Learning~
+$ unit_of_measurement                                   [3m[38;5;246m<chr>[39m[23m ""Children"", ""Children"", ""Childre~
+$ quantityplease_insert_numbers_only                    [3m[38;5;246m<dbl>[39m[23m 1, 1, 1, 1, NA, NA, NA, NA, NA, ~
+$ beneficiaries_type                                    [3m[38;5;246m<chr>[39m[23m ""Mixed"", ""Mixed"", ""Mixed"", ""Mixe~
+$ people_with_disability_0_percent_100_percent_u_061f   [3m[38;5;246m<chr>[39m[23m ""1-5%"", ""0"", ""1-5%"", ""0"", NA, NA~
+$ new_children_boys_18_18                               [3m[38;5;246m<dbl>[39m[23m 7, 8, 8, 11, NA, NA, NA, NA, NA,~
+$ new_children_girls_18_18                              [3m[38;5;246m<dbl>[39m[23m 12, 9, 14, 16, NA, NA, NA, NA, N~
+$ total_new_children                                    [3m[38;5;246m<dbl>[39m[23m 19, 17, 22, 27, 0, 0, 0, 0, 0, 0~
+$ new_adults_men_18_18                                  [3m[38;5;246m<dbl>[39m[23m 0, 0, 0, 0, 35, NA, NA, 21, 11, ~
+$ new_adults_women_18_18                                [3m[38;5;246m<dbl>[39m[23m NA, 0, 0, 0, NA, 28, 23, NA, NA,~
+$ total_new_adults                                      [3m[38;5;246m<dbl>[39m[23m 0, 0, 0, 0, 35, 28, 23, 21, 11, ~
+$ total_new_individuals                                 [3m[38;5;246m<dbl>[39m[23m 19, 17, 22, 27, 35, 28, 23, 21, ~
+$ people_with_disability_0_percent_100_percent_u_061f_2 [3m[38;5;246m<chr>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, ~
+$ number_of_repeated_boys_18_18                         [3m[38;5;246m<dbl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, ~
+$ number_of_repeated_girls_18_18                        [3m[38;5;246m<dbl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, ~
+$ total_repeated_children_18                            [3m[38;5;246m<dbl>[39m[23m 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,~
+$ number_of_repeated_men_18_18                          [3m[38;5;246m<dbl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, ~
+$ number_of_repeated_women_18_18                        [3m[38;5;246m<dbl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, ~
+$ total_repeated_adults_18                              [3m[38;5;246m<dbl>[39m[23m 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,~
+$ total_repeated_beneficiaries_reached                  [3m[38;5;246m<dbl>[39m[23m 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,~
+$ new_and_repeated_again                                [3m[38;5;246m<dbl>[39m[23m 19, 17, 22, 27, 35, 28, 23, 21, ~
+$ new_and_repeated_again_boys                           [3m[38;5;246m<dbl>[39m[23m 7, 8, 8, 11, 0, 0, 0, 0, 0, 0, 1~
+$ new_and_repeated_again_girls                          [3m[38;5;246m<dbl>[39m[23m 12, 9, 14, 16, 0, 0, 0, 0, 0, 0,~
+$ new_and_repeated_again_men                            [3m[38;5;246m<dbl>[39m[23m 0, 0, 0, 0, 35, 0, 0, 21, 11, 5,~
+$ new_and_repeated_again_women                          [3m[38;5;246m<dbl>[39m[23m 0, 0, 0, 0, 0, 28, 23, 0, 0, 0, ~
+$ new_females_girls_and_women                           [3m[38;5;246m<dbl>[39m[23m 12, 9, 14, 16, 0, 28, 23, 0, 0, ~
+$ status                                                [3m[38;5;246m<chr>[39m[23m ""Completed"", ""Completed"", ""Compl~
+$ column1                                               [3m[38;5;246m<lgl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, ~
+$ acronym                                               [3m[38;5;246m<lgl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, ~
+$ type_of_org                                           [3m[38;5;246m<chr>[39m[23m ""National NGO"", ""National NGO"", ~
+$ governorate_2                                         [3m[38;5;246m<chr>[39m[23m ""Idleb"", ""Idleb"", ""Idleb"", ""Idle~
+$ governorate_pcode                                     [3m[38;5;246m<chr>[39m[23m ""SY07"", ""SY07"", ""SY07"", ""SY07"", ~
+$ sub_district2                                         [3m[38;5;246m<chr>[39m[23m ""Jisr-Ash-Shugur"", ""Jisr-Ash-Shu~
+$ sub_district_pcode                                    [3m[38;5;246m<chr>[39m[23m ""SY070400"", ""SY070400"", ""SY07040~
+$ district3                                             [3m[38;5;246m<chr>[39m[23m ""Jisr-Ash-Shugur"", ""Jisr-Ash-Shu~
+$ district_pcode                                        [3m[38;5;246m<chr>[39m[23m ""SY0704"", ""SY0704"", ""SY0704"", ""S~
+$ community4                                            [3m[38;5;246m<chr>[39m[23m ""Bsheiriyeh - Bello"", ""Western M~
+$ community_pcode                                       [3m[38;5;246m<chr>[39m[23m ""C4193"", ""C4212"", ""C4267"", ""C669~
+$ education_pillar                                      [3m[38;5;246m<chr>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, ~
+$ indicator                                             [3m[38;5;246m<chr>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, ~
+$ service_vs_supplier                                   [3m[38;5;246m<chr>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, ~
+$ severity_scale_at_sub_district_level                  [3m[38;5;246m<dbl>[39m[23m 4, 4, 4, 4, 4, 4, 4, 4, 5, 4, 5,~
+$ indicator_level                                       [3m[38;5;246m<lgl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, ~
+$ beneficiaries_calculation_categories                  [3m[38;5;246m<lgl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, ~
+$ unit_of_measurement_1                                 [3m[38;5;246m<chr>[39m[23m ""Campaigns & Children"", ""Campaig~"
+"1",""
+"1","
+"

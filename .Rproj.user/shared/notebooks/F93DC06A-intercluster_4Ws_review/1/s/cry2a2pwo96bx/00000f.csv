@@ -1,0 +1,67 @@
+"0","erl %>% glimpse()
+"
+"1","Rows: 1,732"
+"1",""
+"1","
+"
+"1","Columns: 54"
+"1",""
+"1","
+"
+"1","$ organization                                            [3m[38;5;246m<chr>[39m[23m ""Ent_0002"", ""Ent_0002"", ""Ent_0~
+$ organization_type                                       [3m[38;5;246m<chr>[39m[23m ""INGO"", ""INGO"", ""INGO"", ""INGO""~
+$ implementing_partner                                    [3m[38;5;246m<chr>[39m[23m ""Ent_0002"", ""Ent_0002"", ""Ent_0~
+$ implementing_partner_type                               [3m[38;5;246m<chr>[39m[23m ""INGO"", ""INGO"", ""INGO"", ""INGO""~
+$ final_implementing_partner                              [3m[38;5;246m<chr>[39m[23m ""Ent_0002"", ""Ent_0002"", ""Ent_0~
+$ fund_source_donor                                       [3m[38;5;246m<chr>[39m[23m ""Ent_0200"", ""Ent_0200"", ""Ent_0~
+$ fund_category                                           [3m[38;5;246m<chr>[39m[23m ""Institutional Donor"", ""Instit~
+$ sector                                                  [3m[38;5;246m<chr>[39m[23m ""Early Recovery and Livelihood~
+$ was_the_project_appealed_to_ops_hrp                     [3m[38;5;246m<chr>[39m[23m ""Yes"", ""Yes"", ""Yes"", ""Yes"", ""Y~
+$ sector_objective                                        [3m[38;5;246m<chr>[39m[23m ""SO2 Increase access to Liveli~
+$ sector_activity                                         [3m[38;5;246m<chr>[39m[23m ""Activity 2.1 Financial suppor~
+$ activity_description                                    [3m[38;5;246m<lgl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA~
+$ sector_indicator                                        [3m[38;5;246m<chr>[39m[23m ""Indicator 2.1.1 # of people s~
+$ indicator_unit                                          [3m[38;5;246m<chr>[39m[23m ""People"", ""People"", ""People"", ~
+$ exact_value                                             [3m[38;5;246m<dbl>[39m[23m 4, 4, 7, 7, 10, 10, 10, 10, 13~
+$ direct_beneficiaries                                    [3m[38;5;246m<dbl>[39m[23m 20, 20, 35, 35, 50, 50, 50, 50~
+$ indirect_beneficiaries                                  [3m[38;5;246m<dbl>[39m[23m 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ~
+$ total_beneficiaries                                     [3m[38;5;246m<dbl>[39m[23m 20, 20, 35, 35, 50, 50, 50, 50~
+$ exact_male                                              [3m[38;5;246m<dbl>[39m[23m 4, 4, 7, 7, 5, 9, 5, 9, 11, 11~
+$ exact_female                                            [3m[38;5;246m<dbl>[39m[23m NA, NA, NA, NA, 5, 1, 5, 1, 2,~
+$ exact_children                                          [3m[38;5;246m<dbl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA~
+$ exact_youth                                             [3m[38;5;246m<dbl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA~
+$ exact_pwd                                               [3m[38;5;246m<dbl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA~
+$ exact_fhh                                               [3m[38;5;246m<dbl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA~
+$ exact_id_ps                                             [3m[38;5;246m<dbl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA~
+$ exact_returnees                                         [3m[38;5;246m<dbl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA~
+$ have_you_assisted_same_individual_during_previous_month [3m[38;5;246m<chr>[39m[23m ""No"", ""No"", ""No"", ""No"", ""No"", ~
+$ if_yes_how_many_assisted_previously                     [3m[38;5;246m<dbl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA~
+$ newly_assisted_people                                   [3m[38;5;246m<dbl>[39m[23m 20, 20, 35, 35, 50, 50, 50, 50~
+$ delivery_modality                                       [3m[38;5;246m<chr>[39m[23m ""Cash"", ""Cash"", ""Cash"", ""Cash""~
+$ if_cash_cash_conditionality                             [3m[38;5;246m<chr>[39m[23m ""Conditional"", ""Conditional"", ~
+$ if_cash_cash_restriction                                [3m[38;5;246m<chr>[39m[23m ""Restricted"", ""Restricted"", ""R~
+$ if_cash_cash_delivery_mechanism                         [3m[38;5;246m<chr>[39m[23m ""Money Transfer Agent"", ""Money~
+$ if_cash_cash_transfer_voucher_value_per_household_usd   [3m[38;5;246m<dbl>[39m[23m 1500, 1500, 1500, 1500, 700, 1~
+$ if_cash_cash_frequency                                  [3m[38;5;246m<chr>[39m[23m ""One-off"", ""One-off"", ""One-off~
+$ did_you_report_this_data_to_any_other_sector            [3m[38;5;246m<chr>[39m[23m ""No"", ""No"", ""No"", ""No"", ""No"", ~
+$ if_yes_which_sector                                     [3m[38;5;246m<chr>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA~
+$ governorate                                             [3m[38;5;246m<chr>[39m[23m ""Idleb"", ""Idleb"", ""Idleb"", ""Id~
+$ admin1pcode                                             [3m[38;5;246m<chr>[39m[23m ""SY07"", ""SY07"", ""SY07"", ""SY07""~
+$ district                                                [3m[38;5;246m<chr>[39m[23m ""Jisr-Ash-Shugur"", ""Jisr-Ash-S~
+$ admin2pcode                                             [3m[38;5;246m<chr>[39m[23m ""SY0704"", ""SY0704"", ""SY0705"", ~
+$ sub_district                                            [3m[38;5;246m<chr>[39m[23m ""Jisr-Ash-Shugur"", ""Jisr-Ash-S~
+$ admin3pcode                                             [3m[38;5;246m<chr>[39m[23m ""SY070400"", ""SY070400"", ""SY070~
+$ community                                               [3m[38;5;246m<chr>[39m[23m ""Bsheiriyeh - Bello"", ""Bsheiri~
+$ admin4pcode                                             [3m[38;5;246m<chr>[39m[23m ""C4193"", ""C4193"", ""C4321"", ""C4~
+$ neighborhood                                            [3m[38;5;246m<chr>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA~
+$ neighborhood_pcode                                      [3m[38;5;246m<chr>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA~
+$ other_place_name                                        [3m[38;5;246m<chr>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA~
+$ response_modality                                       [3m[38;5;246m<chr>[39m[23m ""Cross Border"", ""Cross Border""~
+$ hub                                                     [3m[38;5;246m<chr>[39m[23m ""HLG"", ""HLG"", ""HLG"", ""HLG"", ""H~
+$ month                                                   [3m[38;5;246m<chr>[39m[23m ""July"", ""June"", ""July"", ""June""~
+$ status                                                  [3m[38;5;246m<lgl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA~
+$ comment                                                 [3m[38;5;246m<chr>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA~
+$ order                                                   [3m[38;5;246m<dbl>[39m[23m 1026, 1171, 1027, 1172, 1023, ~"
+"1",""
+"1","
+"

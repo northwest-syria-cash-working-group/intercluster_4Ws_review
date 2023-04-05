@@ -1,0 +1,91 @@
+"0","glimpse(nut)
+"
+"1","Rows: 27,254"
+"1",""
+"1","
+"
+"1","Columns: 78"
+"1",""
+"1","
+"
+"1","$ hub                                           [3m[38;5;246m<chr>[39m[23m ""Gaziantep"", ""Gaziantep"", ""Gaziantep"", ""~
+$ funding_source                                [3m[38;5;246m<chr>[39m[23m ""UN"", ""UN"", ""UN"", ""UN"", ""UN"", ""UN"", ""UN""~
+$ organisation_type                             [3m[38;5;246m<chr>[39m[23m ""NNGO"", ""NNGO"", ""NNGO"", ""NNGO"", ""NNGO"", ~
+$ organisation                                  [3m[38;5;246m<chr>[39m[23m ""ZLGL"", ""ZLGL"", ""ZLGL"", ""ZLGL"", ""ZLGL"", ~
+$ partner                                       [3m[38;5;246m<chr>[39m[23m ""Blank"", ""Blank"", ""Blank"", ""Blank"", ""Bla~
+$ donor                                         [3m[38;5;246m<chr>[39m[23m ""VHXW"", ""VHXW"", ""VHXW"", ""VHXW"", ""VHXW"", ~
+$ hrp_yn                                        [3m[38;5;246m<chr>[39m[23m ""Yes"", ""Yes"", ""Yes"", ""Yes"", ""Yes"", ""Yes""~
+$ governorate                                   [3m[38;5;246m<chr>[39m[23m ""Idleb"", ""Idleb"", ""Idleb"", ""Idleb"", ""Idl~
+$ district                                      [3m[38;5;246m<chr>[39m[23m ""Harim"", ""Harim"", ""Harim"", ""Harim"", ""Har~
+$ sub_district                                  [3m[38;5;246m<chr>[39m[23m ""Dana"", ""Dana"", ""Dana"", ""Dana"", ""Dana"", ~
+$ community                                     [3m[38;5;246m<chr>[39m[23m ""Dana (Dana)"", ""Dana (Dana)"", ""Dana (Dan~
+$ neighborhood                                  [3m[38;5;246m<lgl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+$ camp                                          [3m[38;5;246m<chr>[39m[23m ""Afimya Camp"", ""Al Barake"", ""Al Ghofran""~
+$ health_facilities                             [3m[38;5;246m<chr>[39m[23m ""VQEL"", ""VQEL"", ""VQEL"", ""VQEL"", ""VQEL"", ~
+$ activity_group                                [3m[38;5;246m<chr>[39m[23m ""Blanket Supplementary Feeding Programme~
+$ activity                                      [3m[38;5;246m<chr>[39m[23m ""Number of boys and girls (6-23 months) ~
+$ implementing_month                            [3m[38;5;246m<chr>[39m[23m ""January"", ""January"", ""January"", ""Januar~
+$ status                                        [3m[38;5;246m<chr>[39m[23m ""In progress\\تنفذ"", ""In progress\\تنفذ""~
+$ comment                                       [3m[38;5;246m<chr>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+$ beneficiaries_type                            [3m[38;5;246m<chr>[39m[23m ""IDPs"", ""IDPs"", ""IDPs"", ""IDPs"", ""IDPs"", ~
+$ male                                          [3m[38;5;246m<dbl>[39m[23m 113, 65, 15, 111, 61, 42, 24, 16, 220, 4~
+$ female                                        [3m[38;5;246m<dbl>[39m[23m 140, 80, 20, 136, 75, 53, 30, 20, 271, 5~
+$ undefined                                     [3m[38;5;246m<dbl>[39m[23m 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0~
+$ total                                         [3m[38;5;246m<dbl>[39m[23m 253, 145, 35, 247, 136, 95, 54, 36, 491,~
+$ follow_up_male                                [3m[38;5;246m<dbl>[39m[23m 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0~
+$ follow_up_female                              [3m[38;5;246m<dbl>[39m[23m 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0~
+$ follow_up_undefined                           [3m[38;5;246m<dbl>[39m[23m 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0~
+$ screened_by                                   [3m[38;5;246m<chr>[39m[23m ""Community Health Workers \\العمال الصحي~
+$ oedema                                        [3m[38;5;246m<dbl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+$ number_sam_boys                               [3m[38;5;246m<dbl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+$ number_sam_girls                              [3m[38;5;246m<dbl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+$ number_sam_undefined                          [3m[38;5;246m<dbl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+$ number_mam_boys                               [3m[38;5;246m<dbl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+$ number_mam_girls                              [3m[38;5;246m<dbl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+$ number_mam_undefined                          [3m[38;5;246m<dbl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+$ number_u5_referred_with_sam                   [3m[38;5;246m<dbl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+$ number_u5_referred_with_mam                   [3m[38;5;246m<dbl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+$ number_u5_referred_with_medical_complications [3m[38;5;246m<dbl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+$ referred_to_h_fs                              [3m[38;5;246m<chr>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+$ number_plw_mam                                [3m[38;5;246m<dbl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+$ number_plw_referred_with_mam                  [3m[38;5;246m<dbl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+$ number_of_pregnant                            [3m[38;5;246m<dbl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+$ number_of_lactating_0_6                       [3m[38;5;246m<dbl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+$ number_of_lactating_6_12                      [3m[38;5;246m<dbl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+$ number_of_lactating_12_24                     [3m[38;5;246m<dbl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+$ recovered_male                                [3m[38;5;246m<dbl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+$ recovered_female                              [3m[38;5;246m<dbl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+$ died_rate_male                                [3m[38;5;246m<dbl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+$ died_rate_female                              [3m[38;5;246m<dbl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+$ defaulted_male                                [3m[38;5;246m<dbl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+$ defaulted_female                              [3m[38;5;246m<dbl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+$ non_recovered_male                            [3m[38;5;246m<dbl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+$ non_recovered_female                          [3m[38;5;246m<dbl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+$ transferred_out_male                          [3m[38;5;246m<dbl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+$ transferred_out_female                        [3m[38;5;246m<dbl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+$ link_to_drive                                 [3m[38;5;246m<dbl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+$ cash_conditionality                           [3m[38;5;246m<lgl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+$ cash_restriction                              [3m[38;5;246m<lgl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+$ cash_transfer_voucher_value_usd               [3m[38;5;246m<lgl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+$ cash_delivery_mechanism                       [3m[38;5;246m<lgl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+$ frequency                                     [3m[38;5;246m<lgl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+$ estimated_end_date_mmyy                       [3m[38;5;246m<dbl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+$ item11                                        [3m[38;5;246m<chr>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+$ quantity11                                    [3m[38;5;246m<dbl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+$ item22                                        [3m[38;5;246m<chr>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+$ quantity22                                    [3m[38;5;246m<dbl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+$ item33                                        [3m[38;5;246m<chr>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+$ quantity33                                    [3m[38;5;246m<lgl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+$ admin1pcode                                   [3m[38;5;246m<chr>[39m[23m ""SY07"", ""SY07"", ""SY07"", ""SY07"", ""SY07"", ~
+$ admin2pcode                                   [3m[38;5;246m<chr>[39m[23m ""SY0703"", ""SY0703"", ""SY0703"", ""SY0703"", ~
+$ admin3pcode                                   [3m[38;5;246m<chr>[39m[23m ""SY070301"", ""SY070301"", ""SY070301"", ""SY0~
+$ admin4pcode                                   [3m[38;5;246m<chr>[39m[23m ""C4126"", ""C4126"", ""C4126"", ""C4126"", ""C41~
+$ neb_pcode                                     [3m[38;5;246m<lgl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+$ camp_pcode                                    [3m[38;5;246m<chr>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+$ hrp_activites                                 [3m[38;5;246m<chr>[39m[23m ""Yes"", ""Yes"", ""Yes"", ""Yes"", ""Yes"", ""Yes""~
+$ beneficiary_type                              [3m[38;5;246m<chr>[39m[23m ""CU5"", ""CU5"", ""CU5"", ""CU5"", ""CU5"", ""CU5""~
+$ male_2                                        [3m[38;5;246m<dbl>[39m[23m 113, 65, 15, 111, 61, 42, 24, 16, 220, 4~
+$ female_2                                      [3m[38;5;246m<dbl>[39m[23m 140, 80, 20, 136, 75, 53, 30, 20, 271, 5~"
+"1",""
+"1","
+"
