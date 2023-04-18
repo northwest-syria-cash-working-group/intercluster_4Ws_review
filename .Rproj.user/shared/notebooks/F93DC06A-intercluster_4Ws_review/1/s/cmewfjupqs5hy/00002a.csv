@@ -1,0 +1,135 @@
+"0","com <- rbind(
+  prot %>% 
+    filter(unit == ""# people"") %>% 
+    mutate(beneficiaries = total_achieved_as_per_unit, 
+           month = str_to_lower(str_sub(month, start = 6L, end = 8L)), 
+           project_status = ""Completed"") %>% 
+    select(admin1pcode, admin2pcode, admin3pcode, admin4pcode, 
+           admin5pcode, camp_name = camps, 
+           activity, beneficiaries, 
+           month, project_status, cluster = ao_r, 
+           delivery_modality),
+  
+  nut %>% 
+    mutate(month = str_to_lower(str_sub(implementing_month, start = 1L, end = 3L)),
+           admin5pcode = NA_character_, 
+           # Extracts all text before the first instance of punctuation
+           delivery_modality = str_extract(service_delivery_modality, ""^[^[:punct:]]+""), 
+           cluster = ""nutrition"") %>% 
+    select(admin1pcode, admin2pcode, admin3pcode, admin4pcode, 
+           admin5pcode, camp_name, 
+           activity, beneficiaries, 
+           month, project_status = status, cluster, 
+           delivery_modality),
+  
+  wash %>%
+    pivot_longer(cols = c(rehab_repair_water_station, 
+                          o_m, 
+                          construction_water_station, 
+                          network_rehab, 
+                          construction_water_network, 
+                          chlorination, 
+                          wq_testing, 
+                          fuel_consumption, 
+                          water_safety_plans, 
+                          water_trucking, 
+                          cash_assistance_water_trucking, 
+                          pvt_boreholes, 
+                          cash_assistance_private_boreholes, 
+                          tanks_pwd_ben, 
+                          hh_water_treatment, 
+                          hh_water_treatement_cash_assistance, 
+                          sew_rehab_repair, 
+                          sew_support, 
+                          sew_construction, 
+                          beneficiaries_toilets, 
+                          pw_d_beneficiaries_toilet, 
+                          beneficiaries_cash_toilets, 
+                          bath_new, 
+                          cash_bath,
+                          des_beneficiaries, 
+                          swm_support_benf, 
+                          hp_ben, 
+                          hp_pwd_ben, 
+                          hk_ben, 
+                          cash_hk, 
+                          pwd_beneficiaries, 
+                          wash_nfi_ben, 
+                          incinerator_health_facilities, 
+                          cholera_safe_water, 
+                          chlorin_cholera, 
+                          cholera_sew, 
+                          cholera_kit, 
+                          cholera_hp_rcce_iec, 
+                          cholera_wash_in_health), 
+                 names_to = ""activity"", values_to = ""beneficiaries"") %>% 
+    mutate(delivery_modality = NA_character_,
+           cluster = ""wash"") %>% 
+    # Are these really the columns you want to select? 
+    # I think you have to cut it down even more
+    select(admin1pcode, admin2pcode, admin3pcode, admin4pcode, 
+           admin5pcode, camp_name, 
+           activity, beneficiaries, 
+           month, project_status, cluster, 
+           delivery_modality) %>% 
+    filter(!is.na(beneficiaries)), 
+  
+  snfi %>% 
+    mutate(month = str_to_lower(str_sub(reporting_month, start = 1L, end = 3L)),
+           admin5pcode = NA_character_,  
+           camp_name = NA_character_) %>% 
+    select(admin1pcode, admin2pcode, admin3pcode, admin4pcode, 
+           admin5pcode, camp_name, 
+           activity, beneficiaries, 
+           month, project_status, cluster, 
+           delivery_modality),
+  
+  cccm %>% 
+    pivot_longer(cols = (jan:dec), names_to = ""month"", values_to = ""beneficiaries"") %>% 
+    filter(admin3pcode %in% nw_pcode3) %>% 
+    mutate(admin5pcode = NA_character_,  
+           camp_name = NA_character_, 
+           project_status = ""Completed"", 
+           delivery_modality = NA_character_) %>% 
+    select(admin1pcode, admin2pcode, admin3pcode, admin4pcode, 
+           admin5pcode, camp_name, 
+           activity, beneficiaries, 
+           month, project_status, cluster), 
+  
+  fsl %>% 
+    mutate(month = str_to_lower(str_sub(reporting_month, start = 1L, end = 3L)), 
+           project_status = ""Completed"", 
+           cluster = ""fsl"") %>%
+    select(admin1pcode, admin2pcode, admin3pcode, admin4pcode, 
+           admin5pcode, camp_name, 
+           activity, beneficiaries, 
+           month, project_status, cluster, 
+           delivery_modality), 
+  
+  cash %>% 
+    mutate(month = month(distribution_date, label = TRUE), 
+           month = str_to_lower(month), 
+           activity = ""multipurpose cash"", 
+           cluster = ""cash"", 
+           delivery_modality = ""cash"") %>% 
+    select(admin1pcode, admin2pcode, admin3pcode, admin4pcode, 
+           admin5pcode, camp_name, 
+           activity, beneficiaries, 
+           month, project_status, cluster, 
+           delivery_modality), 
+  
+  erl %>% 
+    mutate(month = str_sub(implementing_month, start = 5L, end = 7L), 
+           month = str_to_lower(month),
+           cluster = ""erl"", 
+           admin5pcode = NA_character_) %>% 
+    select(admin1pcode, admin2pcode, admin3pcode, admin4pcode, 
+           admin5pcode, camp_name = other_place_name, 
+           activity = sector_activity, beneficiaries, 
+           month, project_status = status, cluster, 
+           delivery_modality)
+)
+"
+"2","Error in rbind(deparse.level, ...) : 
+  numbers of columns of arguments do not match
+"

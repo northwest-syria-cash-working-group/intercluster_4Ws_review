@@ -55,6 +55,7 @@ library(flextable)
 library(ggrepel)
 library(magrittr)
 library(readxlsb)
+library(tidymodels)
 
 theme_set(theme_light())
 
@@ -117,11 +118,6 @@ mode <- function(x) {
   ux[which.max(tabulate(match(x, ux)))]
 }
 
-```
-
-
-```{r}
-
 pcode3_shape <- 
   sf::st_read("./data/syr_admbnda_uncs_unocha_20201217/syr_admbnda_adm3_uncs_unocha_20201217.shp", 
           quiet = TRUE)
@@ -132,53 +128,49 @@ nw_pcode3 <- read_excel("./data/2023HNO_PiN_Severity_detailedAoI_FORSHARE 150320
   filter(ao_c == "NW") %>% 
   pull(admin3pcode)
 
-
-```
-
-```{r}
-read_excel("./data/ocha_unedited/2023_WoS_SNFI_XBHub_4Ws_Jan&Feb2023.xlsx", 
-           sheet = "Shelter 4Ws") %>% 
+locations <- read_excel("./data/Locations.xlsx") %>% 
   clean_names()
-```
-
-```{r}
-
-
-
-rename_cccm <- function(tbl) {
-  tbl %>% 
-    rename(admin1pcode = gov_pcode,
-           admin2pcode = dist_pcode, 
-           admin3pcode = sub_dist_pcode, 
-           admin4pcode = comm_pcode, 
-           governorate = gov_en, 
-           district = dist_en, 
-           sub_district = sub_dist_en, 
-           community = comm_en) 
-}
-
-cccm %>% filter(assistance_provider == "ISIMM" & admin4pcode == "C1035")
-
-
 
 ```
+
+
+# Reading in data
 
 
 
 ```{r warning=FALSE}
-wash <- read_excel("./data/ocha_edited/WASH OCHA2023 Jan 2023.xlsx",) %>% 
+
+cash <- read_csv("./data/cbr_com.csv")
+
+wash <- read_excel("./data/ocha_unedited/WASH OCHA2023_feb.xlsx",
+                   sheet = 1) %>% 
   clean_names() %>% 
   rename(admin3pcode = sd_pcode, 
          admin4pcode = com_p_code, 
          admin5pcode = camp_pcode, 
-         beneficiaries = number_benificiaries_in_the_location2, 
+         beneficiaries_in_location = number_benificiaries_in_the_location2, 
          camp_name = camp_asm_almkhym,
          school_name = schools_asm_lmdrst,
          collective_shelter_name = collective_shelter_asm_mrkz_alaywa_u_02be,
          health_facility_name = health_facility_name_asm_almnshat_altbyt, 
          water_system_name = name_of_water_system_asm_mhtt_almyah, 
-         partner_code = ip_code) %>% 
-  mutate(ifelse(is.na(partner_code), ngo_code, partner_code))
+         partner_code = ip_code,
+         start_date = project_start_date, 
+         end_date = project_end_date, 
+         quarter = month, 
+         month = iincluding_date, 
+         project_status = status_alhalt, 
+         governorate = gov) %>% 
+  mutate(partner_code = ifelse(is.na(partner_code), ngo_code, partner_code), 
+         cluster = "wash") %>% 
+  left_join(locations %>%
+              select(admin1pcode, admin2pcode, admin3pcode), 
+            by = "admin3pcode") %>% 
+  rename(construction_water_network = constuction_water_network, 
+         fuel_consumption = fule_consumption, 
+         construction_water_station = constuction_water_station, 
+         cholera_wash_in_health =  cholera_was_hin_health, 
+         reporting_month = reporting_month_shhr_altqryr) 
 
 cccm_names <- c("admin1pcode", "governorate",
                 "admin2pcode","district",  
@@ -196,15 +188,16 @@ cccm <- rbind(
     sheet = "ISIMM_Assisted_IDPs",
     skip = 1) %>%
     setNames(cccm_names) %>% 
-    mutate(assistance_provider = "ISIMM"),
+    mutate(activity = "ISIMM"),
   read_excel(
     "./data/ocha_unedited/202302_CCCM 4Ws (as of February 2023).xlsx",
     sheet = "CCCM_Activities_Assisted_IDPs",
     skip = 1) %>%
     setNames(cccm_names) %>% 
-    mutate(assistance_provider = "CCCM")) %>% 
+    mutate(activity = "CCCM")) %>% 
   mutate(jan = as.numeric(jan), 
-         feb = as.numeric(feb))
+         feb = as.numeric(feb),
+         cluster = "cccm")
 
 shelter_select <- function(tbl){
   tbl %>% 
@@ -239,12 +232,16 @@ snfi <- read_excel("./data/ocha_unedited/2023_WoS_SNFI_XBHub_4Ws_Jan&Feb2023.xls
            sheet = "Shelter 4Ws") %>% 
   clean_names() %>% 
   filter(!is.na(sector)) %>%  
-  shelter_select() %>% 
+  shelter_select() %>%
+  mutate(cluster = "shelter") %>% 
+  filter(activity != "END_OF_FORMULA") %>%
   rbind(read_excel("./data/ocha_unedited/2023_WoS_SNFI_XBHub_4Ws_Jan&Feb2023.xlsx", 
            sheet = "NFI 4Ws") %>% 
           clean_names() %>% 
           filter(!is.na(sector)) %>% 
-          shelter_select())
+          shelter_select() %>% 
+          mutate(cluster = "nfi") %>% 
+          filter(activity != "END_OF_FORMULA"))
 
 health_names <- read_excel("./data/ocha_unedited/Monthly Health Cluster Indicators Report GZT Jan-Feb 2023.xlsx", 
            sheet = 1) %>% 
@@ -262,7 +259,20 @@ health_names <- read_excel("./data/ocha_unedited/Monthly Health Cluster Indicato
 
 health <- read_excel("./data/ocha_unedited/Monthly Health Cluster Indicators Report GZT Jan-Feb 2023.xlsx", 
            sheet = 1) %>% 
-  setNames(health_names) 
+  setNames(health_names) %>% 
+  pivot_longer(cols = 
+                 (medical_procedures:
+                    x3_1_6_community_health_workers_trained_re_trained_on_different_health_topi), 
+               names_to = "activity", 
+               values_to = "beneficiaries") %>% 
+  rename(governorate = location_gov, 
+         admin1pcode = code_governorate, 
+         district = location_district, 
+         admin2pcode = code_district, 
+         sub_district = location_sub_district, 
+         admin3pcode = code_sub_district, 
+         community = location_community, 
+         admin4pcode = code_community)
 
 erl <- read_excel("./data/ocha_unedited/2023-02Feb_ERL_4Ws_NWS - WoS - V03 -WoS Validated.xlsx", 
            sheet = "4Ws") %>% 
@@ -274,7 +284,7 @@ erl <- read_excel("./data/ocha_unedited/2023-02Feb_ERL_4Ws_NWS - WoS - V03 -WoS 
          partner_code = implementing_partner, 
          beneficiaries = direct_beneficiaries, 
          previously_assisted = have_you_assisted_same_individual_during_previous_month, 
-         conditinality = if_cash_cash_conditionality,
+         conditionality = if_cash_cash_conditionality,
          restrictions = if_cash_cash_restriction, 
          cash_delivery_mechanism = if_cash_cash_delivery_mechanism,
          transfer_value = if_cash_cash_transfer_voucher_value_per_household_usd, 
@@ -293,9 +303,17 @@ fsl <- read_xlsb("./data/ocha_edited/FSL_January 2023_5Ws_OCHA_22032023.xlsb",
          beneficiaries = x_of_total_beneficiaries_assisted, 
          families = x_of_families_assisted, 
          start_date = starting_date, 
-         end_date = ending_date) %>% 
+         end_date = ending_date,
+         delivery_modality = delivery_modality_in_kind_service_cash_voucher, 
+         activity = fss_activity_do_not_write) %>% 
   # Crazy -- this is the first time I've seen the 1904 start date
-  mutate_at(vars(start_date, end_date), ~ as.Date(as.numeric(.), origin = "1904-01-01"))
+  mutate_at(vars(start_date, end_date), ~ as.Date(as.numeric(.), origin = "1904-01-01")) %>% 
+  mutate_at(vars(camp_name_cccm_official_name, 
+                 camp_name_if_not_listed_by_the_cccm,
+                 admin5pcode), ~ ifelse(. == "", NA_character_, .)) %>% 
+  mutate(camp_name = ifelse(!is.na(camp_name_cccm_official_name), 
+                            camp_name_cccm_official_name, 
+                            camp_name_if_not_listed_by_the_cccm))
 
 edu_names <- read_excel("./data/ocha_unedited/Gaziantep 4Ws OCHA 2023 EDU.xlsx", 
            sheet = 5) %>% 
@@ -321,14 +339,6 @@ edu <- read_excel("./data/ocha_unedited/Gaziantep 4Ws OCHA 2023 EDU.xlsx",
          school_name = name_of_school_learning_center, 
          partner_code = implementing_partner_name_or_code)
 
-# nut_names <- read_excel("./data/202207_NC-Full Database - NW-23082022.xlsx", 
-#            sheet = "4Ws") %>% 
-#   head(1) %>% 
-#   transpose_df() %>% 
-#   select(rowname) %>% 
-#   mutate(rowname = gsub("\\p{Arabic}", "", rowname, perl = TRUE), 
-#          rowname = str_trim(str_replace_all(rowname, "\r\n|/|\\\\", ""))) %>% 
-#   pull(rowname)
 
 nut <- read_excel("./data/ocha_unedited/NW Syria Nutrition cluster Jan + Feb 4Ws Dataset-Coded04042023.xlsx", 
            sheet = 1) %>% 
@@ -338,54 +348,46 @@ nut <- read_excel("./data/ocha_unedited/NW Syria Nutrition cluster Jan + Feb 4Ws
          admin3pcode = sub_dis_pcode, 
          admin4pcode = com_pcode,
          partner_code = organisation, 
-         camp_name = camp, 
-         beneficiaries = total, 
-         health_facility_name = health_facility_or_rrt)
+         camp_name = camp,  
+         health_facility_name = health_facility_or_rrt) %>% 
+  mutate(beneficiaries = male + female)
 
 
-prot_names <- read_excel("./data/202207_PRO_EXTERNAL_TXB_Complie_4Ws_2022_r7_v1_220823.xlsx", 
-           sheet = "a.4Ws - Data entry sheet", 
-           skip = 1) %>%
+prot_names <- read_excel("./data/ocha_unedited/EXTERNAL_NWS_Complie_5Ws_2023_r1_v1_04042023.xlsx", 
+           sheet = "Data entry sheet", 
+           skip = 2) %>%
   head(1) %>% 
-  transpose_df() %>% 
-  select(rowname) %>% 
+  transpose_df() %>%
+  mutate(col_id = row_number()) %>% 
   mutate(rowname = gsub("\\p{Arabic}", "", rowname, perl = TRUE), 
          rowname = str_trim(str_replace_all(rowname, "\r\n|/|\\\\|\\*", ""))) %>% 
+  mutate(rowname = case_when(col_id == 34 ~ "total_reached", 
+                             col_id == 18 ~ "unit", 
+                             col_id == 21 ~ "pwd",
+                             col_id == 22 ~ "earthquake_response", 
+                             col_id == 16 ~ "service_delivery",
+                             TRUE ~ rowname)) %>% 
   pull(rowname)
 
-prot <- read_excel("./data/202207_PRO_EXTERNAL_TXB_Complie_4Ws_2022_r7_v1_220823.xlsx", 
-           sheet = "a.4Ws - Data entry sheet", 
-           skip = 1) %>%
+prot <- read_excel("./data/ocha_unedited/EXTERNAL_NWS_Complie_5Ws_2023_r1_v1_04042023.xlsx", 
+           sheet = "Data entry sheet", 
+           skip = 2) %>%
   setNames(prot_names) %>% 
   clean_names() %>% 
-  rename(delivery_modality = delivery_modaity, 
-         admin1pcode = code_governorate, 
-         admin2pcode = code_district, 
-         admin3pcode = code_sub_district, 
-         admin4pcode = code_commune_village_town)  
-  
-
-```
-
-
-
-```{r eval=FALSE}
-health %>% glimpse()
   rename(admin1pcode = code_governorate, 
          admin2pcode = code_district, 
          admin3pcode = code_sub_district, 
-         admin4pcode = code_community) %>% 
-  mutate(frequencies = 
-           x1_1_1_number_of_outpatients_consultations + 
-           x1_1_2_number_of_trauma_consultations_supported + 
-           x1_1_2_1_number_of_hostility_related_trauma_consultations_supported + 
-           x1_1_3_number_of_mental_health_consultations_supported + 
-           x1_1_4_number_of_physical_rehabilitation_sessions_supported + 
-           x1_1_5_number_of_vaginal_deliveries_attended_by_a_skilled_attendant + 
-           x1_1_6_number_of_caesarian_sections_supported + 
-           x1_1_7_number_of_cases_referred_for_specialized_treatment_between_levels_of_care_inside_syria_cross_)
-  
+         admin4pcode = code_commune_village_town, 
+         admin5pcode = code_camps, 
+         delivery_modality = delivery_modaity, 
+         beneficiary_type = type_of_beneficiaries_only_if_unit_number_people, 
+         total_achieved_as_per_unit = total_achieved_as_per_the_unit_in_the_previous_field, 
+         hrp_project = hrp_project_or_not_yn_u_061f)
+
 ```
+
+
+
 
 ```{r}
 edu %>% count(activity)
@@ -416,7 +418,7 @@ sum_table <- tribble(
   "Education", TRUE, FALSE, FALSE, FALSE, FALSE, FALSE,
   "ERL", TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, 
   "FSL", TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, 
-  "Health", TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, 
+  "Health", FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, 
   "Nutrition", TRUE, FALSE, TRUE, TRUE, TRUE, TRUE, 
   "Protection", TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, 
   "SNFI", TRUE, TRUE, TRUE, TRUE, TRUE, FALSE, 
@@ -431,9 +433,7 @@ sum_table %>%
   theme_zebra() %>% 
   bg(j = 2:7, bg=colmatrix) %>% 
   set_table_properties(layout = "autofit", width = .99) %>% 
-  set_caption("Review of 4W templates -- alignment with cash reporting standards") %>% 
-  footnote(i = 1, j = 1, part = "header",
-           as_paragraph("Except Cash, templates reviewed were from 2022"))
+  set_caption("Review of 4W templates -- alignment with cash reporting standards") 
 
 
 ```
@@ -444,12 +444,155 @@ Specific recommendations for joining datasets will be listed in the section `Con
 
 However, immediately, were Education, ERL, FSL and SNFI partners to directly provide their 4Ws to the CWG, exactly how they would normally submit it to their Cluster Coordinators and IMs, they could be directly integrated in current CWG reporting with minimal issues. 
 
+Incidentally, several of these columns are also present in the intercluster 4Ws reporting template
+
 <br><br><br>
 
 # 2. Consolidation
 
 
-### Site-level data and number of unique individuals reached 
+
+```{r}
+
+# Finally! This works!!! Hahahahhahahaha 
+
+com <- rbind(
+  prot %>% 
+    filter(unit == "# people") %>% 
+    mutate(beneficiaries = total_achieved_as_per_unit, 
+           month = str_to_lower(str_sub(month, start = 6L, end = 8L)), 
+           project_status = "Completed") %>% 
+    select(admin1pcode, admin2pcode, admin3pcode, admin4pcode, 
+           admin5pcode, camp_name = camps, 
+           activity, beneficiaries, 
+           month, project_status, cluster = ao_r, 
+           delivery_modality),
+  
+  nut %>% 
+    mutate(month = str_to_lower(str_sub(implementing_month, start = 1L, end = 3L)),
+           admin5pcode = NA_character_, 
+           # Extracts all text before the first instance of punctuation
+           delivery_modality = str_extract(service_delivery_modality, "^[^[:punct:]]+"), 
+           cluster = "nutrition") %>% 
+    select(admin1pcode, admin2pcode, admin3pcode, admin4pcode, 
+           admin5pcode, camp_name, 
+           activity, beneficiaries, 
+           month, project_status = status, cluster, 
+           delivery_modality),
+  
+  wash %>%
+    pivot_longer(cols = c(rehab_repair_water_station, 
+                          o_m, 
+                          construction_water_station, 
+                          network_rehab, 
+                          construction_water_network, 
+                          chlorination, 
+                          wq_testing, 
+                          fuel_consumption, 
+                          water_safety_plans, 
+                          water_trucking, 
+                          cash_assistance_water_trucking, 
+                          pvt_boreholes, 
+                          cash_assistance_private_boreholes, 
+                          tanks_pwd_ben, 
+                          hh_water_treatment, 
+                          hh_water_treatement_cash_assistance, 
+                          sew_rehab_repair, 
+                          sew_support, 
+                          sew_construction, 
+                          beneficiaries_toilets, 
+                          pw_d_beneficiaries_toilet, 
+                          beneficiaries_cash_toilets, 
+                          bath_new, 
+                          cash_bath,
+                          des_beneficiaries, 
+                          swm_support_benf, 
+                          hp_ben, 
+                          hp_pwd_ben, 
+                          hk_ben, 
+                          cash_hk, 
+                          pwd_beneficiaries, 
+                          wash_nfi_ben, 
+                          incinerator_health_facilities, 
+                          cholera_safe_water, 
+                          chlorin_cholera, 
+                          cholera_sew, 
+                          cholera_kit, 
+                          cholera_hp_rcce_iec, 
+                          cholera_wash_in_health), 
+                 names_to = "activity", values_to = "beneficiaries") %>% 
+    mutate(delivery_modality = NA_character_,
+           cluster = "wash") %>% 
+    # Are these really the columns you want to select? 
+    # I think you have to cut it down even more
+    select(admin1pcode, admin2pcode, admin3pcode, admin4pcode, 
+           admin5pcode, camp_name, 
+           activity, beneficiaries, 
+           month, project_status, cluster, 
+           delivery_modality) %>% 
+    filter(!is.na(beneficiaries)), 
+  
+  snfi %>% 
+    mutate(month = str_to_lower(str_sub(reporting_month, start = 1L, end = 3L)),
+           admin5pcode = NA_character_,  
+           camp_name = NA_character_) %>% 
+    select(admin1pcode, admin2pcode, admin3pcode, admin4pcode, 
+           admin5pcode, camp_name, 
+           activity, beneficiaries, 
+           month, project_status, cluster, 
+           delivery_modality),
+  
+  cccm %>% 
+    pivot_longer(cols = (jan:dec), names_to = "month", values_to = "beneficiaries") %>% 
+    filter(admin3pcode %in% nw_pcode3) %>% 
+    mutate(admin5pcode = NA_character_,  
+           camp_name = NA_character_, 
+           project_status = "Completed", 
+           delivery_modality = NA_character_) %>% 
+    select(admin1pcode, admin2pcode, admin3pcode, admin4pcode, 
+           admin5pcode, camp_name, 
+           activity, beneficiaries, 
+           month, project_status, cluster, 
+           delivery_modality), 
+  
+  fsl %>% 
+    mutate(month = str_to_lower(str_sub(reporting_month, start = 1L, end = 3L)), 
+           project_status = "Completed", 
+           cluster = "fsl") %>%
+    select(admin1pcode, admin2pcode, admin3pcode, admin4pcode, 
+           admin5pcode, camp_name, 
+           activity, beneficiaries, 
+           month, project_status, cluster, 
+           delivery_modality), 
+  
+  cash %>% 
+    mutate(month = month(distribution_date, label = TRUE), 
+           month = str_to_lower(month), 
+           activity = "multipurpose cash", 
+           cluster = "cash", 
+           delivery_modality = "cash") %>% 
+    select(admin1pcode, admin2pcode, admin3pcode, admin4pcode, 
+           admin5pcode, camp_name, 
+           activity, beneficiaries, 
+           month, project_status, cluster, 
+           delivery_modality), 
+  
+  erl %>% 
+    mutate(month = str_sub(implementing_month, start = 5L, end = 7L), 
+           month = str_to_lower(month),
+           cluster = "erl", 
+           admin5pcode = NA_character_) %>% 
+    select(admin1pcode, admin2pcode, admin3pcode, admin4pcode, 
+           admin5pcode, camp_name = other_place_name, 
+           activity = sector_activity, beneficiaries, 
+           month, project_status = status, cluster, 
+           delivery_modality)
+)
+  
+```
+
+
+### Number of unique individuals reached 
 
 The Cash Working Group is interested in the following indicators: 
 
@@ -459,7 +602,7 @@ The Cash Working Group is interested in the following indicators:
 
 Site-level data is necessary for any of these calculations to take place. And the calculation of the number of unique individuals reached is an important figure to all clusters. However, the CWG has no interest in imposing its reporting policy and calculations on other clusters -- this section instead outlines how the CWG intends to process these figures, to document them for public knowledge and for ease of future revision. 
 
-Each cluster should make their own determination in that regard. 
+To reiterate, the multi-sector reached has been calculated according to the CWG's own preferences (please download the code to see the exact conditions). Other coordination bodies and clusters should make their own determinations. 
 
 Site-level data is important in calculating the number of unique individuals reached -- this itself is an important figure for the CWG as we work to determine the percentage of beneficiaries who have received assistance through in-kind, cash or service delivery modalities. 
 
@@ -469,26 +612,25 @@ Beneficiary frequencies can be easily determined by summing beneficiaries reache
 
 The ideal way to determine the number of unique individuals reached is through an established and maintained beneficiary database. However, this option is not available to us. Whilst various clusters may have different formulae for calculating individuals reached, common approaches include a column asking whether beneficiaries have been previously assisted or taking the highest number reached out of any activity per community then summing those together. 
 
-This second option -- taking the highest number reached, by any activity, at admin4 -- is the best available option to avoid double counting. In fact, there will be usually be some slight undercounting, but seeing as the solution to that would be to push everyone down to reporting at admin5, it would be a lot of effort for marginal gains. 
+This second option -- taking the highest number reached, by any activity, at site level -- is the best available option to avoid double counting. In fact, there will be usually be some slight undercounting. However, site-level consolidation is not currently an option. The lowest-common denominator between clusters is the community level, or admin4 (with the very notable exception of Health, which only reports at admin3, likely due to the catchment area of each health facility). 
 
 Site-level (camp, specific location in the community) data is only collected in the following templates:
 
 * WASH: camp pcodes and the specific WASH installations are collected
 * FSL: camp pcodes are collected
 * Education: camp pcodes and names are available, as are schools and their unique identifier numbers.
-* Nutrition: camp pcodes are collected
+* Nutrition: camp pcodes are collected, health facility names and school names are collected. 
 * Protection: camp pcodes are collected
+* Cash: camp pcodes are collected
 
-Shelter and NFIs, Health, ERL and CCCM (again, what they have provided to OCHA is presumably only meant for external parties and missing quite a lot of information) do not collect information on camp and specific locations. 
+However, as will be explored in the following sections, site-level data (admin5) is of quite poor quality, largely due to the poor standardisation of site names, differing thoughts on the ownership of the geoadmins dataset as well as due to a lot of information not being collected. Therefore, pushing everyone down to reporting at admin5 without first resolving these issues would be a lot of effort for very marignal gains. 
 
-
-
-
-Shelter beneficiaries are calculated by selecting the highest number of beneficiaries per community. 
 
 <br><br> 
 
 ### Coordination and multi-sector footprint
+
+All this being said, the consolidation of the 4W data does create additional opportunities 
 
 The consolidation of this 4W data creates additional opportunities for inter-cluster coordination. Inter-cluster coordination is not the purview of the Cash Working Group and OCHA is more than capable to making these opportunities for themselves. 
 
@@ -500,6 +642,21 @@ However, it would also be remiss to not mention what new metrics would be availa
 
 Again, inter-cluster coordination is not the purview of the Cash Working Group, but we are happy to share all the code and data with whoever wants to take the lead for that. 
 
+The total number of unique indi
+
+```{r}
+com %>% 
+  filter(!is.na(admin4pcode)) %>% 
+  group_by(admin4pcode) %>% 
+  slice(which.max(beneficiaries)) %>% 
+  ungroup() %>% 
+  {sum(.$beneficiaries, na.rm = TRUE)}
+  group_by(admin3pcode) %>% 
+  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE))
+    
+```
+
+
 <br><br>
 
 
@@ -507,15 +664,184 @@ Again, inter-cluster coordination is not the purview of the Cash Working Group, 
 
 <br><br><br>
 
+### Monthly
+
+```{r}
+rbind(
+  
+  wash %>% 
+  filter(project_status == "Completed") %>% 
+  mutate(month = str_to_lower(month)) %>% 
+  group_by(month, 
+           health_facility_name, 
+           school_name, 
+           collective_shelter_name, 
+           admin5pcode, 
+           admin4pcode) %>%
+  slice(which.max(so2)) %>% 
+  group_by(month) %>% 
+  summarise(beneficiaries = sum(so2, na.rm = TRUE)) %>% 
+  mutate(type = "wash_monthly"), 
+  
+  cccm %>% 
+  filter(activity == "CCCM") %>% 
+  pivot_longer(cols = (jan:dec), names_to = "month", values_to = "beneficiaries") %>% 
+  group_by(admin4pcode, month) %>%
+  slice(which.max(beneficiaries)) %>% 
+  group_by(month) %>% 
+  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE)) %>% 
+  mutate(type = "cccm_monthly"), 
+  
+  erl %>%  
+  mutate(month = str_sub(implementing_month, start = 5L, end = 7L), 
+         month = str_to_lower(month)) %>% 
+  filter(report_this_to_any_other_sector == "No") %>% 
+  group_by(month) %>% 
+  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE)) %>% 
+  mutate(type = "erl_monthly"), 
+  
+  health %>% 
+  mutate(month = case_when(implementation_month == 1 ~ "jan", 
+                           implementation_month == 2 ~ "feb", 
+                           TRUE ~ NA_character_)) %>% 
+  filter(!is.na(month)) %>% 
+  group_by(month) %>% 
+  filter(activity == "medical_procedures") %>% 
+  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE)) %>% 
+  mutate(type = "health_monthly"), 
+  
+  fsl %>% 
+  filter(activity == "Food Baskets" & reported_to_other_sector == "No") %>% 
+  mutate(month = str_to_lower(str_sub(reporting_month, start = 1L, end = 3L))) %>%
+  group_by(month) %>% 
+  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE)) %>% 
+  mutate(type = "food_monthly"), 
+  
+  cash %>% 
+  filter(project_status == "Completed") %>% 
+  group_by(month = month(distribution_date, label = TRUE)) %>% 
+  filter(!is.na(month)) %>% 
+  mutate(month = str_to_lower(month)) %>% 
+  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE)) %>% 
+  mutate(type = "cash_monthly"), 
+  
+  snfi %>% filter(cluster == "nfi" & activity == "1.1.1.1: Provision of core NFIs" & 
+                  new_beneficiaries == "Yes") %>% 
+  mutate(month = str_to_lower(str_sub(reporting_month, start = 1L, end = 3L))) %>% 
+  group_by(month) %>% 
+  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE)) %>% 
+  mutate(type = "nfi_monthly"), 
+
+  snfi %>% 
+  filter(cluster == "shelter" & new_beneficiaries == "Yes") %>% 
+  mutate(month = str_to_lower(str_sub(reporting_month, start = 1L, end = 3L))) %>% 
+  group_by(month) %>% 
+  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE)) %>% 
+  mutate(type = "shelter_monthly")
+  
+) %>% 
+  arrange(type, month) %>% 
+  write_csv("./data/monthly_by_cluster.csv")
+```
+
+
 # 3. Annexes -- 4W templates 
+
+### Cash 
+
+```{r}
+cash %>% 
+  filter(project_status == "Completed") %>% 
+  group_by(month = month(distribution_date, label = TRUE)) %>% 
+  filter(!is.na(month)) %>% 
+  mutate(month = str_to_lower(month)) %>% 
+  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE)) %>% 
+  mutate(type = "cash_monthly")
+```
+
 
 ### WASH 
 
+
+
+```{r}
+wash %>% glimpse()
+
+
+```
+
+
+Total reached is just the `so2` column 
+We also calculate `so1` for comparison  
+
+You need to do this for s01 and s02
+Monthly: Max -- health facility OR school, collective shelter, camp_code, community
+Cumulative is the max of all months, for the same levels, starting with health facility OR school
+
 ```{r warning = FALSE}
 
+# Monthly reached
+wash %>% 
+  filter(project_status == "Completed") %>% 
+  group_by(month, 
+           health_facility_name, 
+           school_name, 
+           collective_shelter_name, 
+           admin5pcode, 
+           admin4pcode) %>%
+  slice(which.max(so2)) %>% 
+  group_by(month) %>% 
+  summarise(beneficiaries = sum(so2, na.rm = TRUE)) %>% 
+  mutate(type = "wash_monthly")
 
-glimpse(wash)
+# Cumulative
+# The cumulative tallies
+wash %>% 
+  filter(project_status == "Completed") %>% 
+  group_by(health_facility_name, 
+           school_name, 
+           collective_shelter_name, 
+           admin5pcode, 
+           admin4pcode) %>%
+  slice(which.max(so2)) %>% 
+  ungroup() %>% 
+  summarise(beneficiaries = sum(so2, na.rm = TRUE)) %>% 
+  mutate(type = "wash_cumulative")
+
+# so1 calculations 
+# These tally 
+wash %>% 
+  filter(project_status == "Completed") %>% 
+  group_by(health_facility_name, 
+           school_name, 
+           collective_shelter_name, 
+           camp_name, 
+           admin5pcode, 
+           admin4pcode) %>%
+  slice(which.max(so1_1_1)) %>% 
+  ungroup() %>% 
+  summarise(beneficiaries = sum(so1_1_1, na.rm = TRUE)) %>% 
+  mutate(type = "wash_so1_1_1_cumulative")
+
+
+wash %>% 
+  filter(project_status == "Completed") %>% 
+  group_by(health_facility_name, 
+           school_name, 
+           collective_shelter_name, 
+           camp_name, 
+           admin5pcode, 
+           admin4pcode) %>%
+  slice(which.max(so1_1_2)) %>% 
+  ungroup() %>% 
+  summarise(beneficiaries = sum(so1_1_2, na.rm = TRUE)) %>% 
+  mutate(type = "wash_so1_1_2_cumulative")
 ```
+
+```{r}
+wash %>% 
+```
+
 
 ```{r eval=FALSE}
 wash %>% 
@@ -547,9 +873,41 @@ However, their 4Ws is missing most of the quality and design-related columns, su
 
 ### CCCM        
 
+two figures reported: 
+assisted IDPs (CCCM assisted, ignore ISIMM sheet), 
+tracked IDPs (tracked, submitted separately)
+
+cumulative is the max across months -- for the assisted IDPs (new arrivals sheet)
+new arrivals individuals -- the cumulative is the sum, as these are population movements 
+
+For the dashboard:
+we are currently reliant on calculations for the dashboard
+raw data currently not provided to OCHA NWS
+
+
+
+
+
 ```{r}
 
-glimpse(cccm)
+cccm %>% 
+  filter(activity == "CCCM") %>% 
+  pivot_longer(cols = (jan:dec), names_to = "month", values_to = "beneficiaries") %>% 
+  group_by(admin4pcode) %>%
+  slice(which.max(beneficiaries)) %>% 
+  ungroup() %>% 
+  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE)) %>% 
+  mutate(type = "cccm_cumulative")
+
+cccm %>% 
+  filter(activity == "CCCM") %>% 
+  pivot_longer(cols = (jan:dec), names_to = "month", values_to = "beneficiaries") %>% 
+  group_by(admin4pcode, month) %>%
+  slice(which.max(beneficiaries)) %>% 
+  group_by(month) %>% 
+  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE)) %>% 
+  mutate(type = "cccm_monthly")
+  
 ```
 
 It is not currently possible to integrate CCCM's 4W submissions into an inter-cluster template. However, it is also unclear if any of CCCM's activities have cash components. 
@@ -559,6 +917,39 @@ It is unlikely that the template provided to OCHA for reporting purposes is the 
 <br><br><br> 
 
 ### Shelter
+
+- unique beneficiaries: use new beneficiary column 
+
+NFI uses 1.1.1.1: Provision of core NFIs for the monthly reached, and for the cumulative, but use new beneficiary column -- unique calculation to be confirmed. 
+
+SNFI disaggregations -- girls, boys, men, women, elderly men, elderly women 
+
+Shelter takes all beneficiaries of all activities, for the unique, we use the new beneficiary column 
+
+
+```{r}
+# NFI reached 
+snfi %>% filter(cluster == "nfi" & activity == "1.1.1.1: Provision of core NFIs" & 
+                  new_beneficiaries == "Yes") %>% 
+  mutate(month = str_to_lower(str_sub(reporting_month, start = 1L, end = 3L))) %>% 
+  group_by(month) %>% 
+  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE)) %>% 
+  mutate(type = "nfi_monthly")
+
+snfi %>% 
+  filter(cluster == "shelter" & new_beneficiaries == "Yes") %>% 
+  mutate(month = str_to_lower(str_sub(reporting_month, start = 1L, end = 3L))) %>% 
+  group_by(month) %>% 
+  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE)) %>% 
+  mutate(type = "shelter_monthly")
+  
+  {sum(.$beneficiaries, na.rm = TRUE)}
+
+snfi %>% glimpse()
+```
+
+
+
 
 ```{r}
 
@@ -589,14 +980,82 @@ Shelter has quite a good list of cash delivery mechanism options:
 
 ### Health 
 
+The data for the previous month usually changes 
+
+For calculation of beneficiaries reached:
+ 
+-medical_procedures 
+cluster reached is medical_procedures
+
+treatment is used to compared to the Amman 
+
+-x1_5_1_treatment_courses_delivered_to_health_facilities_drug_treatment_one_
+
+so health uses sub_district for beneficiary calculations
+
+separate columns
+for presentation in the dashboard: 
+x1_1_1_outpatients_cons
+x1_1_7_cases_referred_specialized_treatment_inside_syria_cross_line_and_cro
+x1_1_3_mental_health_cons_supported   
+x1_1_4_physical_rehab_sess_supported
+
+sex and age disaggregation, just the MSNA percentages -- 19%, 24%, 30%, 27%
+girls, boys, women, men
+
+cumulative: sum of all months (frequencies), interventions as opposed to persons 
+
+
 ```{r}
+
+health %>% 
+  mutate(month = case_when(implementation_month == 1 ~ "jan", 
+                           implementation_month == 2 ~ "feb", 
+                           TRUE ~ NA_character_)) %>% 
+  filter(!is.na(month)) %>% 
+  group_by(month) %>% 
+  filter(activity == "medical_procedures") %>% 
+  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE)) %>% 
+  mutate(type = "health_monthly")
+  {sum(.$beneficiaries, na.rm = TRUE)}
 
 health %>% glimpse()
 ```
 
 Health 4Ws are useful contain community pcodes and are therefore interoperable from a geographic coverage and gaps standpoint. However, the template lacks key columns necessary for cash analysis. A `delivery modality` column exists, but has no options. There are no columns for conditionality or dollar value of interventions. 
 
-### ERL 
+### ERL
+
+Report on both direct and indirect beneficiaries 
+
+For the monthly reached, only direct beneficiaries not reported to other clusters
+For the the cumulative, only direct beneficiaries and not previously assisted and not reported to other clusters. 
+
+disaggregations are backfilled so they can be ignored. 
+
+
+
+```{r}
+
+# Monthly reached
+erl %>%  
+  mutate(month = str_sub(implementing_month, start = 5L, end = 7L), 
+         month = str_to_lower(month)) %>% 
+  filter(report_this_to_any_other_sector == "No") %>% 
+  group_by(month) %>% 
+  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE)) %>% 
+  mutate(type = "erl_monthly")
+
+# Cumulative
+erl %>%  
+  mutate(month = str_sub(implementing_month, start = 5L, end = 7L)) %>% 
+  filter(report_this_to_any_other_sector == "No" & previously_assisted == "No") %>% 
+  # These steps are not necessary
+  # group_by(admin4pcode) %>% 
+  # slice(which.max(beneficiaries)) %>% 
+  # ungroup() %>% 
+  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE))
+```
 
 ```{r}
 
@@ -604,12 +1063,15 @@ Health 4Ws are useful contain community pcodes and are therefore interoperable f
 erl %>% glimpse()
 ```
 
-```{reval=FALSE}
+```{r eval=FALSE}
 erl %>% 
   filter(delivery_modality == "Cash") %>% 
   count(indicator_unit)
   group_by(deliver_mechanism = if_cash_cash_delivery_mechanism) %>% 
   summarise(beneficiaries = sum(total_beneficiaries) )
+  
+erl %>% 
+  count(report_this_to_any_other_sector)
 ```
 
 
@@ -619,25 +1081,76 @@ Unique beneficiaries are available, with a separate column,
 
 ERL and FSL are the only clusters to ask if data has been reported to other Clusters. Whilst still not 
 
-However, no partner has a column asking if beneficiaries have received assistance from any other cluster. 
 
 ### FSL 
 
+#### Food 
+-food baskets for the monthly reached, filtered from `fss_activity_do_not_write`
+
+-Total beneficiaries assisted: `beneficiaries`
+
+-For the monthly reached, `beneficiaries` 
+-For the cumulative, AVERAGE of beneficiaries at community level, for some reason FSL is using sub-district 
+-For their their averages, they are dividing only dividing by the months that have beneficiaries, essentially na.rm = TRUE
+
+#### Livelihoods
+
+-all non-food activities, excluding cash-for-work 
+-For the cumulative is the SUM 
+
+females is total females, so adult women you have to subtract the girls from the female total; same for males 
+
+UN/non-UN are provided separately
+
+
 ```{r}
 
-
+# Food Monthly reached 
 fsl %>% 
-  mutate_at(vars(start_date, end_date), ~ as.Date(as.numeric(.), origin = "1904-01-01")) %>% 
-  select(start_date, end_date)
+  filter(activity == "Food Baskets" & reported_to_other_sector == "No") %>% 
+  group_by(reporting_month) %>% 
+  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE))
 
+# Food Cumulative
+fsl %>% 
+  mutate(month = case_when(reporting_month == "January" ~ "jan", 
+                           TRUE ~ NA_character_)) %>% 
+  filter(activity == "Food Baskets" & reported_to_other_sector == "No") %>% 
+  group_by(final_implementing_partner, admin4pcode) %>% 
+  slice(which.max(beneficiaries)) %>% 
+  ungroup() %>% 
+  group_by(month) %>% 
+  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE)) %>% 
+  mutate(type = "food_monthly")
+  {sum(.$beneficiaries)}
 
 ```
+```{r}
+fsl %>% glimpse()
+```
+
+
 
 FSL's template, unsurprisingly, is also in full alignment with standard cash reporting standards and there will be no problems integrating their data into the Cash 4Ws. FSL 4Ws are fully interoperable.  
 
 <br><br><br>
 
 ### Education 
+
+-Monthly reached is sum of all activities 
+-Cumulative is the sum of all the months 
+
+Data calculation table is wrong. But we can only use the data calculation sheet. Education hasn't provided how their beneficiaries are calculated from raw data 
+
+For fun, just calculate the max by school, adults and children 
+
+Education disaggregations are provided
+
+```{r}
+edu %>% 
+  
+```
+
 
 ```{r}
 
@@ -656,10 +1169,78 @@ There is nowhere in the template to record either the amount of funding disburse
 
 ### Nutrition 
 
-```{r}
+Everything comes from the data sheet 
+You got to look at formulas (measures) inside the pivot
 
+Basically, I don't understand how to calculate the max by admin4pcode for nutrition: those numbers don't tally. 
+
+Total reached: =[Total CU5]+[Total PLWs]+[MNT Adolescents]
+Cumulative under 5 is the max of all under fives at the community level 
+Total PLWs in the max of all PLWs at the community level 
+MNT adolescents is the number of grils who received micronutrients
+
+Max PLWs is the max of micronutrient PLWs, HEB PLWs, MAM PLWs, IYCF counselling PLWs, IYCF messaging, Mothers' support groups and FMA; however, when checking the totals, inside the sheet `Data` in the Nutrition submissions, many more activities have been included. 
+
+Max U5 is the sum of max girls and max boys at admin4,
+The specific activities included in the calculation of either max girls or boys are LNS, U5 MNP, U5 HEB, U5 Vitamin A, U5 in-patient SAM, U5 out-patient, deworming and MAM
+
+However, much like the calculations for PLWs, when reviewing which data actually comprises the columns `Total U5 boys` and `Total U5 girls`, we note that the range of activities included is much broader than specified 
+
+```{r}
+nut %>% 
+  filter(str_detect(activity, "boys|LNS")) %>%
+  filter(activity %out% c("# of boys and girls (6 – 59 months) screened for malnutrition")) %>% 
+  group_by(admin4pcode) %>% 
+  slice(which.max(female)) %>% 
+  select(-male) %>% 
+  rename(u_ben = female) %>% 
+  mutate(u_ben_type = "girls") %>% 
+  rbind(nut %>% 
+          filter(str_detect(activity, "boys|LNS")) %>% 
+          filter(activity %out% c("# of boys and girls (6 – 59 months) screened for malnutrition")) %>% 
+          group_by(admin4pcode) %>%
+          slice(which.max(male)) %>% 
+          select(-female) %>%
+          rename(u_ben = male) %>%
+          mutate(u_ben_type = "boys")) %>% 
+  {sum(.$u_ben)}
 
 glimpse(nut)
+
+nut %>% count(admin4pcode)
+```
+
+Nutrition still does not tally
+
+```{r}
+
+nut %>% 
+  filter(str_detect(activity, "PLW|IYCF|MUAC|lactating")) %>%
+  filter(activity %out% c("# of health and nutrition staff trained in IYCF-E", 
+                          "# of RRTs established and supported to provide CMAM and IYCF services.", 
+                          "# PLWs screened for malnutrition"
+                          )) %>% 
+  count(activity)
+  select(-male) %>% 
+  rename(u_ben = female) %>% 
+  mutate(u_ben_type = "PLW") %>% 
+  group_by(health_facility_name, admin4pcode) %>% 
+  slice(which.max(u_ben)) %>% 
+  
+  filter(admin3pcode == "SY020300") %>% 
+  {sum(.$u_ben)}
+
+# no maximum per community
+nut %>% 
+  filter(str_detect(activity, "adolescent")) %>% 
+  {sum(.$female)}
+
+SY0203000
+
+format(662942 * 6 * 150 / 5, big.mark = ",")
+
+glimpse(nut)
+    
 ```
 
 <br> 
@@ -669,6 +1250,48 @@ Nutrition's 4W dataset is largely interoperable with CWG's, having all relevant 
 <br><br><br>
 
 ### Protection 
+
+#### Child protection 
+
+-HRP indicators 5.1.1 and 5.1.2, sum of both
+-Filter by the column `analaysis unit` == "People"
+-Calculation uses the column `Total Reached`
+-Cumulative: sum of all months
+
+CP interventions 
+-sum of the column `total cumulative interventions`, filter in all HRP indicators except 1.3.1 and "none"
+-And the analysis_unit should be people 
+
+### GBV 
+-They use activity codes, and only `GBV100`, filter out `none` under the HRP indicator column 
+-Calculation uses the column `new total reached`
+-Filter by the column `analysis_unit` == "Beneficiaries"
+
+GBV interventions
+-sum of the column `total cumulative intervention`, for code_activity GBV200, GBV300, GBV500, GBV600, regardless of indicator or analysis unit
+
+### Mine Action 
+-Total of all activities under the sub-cluster
+- sum of the column `Total reached`
+-Filter by the column `analaysis unit` == "People"
+
+MIne Action interventions 
+-sum of the column `total cumulative interventions`, filter in all HRP indicators except 1.3.1 and "none"
+-And the analysis_unit should be people 
+
+
+### General protection 
+-People reached (data and calculation pending)
+
+General protection interventions 
+-sum of the column `total cumulative interventions`, filter in all HRP indicators except 1.3.1 and "none"
+-And the analysis_unit should be people 
+
+
+#### Total protection
+
+-beneficiaries is the sum of beneficiaries in child protection, mine action, GBV and general protection 
+
 
 ```{r}
 
@@ -689,6 +1312,16 @@ Protection is only very partially interoperable with the CWG 4Ws. They do ask fo
 
 
 
+# General reporting 
+funded by UN/NGO/other
+percentage of reached individuals funded by UN/NGO/othe
+for some clusters, they just provide the breakdown 
+number of partner reported
+modalities
+
+Totals for all activities -- a table for all activities 
+
+Sheet for disaggregations 
 
 
 
