@@ -131,6 +131,13 @@ nw_pcode3 <- read_excel("./data/2023HNO_PiN_Severity_detailedAoI_FORSHARE 150320
 locations <- read_excel("./data/Locations.xlsx") %>% 
   clean_names()
 
+pop <- read_excel("./data/Population_Data_May_2022_final_01122022_with_SADD.xlsx", 
+           sheet = 5, 
+           skip = 2) %>% 
+  clean_names() %>% 
+  select(admin0name_en:longitude_x, 
+         final_est_of_id_ps_may_2022:family_avg_size_total_pop)
+
 ```
 
 
@@ -387,6 +394,12 @@ prot <- read_excel("./data/ocha_unedited/EXTERNAL_NWS_Complie_5Ws_2023_r1_v1_040
 ```
 
 
+```{r}
+
+
+pop %>% glimpse()
+```
+
 
 
 ```{r}
@@ -461,11 +474,12 @@ com <- rbind(
     filter(unit == "# people") %>% 
     mutate(beneficiaries = total_achieved_as_per_unit, 
            month = str_to_lower(str_sub(month, start = 6L, end = 8L)), 
-           project_status = "Completed") %>% 
+           project_status = "Completed", 
+           cluster = "Protection") %>% 
     select(admin1pcode, admin2pcode, admin3pcode, admin4pcode, 
            admin5pcode, camp_name = camps, 
            activity, beneficiaries, 
-           month, project_status, cluster = ao_r, 
+           month, project_status, cluster,
            delivery_modality),
   
   nut %>% 
@@ -473,7 +487,7 @@ com <- rbind(
            admin5pcode = NA_character_, 
            # Extracts all text before the first instance of punctuation
            delivery_modality = str_extract(service_delivery_modality, "^[^[:punct:]]+"), 
-           cluster = "nutrition") %>% 
+           cluster = "Nutrition") %>% 
     select(admin1pcode, admin2pcode, admin3pcode, admin4pcode, 
            admin5pcode, camp_name, 
            activity, beneficiaries, 
@@ -522,7 +536,11 @@ com <- rbind(
                           cholera_wash_in_health), 
                  names_to = "activity", values_to = "beneficiaries") %>% 
     mutate(delivery_modality = NA_character_,
-           cluster = "wash") %>% 
+           cluster = "WASH") %>% 
+    # A bit controversial, but if I don't do this, WASH will be gigantic
+    group_by(activity, admin4pcode) %>% 
+    slice(which.max(beneficiaries)) %>% 
+    ungroup() %>% 
     # Are these really the columns you want to select? 
     # I think you have to cut it down even more
     select(admin1pcode, admin2pcode, admin3pcode, admin4pcode, 
@@ -535,7 +553,8 @@ com <- rbind(
   snfi %>% 
     mutate(month = str_to_lower(str_sub(reporting_month, start = 1L, end = 3L)),
            admin5pcode = NA_character_,  
-           camp_name = NA_character_) %>% 
+           camp_name = NA_character_,
+           cluster = "SNFI") %>% 
     select(admin1pcode, admin2pcode, admin3pcode, admin4pcode, 
            admin5pcode, camp_name, 
            activity, beneficiaries, 
@@ -548,7 +567,8 @@ com <- rbind(
     mutate(admin5pcode = NA_character_,  
            camp_name = NA_character_, 
            project_status = "Completed", 
-           delivery_modality = NA_character_) %>% 
+           delivery_modality = NA_character_, 
+           cluster = str_to_upper(cluster)) %>% 
     select(admin1pcode, admin2pcode, admin3pcode, admin4pcode, 
            admin5pcode, camp_name, 
            activity, beneficiaries, 
@@ -558,7 +578,7 @@ com <- rbind(
   fsl %>% 
     mutate(month = str_to_lower(str_sub(reporting_month, start = 1L, end = 3L)), 
            project_status = "Completed", 
-           cluster = "fsl") %>%
+           cluster = "FSL") %>%
     select(admin1pcode, admin2pcode, admin3pcode, admin4pcode, 
            admin5pcode, camp_name, 
            activity, beneficiaries, 
@@ -569,7 +589,7 @@ com <- rbind(
     mutate(month = month(distribution_date, label = TRUE), 
            month = str_to_lower(month), 
            activity = "multipurpose cash", 
-           cluster = "cash", 
+           cluster = "Cash", 
            delivery_modality = "cash") %>% 
     select(admin1pcode, admin2pcode, admin3pcode, admin4pcode, 
            admin5pcode, camp_name, 
@@ -580,15 +600,86 @@ com <- rbind(
   erl %>% 
     mutate(month = str_sub(implementing_month, start = 5L, end = 7L), 
            month = str_to_lower(month),
-           cluster = "erl", 
+           cluster = "ERL", 
            admin5pcode = NA_character_) %>% 
     select(admin1pcode, admin2pcode, admin3pcode, admin4pcode, 
            admin5pcode, camp_name = other_place_name, 
            activity = sector_activity, beneficiaries, 
            month, project_status = status, cluster, 
-           delivery_modality)
-)
+           delivery_modality), 
   
+  edu %>% 
+    mutate(month = str_to_lower(str_sub(reporting_month, start = 4L, end = 6L)), 
+           cluster = "Education", 
+           admin5pcode = NA_character_) %>% 
+    select(admin1pcode, admin2pcode, admin3pcode, admin4pcode, 
+             admin5pcode, camp_name, 
+             activity, beneficiaries = ben_frequencies, 
+             month, project_status = status, cluster, 
+             delivery_modality = activity_modality)
+) %>% 
+  mutate(project_status = recode(project_status, 
+                                 "In progress" = "Ongoing"))
+
+
+
+```
+
+```{r eval=FALSE}
+
+# WASH being problematic
+wash %>%
+    pivot_longer(cols = c(rehab_repair_water_station, 
+                          o_m, 
+                          construction_water_station, 
+                          network_rehab, 
+                          construction_water_network, 
+                          chlorination, 
+                          wq_testing, 
+                          fuel_consumption, 
+                          water_safety_plans, 
+                          water_trucking, 
+                          cash_assistance_water_trucking, 
+                          pvt_boreholes, 
+                          cash_assistance_private_boreholes, 
+                          tanks_pwd_ben, 
+                          hh_water_treatment, 
+                          hh_water_treatement_cash_assistance, 
+                          sew_rehab_repair, 
+                          sew_support, 
+                          sew_construction, 
+                          beneficiaries_toilets, 
+                          pw_d_beneficiaries_toilet, 
+                          beneficiaries_cash_toilets, 
+                          bath_new, 
+                          cash_bath,
+                          des_beneficiaries, 
+                          swm_support_benf, 
+                          hp_ben, 
+                          hp_pwd_ben, 
+                          hk_ben, 
+                          cash_hk, 
+                          pwd_beneficiaries, 
+                          wash_nfi_ben, 
+                          incinerator_health_facilities, 
+                          cholera_safe_water, 
+                          chlorin_cholera, 
+                          cholera_sew, 
+                          cholera_kit, 
+                          cholera_hp_rcce_iec, 
+                          cholera_wash_in_health), 
+                 names_to = "activity", values_to = "beneficiaries") %>% 
+  # A bit controversial, but if I don't do this, WASH will be gigantic
+  # group_by(activity, admin4pcode) %>% 
+  # slice(which.max(beneficiaries)) %>% 
+  # ungroup() %>% 
+    mutate(delivery_modality = NA_character_,
+           cluster = "WASH") %>% 
+  group_by(activity) %>% 
+  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE)) %>% 
+  arrange(desc(beneficiaries))
+
+
 ```
 
 
@@ -642,27 +733,84 @@ However, it would also be remiss to not mention what new metrics would be availa
 
 Again, inter-cluster coordination is not the purview of the Cash Working Group, but we are happy to share all the code and data with whoever wants to take the lead for that. 
 
-The total number of unique indi
+The total number of unique individuals that has been reached by the response so far is `r `filter(com, !is.na(admin4pcode)) %>% group_by(admin4pcode) %>% slice(which.max(beneficiaries)) %>% ungroup() %>% {sum(.$beneficiaries)} %>% format(big.mark = ",")` persons. 
+
+
 
 ```{r}
 com %>% 
   filter(!is.na(admin4pcode)) %>% 
   group_by(admin4pcode) %>% 
-  slice(which.max(beneficiaries)) %>% 
-  ungroup() %>% 
-  {sum(.$beneficiaries, na.rm = TRUE)}
-  group_by(admin3pcode) %>% 
-  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE))
-    
+  summarise(sectors = n_distinct(cluster)) %>% 
+  ggplot(aes(x = sectors)) + 
+  geom_histogram(bins = 9) + 
+  scale_x_continuous(breaks = seq(1, 9, by = 1)) + 
+  geom_text(stat = "count", aes(label=..count..), vjust= - 0.5) +
+  expand_limits(y = 820) + 
+  labs(x = "Number of sectors", 
+       y = "Number of communities", 
+       title = "More than half of communities only have one cluster present")
+```
+<br>
+
+We note, from the table below, that the single cluster present in most of these 774 communities is CCCM.
+
+```{r}
+com %>% 
+  filter(!is.na(admin4pcode)) %>% 
+  group_by(cluster) %>% 
+  summarise(ben_frequencies = sum(beneficiaries, na.rm = TRUE), 
+            communities = n_distinct(admin4pcode)) %>% 
+  arrange(desc(communities)) %>% 
+  flextable() %>% 
+  theme_zebra() %>% 
+  set_caption("Footprint and reach per cluster/WG") %>% 
+  footnote(i = 1, j = 2, inline = TRUE, ref_symbols = "1", part = "header",
+           as_paragraph("Beneficiary frequencies are the number of times an individual has received assistance, regardless double counting")) %>% 
+  set_table_properties(layout = "autofit", width = .7)
 ```
 
+<br>
+
+Following CCCM, FSL has the largest footprint. SNFI and ERL have markedly more concentrated footprints. This probably has implications for the earthquake response as it will necessarily focused around Shelter. 
+
+
+<br>
+
+There are 34 communities where the only cluster present is not CCCM. In the majority of these cases, the single cluster present is either Education or Nutrition. 
+
+```{r}
+com %>% 
+  filter(!is.na(admin4pcode)) %>% 
+  group_by(admin4pcode, cluster) %>% 
+  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE)) %>% 
+  ungroup() %>% 
+  pivot_wider(names_from = cluster, values_from = beneficiaries) %>%
+  mutate(clusters = rowSums(!is.na(.[,-1]))) %>% 
+  filter(clusters == 1 & is.na(CCCM))
+  
+```
+
+
+```{r}
+
+com %>% filter(!is.na(camp_name) & is.na(admin5pcode)) %>% 
+  summarise(camp_no_code = n_distinct(camp_name), 
+            ben_freq = sum(beneficiaries, na.rm = TRUE)) %>% 
+  flextable() %>% 
+  theme_zebra()
+  
+```
 
 <br><br>
 
 
 ### Beneficiary disaggregations 
 
+
+
 <br><br><br>
+
 
 ### Monthly
 
