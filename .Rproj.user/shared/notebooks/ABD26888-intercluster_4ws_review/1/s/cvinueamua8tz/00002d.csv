@@ -1,0 +1,24 @@
+"0","com %>% 
+  filter(activity != ""ISIMM"") %>% 
+  group_by(cluster, admin4pcode) %>% 
+  summarise(count = n()) %>% 
+  pairwise_cor(cluster, admin4pcode, value = count, 
+               method = c(""spearman""), upper = FALSE) %>% 
+  arrange(desc(correlation)) %>% 
+  left_join(
+    com %>% 
+      filter(activity != ""ISIMM"") %>% 
+      pairwise_count(cluster, admin4pcode), 
+    by = c(""item1"", ""item2"")
+  ) %>% 
+  rename(cluster1 = item1, 
+         cluster2 = item2, 
+         count = n) %>% 
+  mutate(correlation = round(correlation, digits = 3)) %>% 
+  datatable(options = list(pageLength = 10, scrollY = FALSE), 
+            filter = list(position = ""top"", clear = FALSE),
+            caption = htmltools::tags$caption(style = 'caption-side: top; 
+                                    text-align: center; font-size:120% ;',
+                                    ""Cluster pairs, correlations and co-occurences""))
+"
+"2","`summarise()` has grouped output by 'cluster'. You can override using the `.groups` argument."
