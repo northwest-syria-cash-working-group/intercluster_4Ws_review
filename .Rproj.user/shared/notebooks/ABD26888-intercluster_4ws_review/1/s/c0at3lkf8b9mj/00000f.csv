@@ -1,0 +1,12 @@
+"0","com %>% 
+  filter(!is.na(admin4pcode) & 
+           activity != ""ISIMM"" & 
+           project_status %in% c(""Completed"", ""Ongoing"")) %>%
+  group_by(admin4pcode) %>% 
+  slice(which.max(beneficiaries)) %>% 
+  {sum(.$beneficiaries, na.rm = TRUE)}
+"
+"1","[1]"
+"1"," 2659011"
+"1","
+"

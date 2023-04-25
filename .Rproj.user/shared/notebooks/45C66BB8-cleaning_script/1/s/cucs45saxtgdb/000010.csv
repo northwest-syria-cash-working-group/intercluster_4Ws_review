@@ -1,0 +1,13 @@
+"0","com %>% 
+  mutate(site = case_when(!is.na(admin5pcode) ~ admin5pcode, 
+                          !is.na(camp_name) ~ camp_name, 
+                          TRUE ~ admin4pcode)) %>% 
+  filter(!is.na(admin4pcode) & activity != ""ISIMM"") %>%
+  group_by(site) %>% 
+  slice(which.max(beneficiaries)) %>% 
+  {sum(.$beneficiaries, na.rm = TRUE)}
+"
+"1","[1]"
+"1"," 4745018"
+"1","
+"

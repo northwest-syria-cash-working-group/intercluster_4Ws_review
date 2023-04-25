@@ -1,0 +1,8 @@
+"0","pop %>% 
+  filter(admin3pcode %in% nw_pcode3) %>% 
+  {mean(.$total_pop)}
+"
+"1","[1]"
+"1"," 3456.6"
+"1","
+"

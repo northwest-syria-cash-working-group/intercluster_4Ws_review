@@ -1,0 +1,6 @@
+"0","com %>% 
+  pairwise_cor(cluster, admin4pcode, method = ""spearman"", 
+               sort = TRUE, upper = FALSE) 
+"
+"2","Aggregation function missing: defaulting to length
+"

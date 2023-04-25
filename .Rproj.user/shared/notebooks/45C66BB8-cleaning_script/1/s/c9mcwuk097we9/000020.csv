@@ -1,0 +1,17 @@
+"0","com %>% 
+  mutate(no_admin5 = ifelse(is.na(admin5pcode), 
+                            ""yes"", 
+                            ""no"")) %>% 
+  filter(activity != ""ISIMM"") %>% 
+  group_by(cluster, no_admin5) %>% 
+  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE)) %>% 
+  pivot_wider(names_from = no_admin5, values_from = beneficiaries) %>% 
+  mutate(total_frequencies = sum(yes, no, na.rm = TRUE), 
+         pc_missing = round(yes / total_frequencies * 100, digits = 2)) %>% 
+  select(-total_frequencies) %>% 
+  flextable() %>% 
+  theme_zebra() %>% 
+  set_caption(""The impracticality of requiring partners to report at admin5"") %>% 
+  set_table_properties(layout = ""autofit"", width = .8)
+"
+"2","`summarise()` has grouped output by 'cluster'. You can override using the `.groups` argument."
