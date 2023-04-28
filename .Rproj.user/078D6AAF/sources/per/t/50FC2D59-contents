@@ -77,3 +77,11 @@ com %>%
   facet_wrap(~ admin1pcode, scales = "free_y") + 
   labs(x = "Percent of population covered", 
        title = "Percentage covered in communities reached by response")
+
+* The number of cluster per admin4 (useful for determining inter-cluster gaps i.e. are there any areas  where we are doing Education without Shelter? Nutrition without Food Security?) 
+
+* The number of activities per admin4 (similar to above, but more detailed. Additionally, this, together with the number of beneficiary frequencies are useful in establishing a shorthand for the overall level of investment the humanitarian community has per community). 
+
+* The number of beneficiary frequencies at admin4. This, together with the number of activities, will be used to determine how industry-wide resources have been allocated across Northwest Syria and if those allocations have been fair i.e. are there communities of similar pre-existing vulnerability and earthquake damage that have received drastically different levels of support? The number of activities and the number of beneficiary frequencies are what are most visible to communities anyway and will be interpreted by affected persons as a proxy of the level of humanitarian interest. 
+
+As a by-product of calculating these data, the following information has also been calculated: 

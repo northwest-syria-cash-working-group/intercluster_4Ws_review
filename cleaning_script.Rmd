@@ -57,6 +57,7 @@ library(magrittr)
 library(readxlsb)
 library(tidymodels)
 library(widyr)
+library(googlesheets4)
 
 theme_set(theme_light())
 
@@ -178,13 +179,76 @@ eq <- read_excel("./data/syria-earthquake-impact-20-march-2023.xlsx",
 ```
 
 
+
+
+```{r}
+
+fsl_names <- c("hub",
+               "response_type", 
+               "donor", 
+               "report_date", 
+               "distribution_date", 
+               "project_status", 
+               "implementing_partner", 
+               "activity", 
+               "regularity", 
+               "frequency",  
+               "quantity", 
+               "unit",
+               "families",
+               "beneficiaries", 
+               "rapid_assessment", 
+               "governorate", 
+               "district", 
+               "sub_district", 
+               "site", 
+               "village_camps",
+               "camp_name", 
+               "reception_centre_name")
+
+read_sheet("https://docs.google.com/spreadsheets/d/1KGqt-3YDh2k8qNCksOJAndRPO56Gq6pGs6esEQtIFIw/edit#gid=1890981115", 
+                  sheet = 2) %>% 
+  setNames(fsl_names) %>%  
+  left_join(locations %>% 
+              select(admin1pcode, 
+                     admin2pcode, 
+                     admin3pcode, 
+                     admin4pcode,                 
+                     location_name_en, 
+                     location_pcode, 
+                     location_type), 
+            by = c("site" = "location_name_en")) %>% 
+  left_join(locations %>% 
+              select(longitude_x, latitude_y, admin4pcode), 
+            by = "admin4pcode") %>% 
+  mutate(activity = ifelse(activity == "Cash Response" & quantity < 100,
+                           "Cash Response Low", 
+                           activity), 
+         transfer_value = ifelse(unit == "USD", quantity, NA_integer_), 
+         total_usd = quantity * families, 
+         delivery_modality = ifelse(unit == "USD", "Cash", "In-kind")) %>% 
+  mutate(implementing_partner = 
+           recode(implementing_partner,
+                  "GOAL" = "GOAL (GOAL)",
+                  "Mercy Without Limits (MWL)" = "Mercy Without Limits",
+                  "Ihsan for Relief and Development (IRD)" = "Ihsan for Relief and Development")) %>% 
+  mutate(governorate = ifelse(governorate == "idleb", "Idleb", governorate),
+         district = ifelse(district == "idleb", "Idleb", district)) %>% 
+  mutate(project_status = recode(project_status, 
+                    "Implemented" = "Completed")) %>%
+  filter(activity != "Cash Response") %>% 
+  write_csv("./data/fsl_tracker.csv")
+```
+
+
 # Reading in data
 
-!!!Please clarify between total_usd and transfer_value
 
 ```{r reading-4ws, warning=FALSE}
 
 cash <- read_csv("./data/cbr_com.csv")
+
+fsl_tracker <- read_csv("./data/fsl_tracker.csv")
 
 wash <- read_excel("./data/ocha_unedited/WASH OCHA2023_feb.xlsx",
                    sheet = 1) %>% 
@@ -215,8 +279,8 @@ wash <- read_excel("./data/ocha_unedited/WASH OCHA2023_feb.xlsx",
          construction_water_station = constuction_water_station, 
          cholera_wash_in_health =  cholera_was_hin_health, 
          reporting_month = reporting_month_shhr_altqryr, 
-         transfer_value = cash_total_money_usd) %>% 
-  mutate(transfer_value = as.numeric(transfer_value))
+         total_usd = cash_total_money_usd) %>% 
+  mutate(total_usd = as.numeric(total_usd))
 
 cccm_names <- c("admin1pcode", "governorate",
                 "admin2pcode","district",  
@@ -287,7 +351,8 @@ snfi <- read_excel("./data/ocha_unedited/2023_WoS_SNFI_XBHub_4Ws_Jan&Feb2023.xls
           filter(!is.na(sector)) %>% 
           shelter_select() %>% 
           mutate(sub_cluster = "nfi") %>% 
-          filter(activity != "END_OF_FORMULA"))
+          filter(activity != "END_OF_FORMULA")) %>% 
+  mutate(total_usd = transfer_value * families)
 
 health_names <- read_excel("./data/ocha_unedited/Monthly Health Cluster Indicators Report GZT Jan-Feb 2023.xlsx", 
            sheet = 1) %>% 
@@ -334,7 +399,9 @@ erl <- read_excel("./data/ocha_unedited/2023-02Feb_ERL_4Ws_NWS - WoS - V03 -WoS 
          restrictions = if_cash_cash_restriction, 
          cash_delivery_mechanism = if_cash_cash_delivery_mechanism,
          transfer_value = if_cash_cash_transfer_voucher_value_per_household_usd, 
-         frequency = if_cash_cash_frequency)
+         frequency = if_cash_cash_frequency) %>% 
+  filter(indicator_unit == "People") %>% 
+  mutate(total_usd = transfer_value * beneficiaries)
 
 fsl <- read_xlsb("./data/ocha_edited/FSL_January 2023_5Ws_OCHA_22032023.xlsb", 
            sheet = "5Ws Actuals - Jan 2023") %>% 
@@ -351,7 +418,8 @@ fsl <- read_xlsb("./data/ocha_edited/FSL_January 2023_5Ws_OCHA_22032023.xlsb",
          start_date = starting_date, 
          end_date = ending_date,
          delivery_modality = delivery_modality_in_kind_service_cash_voucher, 
-         activity = fss_activity_do_not_write) %>% 
+         activity = fss_activity_do_not_write, 
+         frequency = monthly_frequency) %>% 
   # Crazy -- this is the first time I've seen the 1904 start date
   mutate_at(vars(start_date, end_date), ~ as.Date(as.numeric(.), origin = "1904-01-01")) %>% 
   mutate_at(vars(camp_name_cccm_official_name, 
@@ -359,7 +427,8 @@ fsl <- read_xlsb("./data/ocha_edited/FSL_January 2023_5Ws_OCHA_22032023.xlsb",
                  admin5pcode), ~ ifelse(. == "", NA_character_, .)) %>% 
   mutate(camp_name = ifelse(!is.na(camp_name_cccm_official_name), 
                             camp_name_cccm_official_name, 
-                            camp_name_if_not_listed_by_the_cccm))
+                            camp_name_if_not_listed_by_the_cccm), 
+         total_usd = frequency * transfer_value * families) 
 
 edu_names <- read_excel("./data/ocha_unedited/Gaziantep 4Ws OCHA 2023 EDU.xlsx", 
            sheet = 5) %>% 
@@ -398,7 +467,8 @@ nut <- read_excel("./data/ocha_unedited/NW Syria Nutrition cluster Jan + Feb 4Ws
          health_facility_name = health_facility_or_rrt, 
          transfer_value = cash_transfer_voucher_value_usd) %>% 
   mutate(beneficiaries = male + female, 
-         transfer_value = as.numeric(transfer_value))
+         transfer_value = as.numeric(transfer_value), 
+         frequency = as.numeric(frequency))
 
 
 prot_names <- read_excel("./data/ocha_unedited/EXTERNAL_NWS_Complie_5Ws_2023_r1_v1_04042023.xlsx", 
@@ -434,8 +504,6 @@ prot <- read_excel("./data/ocha_unedited/EXTERNAL_NWS_Complie_5Ws_2023_r1_v1_040
 
 ```
 
-
-
 <br>
 
 Specific recommendations for joining datasets will be listed in the section `Consolidation`. 
@@ -445,6 +513,7 @@ However, immediately, were Education, ERL, FSL and SNFI partners to directly pro
 Incidentally, several of these columns are also present in the intercluster 4Ws reporting template
 
 <br><br><br>
+
 
 # 2. Consolidation
 
@@ -461,19 +530,21 @@ consolidation_cols <- function(tbl) {
            activity, beneficiaries, 
            month, project_status, cluster, 
            delivery_modality, 
-           transfer_value)
+           transfer_value, total_usd)
 }
 
 # Finally! This works!!! Hahahahhahahaha 
 
 com <- rbind(
+  
   prot %>% 
     filter(unit == "# people") %>% 
     mutate(beneficiaries = total_achieved_as_per_unit, 
            month = str_to_lower(str_sub(month, start = 6L, end = 8L)), 
            project_status = "Completed", 
            cluster = "Protection", 
-           transfer_value = NA_integer_) %>% 
+           transfer_value = NA_integer_, 
+           total_usd = NA_integer_) %>% 
     rename(camp_name = camps) %>% 
     consolidation_cols(),
   
@@ -482,7 +553,9 @@ com <- rbind(
            admin5pcode = NA_character_, 
            # Extracts all text before the first instance of punctuation
            delivery_modality = str_extract(service_delivery_modality, "^[^[:punct:]]+"), 
-           cluster = "Nutrition") %>% 
+           cluster = "Nutrition", 
+           # I'm not sure this is the correct calculation
+           total_usd = frequency * transfer_value * beneficiaries) %>% 
     rename(project_status = status) %>% 
     consolidation_cols(),
   
@@ -531,10 +604,11 @@ com <- rbind(
            cluster = "WASH", 
            month = str_to_lower(month)) %>% 
     # If you don't do this, you get repeats 
-   group_by(activity, admin4pcode) %>% 
-   slice(which.max(beneficiaries)) %>% 
-   ungroup() %>% 
-   filter(!is.na(beneficiaries)) %>% 
+    group_by(activity, admin4pcode) %>% 
+    slice(which.max(beneficiaries)) %>% 
+    ungroup() %>% 
+    filter(!is.na(beneficiaries)) %>% 
+    mutate(transfer_value = NA_integer_) %>% 
     consolidation_cols(), 
   
   snfi %>% 
@@ -552,15 +626,24 @@ com <- rbind(
            project_status = "Completed", 
            delivery_modality = NA_character_, 
            transfer_value = NA_integer_,
+           total_usd = NA_integer_,
            cluster = str_to_upper(cluster)) %>% 
     filter(!is.na(beneficiaries)) %>% 
     consolidation_cols(), 
   
   fsl %>% 
     mutate(month = str_to_lower(str_sub(reporting_month, start = 1L, end = 3L)), 
+           # Not sure if I should just make it all "Ongoing" instead
            project_status = "Completed", 
            cluster = "FSL") %>%
     consolidation_cols(), 
+  
+  fsl_tracker %>% 
+    mutate(month = month(distribution_date, label = TRUE), 
+           month = str_to_lower(month), 
+           cluster = "FSL", 
+           admin5pcode = NA_character_) %>% 
+    consolidation_cols(),
   
   cash %>% 
     mutate(month = month(distribution_date, label = TRUE), 
@@ -584,7 +667,8 @@ com <- rbind(
     mutate(month = str_to_lower(str_sub(reporting_month, start = 4L, end = 6L)), 
            cluster = "Education", 
            admin5pcode = NA_character_, 
-           transfer_value = NA_integer_) %>%
+           transfer_value = NA_integer_, 
+           total_usd = NA_integer_) %>%
     select(-beneficiaries) %>% 
     rename(beneficiaries = ben_frequencies, 
            project_status = status, 
@@ -620,13 +704,14 @@ com <- rbind(
                      activity == "2.1.1.1: Rehabilitation of damaged/ unfinished housing" ~ 
                        "Rehabilitation of damaged/unfinished housing", 
                      TRUE ~ activity
-                     )) 
+                     )) %>% 
+  # I think it's cash that's the problem
+  filter(!is.na(beneficiaries))
 
 
 com %>% write_csv("./data/com.csv")
 
 ```
-
 
 
 
