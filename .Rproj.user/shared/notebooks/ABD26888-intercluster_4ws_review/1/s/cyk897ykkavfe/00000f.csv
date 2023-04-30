@@ -1,0 +1,28 @@
+"0","tribble(
+  ~acronym, ~name, 
+  ""CCCM"", ""Camp Management and Camp Coordination"",
+  ""CWG"", ""Cash Working Group"",
+  ""ERL"", ""Early Recovery and Livelihoods"", 
+  ""FSL"", ""Food Security and Livelihoods"",
+  ""HNO"", ""Humanitarian Needs Overview"",
+  ""HRP"", ""Humanitarian Response Plan"",
+  ""IDP"", ""Internally Displaced Person"", 
+  ""MPC"", ""Multipurpose Cash"",
+  ""NWS"", ""Northwest Syria"", 
+  ""OCHA"", ""UN Office for the Coordination of Humanitarian Affairs"",
+  ""SNFI"", ""Shelter and Non-Food Items"", 
+  ""SWM"", ""Solid Waste Management"", 
+  ""WASH"", ""Water, Sanitation and Hygiene""
+) %>% 
+  rename("""" = acronym, """" = name) %>% 
+  flextable() %>% 
+  set_caption(as_paragraph(as_b(""Acronyms""))) %>% 
+  hline_top(border = fp_border_default(width = 0), 
+            part = ""header"") %>% 
+  set_table_properties(layout = ""autofit"") %>%
+  fontsize(j = 1:2, size = 8) %>% 
+  fontsize(j = 1:2, size = 8, part = ""header"") %>% 
+  line_spacing(part = ""all"", space = .2) 
+"
+"2","Error: attempt to use zero-length variable name
+"

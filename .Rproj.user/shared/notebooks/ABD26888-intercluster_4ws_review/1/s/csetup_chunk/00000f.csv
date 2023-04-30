@@ -137,6 +137,8 @@ Attaching package: ‘flextable’
 "
 "0","library(widyr)"
 "0","library(tidytext)"
+"0","library(treemapify)"
+"0","library(mdepriv)"
 "0",""
 "0","theme_set(theme_light())"
 "0",""
