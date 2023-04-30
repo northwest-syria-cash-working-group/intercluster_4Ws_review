@@ -1486,23 +1486,36 @@ reference_table <- com %>%
             by = "admin4pcode")
 
 reference_table %>% 
-  write_csv("./data/benficiaries_by_communities.csv")
-
-reference_table %>% 
   left_join(pop %>% 
               select(district = admin2name_en, 
                      sub_district = admin3name_en, 
                      community = admin4name_en, 
                      admin4pcode), 
             by = "admin4pcode") %>% 
-  select
+  select(district, sub_district, community,
+         beneficiaries, frequencies = beneficiary_frequencies, 
+         clusters, total_pop, eq_score,
+         wounded_dead, wounded_dead_100k, 
+         damaged_houses, damaged_houses_100k) %>% 
+  mutate_at(vars(wounded_dead_100k, damaged_houses_100k), 
+            ~ round(., digits = 1)) %>% 
+  mutate(eq_score = round(eq_score, digits = 3)) %>% 
   datatable(options = list(pageLength = 10, scrollX = TRUE, scrollY = TRUE), 
             filter = list(position = "top", clear = FALSE),
             caption = htmltools::tags$caption(style = 'caption-side: top; 
                                     text-align: center; font-size:120% ;',
-                                    "Community-level reference table"))
+                                    "Community-level reference table")) %>% 
+  formatCurrency(c("total_pop", 
+                   "wounded_dead", "damaged_houses", 
+                   "beneficiaries", "frequencies"), 
+                 currency = "", interval = 3, mark = ",") %>%
+  formatRound(c("total_pop", 
+                "wounded_dead", "damaged_houses",
+                "beneficiaries", "frequencies"), digits = 0)
 
-pop %>% glimpse()
+# reference_table %>% 
+#   write_csv("./data/benficiaries_by_communities.csv")
+
 ```
 
 
