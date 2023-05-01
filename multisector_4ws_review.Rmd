@@ -256,6 +256,7 @@ In order to report on all cash- and voucher-based activities, not just Multipurp
 
 However, in the course of this review, the consolidation of the 4W data has created additional opportunities for multi-sector analysis. Several new metrics are now available, and their viability and utility will be discussed in their own sections: 
 
+* The number of unique individuals reached
 * The number of cluster per community (admin4)
 * The number of activities per admin4
 * The number of beneficiary frequencies at admin4

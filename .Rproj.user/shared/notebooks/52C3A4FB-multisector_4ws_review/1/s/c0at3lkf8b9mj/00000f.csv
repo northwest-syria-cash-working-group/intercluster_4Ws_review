@@ -1,0 +1,14 @@
+"0","# `com` is the name of the consolidated dataset 
+com %>% 
+  filter(!is.na(admin4pcode) & 
+           activity != ""ISIMM"" & 
+           project_status %in% c(""Completed"", ""Ongoing"")) %>%
+  # Maximum of beneficiaries of any activity of any cluster, at admin4
+  group_by(admin4pcode) %>% 
+  slice(which.max(beneficiaries)) %>% 
+  {sum(.$beneficiaries, na.rm = TRUE)}
+"
+"1","[1]"
+"1"," 3116759"
+"1","
+"

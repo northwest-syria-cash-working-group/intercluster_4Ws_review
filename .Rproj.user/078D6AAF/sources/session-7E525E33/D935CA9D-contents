@@ -1,5 +1,5 @@
 ---
-title: "Intercluster coverage and gaps review"
+title: "Multisector coverage and gaps review"
 author: "Based on Northwest Syria 4Ws data"
 date:  "`r format(Sys.time(), '%d %B, %Y')`"
 output:
@@ -256,8 +256,8 @@ In order to report on all cash- and voucher-based activities, not just Multipurp
 
 However, in the course of this review, the consolidation of the 4W data has created additional opportunities for multi-sector analysis. Several new metrics are now available, and their viability and utility will be discussed in their own sections: 
 
-* The number of cluster per community (admin4)
-* The number of activities per admin4
+* The number of unique individuals reached
+* The number of clusters per community (admin4)
 * The number of beneficiary frequencies at admin4
 
 The intended audience of this document are programme managers, coordinators and other persons involved in programmatic and operational decision making. Though there is a specific section on cash, this review is multisectoral in nature, given that the CWG's purview is multipurpose cash and it would inadequate to limit the scope to any one cluster or sector.
@@ -312,7 +312,7 @@ summary_table %>%
 
 The most obvious limitation, from a multisector perspective, is the exclusion of the Health data. It has been read in, but it cannot be combined with the rest of the data as there is no health reporting at admin4, likely due to them reporting based on the catchment area of each health facility. 
 
-It is possible to perform a less-accurate analysis at admin3 that includes all clusters (and would involve discarding much more data), but the Cash Working Group sees more value in an admin4-level analysis. The higher the level of aggregation, the more undercounting and more imprecise figures will be -- this is discussed in the [section 6.3](https://northwest-syria-cash-working-group.github.io/intercluster_4Ws_review/#unique-beneficiaries-and-admin5-calculations) in the annexes. 
+It is possible to perform a less-accurate analysis at admin3 that includes all clusters (and would involve discarding much more data), but the Cash Working Group sees more value in an admin4-level analysis. The higher the level of aggregation, the more undercounting and more imprecise figures will be -- this is discussed in the [section 6.4](https://northwest-syria-cash-working-group.github.io/intercluster_4Ws_review/#unique-beneficiaries-and-admin5-calculations) in the annexes. 
 
 The second major limitation in this analysis is the availability of data. No cluster has provided more than 2 months of data in 2023 to OCHA. More Cash data is available because this is a CWG report and though only the January FSL 4Ws were provided, the remaining data were extracted from the [FSL Emergency Response Tracker](https://docs.google.com/spreadsheets/d/1KGqt-3YDh2k8qNCksOJAndRPO56Gq6pGs6esEQtIFIw/edit#gid=1890981115){target="_blank"}. 
 
