@@ -1,5 +1,5 @@
 ---
-title: "Intercluster coverage and gaps review"
+title: "DRAFT Intercluster coverage and gaps review"
 author: "Based on 4Ws data"
 date:  "`r format(Sys.time(), '%d %B, %Y')`"
 output:
@@ -21,7 +21,7 @@ always_allow_html: yes
   display: block;
   height: 70px;
   margin: 2em 20px 40px 20px;
-  background-image: url("NWS-CWG logo.PNG");
+  background-image: url("https://github.com/northwest-syria-cash-working-group/intercluster_4Ws_review/raw/main/NWS-CWG%20logo.PNG");
   background-size: contain;
   background-position: center center;
   background-repeat: no-repeat;
@@ -182,6 +182,34 @@ eq_score <- eq %>%
           method = "bv", output = "all", 
           score_i_heading = "eq_score")
 
+reference_table <- com %>% 
+  filter(project_status %in% c("Completed", "Ongoing") & 
+           activity %out% c("ISIMM")) %>% 
+  group_by(admin4pcode) %>% 
+  slice(which.max(beneficiaries)) %>% 
+  ungroup() %>% 
+  select(admin1pcode, admin2pcode, admin3pcode, admin4pcode, 
+         beneficiaries) %>% 
+  left_join(com %>%
+              filter(project_status %in% c("Completed", "Ongoing") &
+                       activity %out% c("ISIMM")) %>%
+              group_by(admin4pcode) %>% 
+              summarise(beneficiary_frequencies = sum(beneficiaries, na.rm = TRUE), 
+                        clusters = n_distinct(cluster, na.rm = TRUE)), 
+            by = "admin4pcode") %>% 
+  right_join(pop %>% select(total_pop, admin4pcode), 
+             by = "admin4pcode") %>% 
+  left_join(eq %>% 
+              select(wounded_dead, 
+                     wounded_dead_100k, 
+                     damaged_houses, 
+                     damaged_houses_100k, 
+                     admin4pcode), 
+            by = "admin4pcode") %>% 
+  left_join(eq_score$data %>% 
+              select(eq_score, admin4pcode), 
+            by = "admin4pcode")
+
 ```
 
 
@@ -231,9 +259,9 @@ However, in the course of this review, the consolidation of the 4W data has crea
 
 The intended audience of this document are programme managers, coordinators and other persons involved in programmatic and operational decision making. Though there is a specific section on cash, this review is multisectoral in nature, given that the CWG's purview is multipurpose cash and it would inadequate to limit the scope to any one cluster or sector.
 
-However, inter-cluster coordination is not the responsibility of the Cash Working Group. Though the recommendations and findings are targeted at improving overall programme quality. We welcome any and all actors to make their own interpretations of the data. All [code](https://github.com/northwest-syria-cash-working-group/intercluster_4Ws_review) and [data](https://github.com/northwest-syria-cash-working-group/intercluster_4Ws_review/raw/main/data/com.csv) are available for download. There is no intention to make this a regular CWG product.
+However, inter-cluster coordination is not the responsibility of the Cash Working Group. Though the recommendations and findings are targeted at improving overall programme quality. We welcome any and all actors to make their own interpretations of the data. All [code](https://github.com/northwest-syria-cash-working-group/intercluster_4Ws_review){target="_blank"} and [data](https://github.com/northwest-syria-cash-working-group/intercluster_4Ws_review/raw/main/data/com.csv){target="_blank"} are available for download. There is no intention to make this a regular CWG product.
 
-This document does not distinguish between HRP and Earthquake interventions as they are being implemented in the same places by the same persons, though this is data that can be extracted from some 4Ws. 
+This document does not distinguish between HRP and Earthquake interventions (and neither will most affected communities) as they are being implemented in the same places by the same agencies, though this is data that can be extracted from some 4Ws. 
 
 Please use the table on contents on the right to navigate through this document. This document distinguishes between **beneficiaries** (unique individuals reached) and **beneficiary frequencies** (the total number of times an individual has received assistance, independent of double counting). 
  
@@ -258,7 +286,7 @@ summary_table <- com %>%
 ```
 
 
-One consolidated multisector dataset (excluding Health) has been developed. **`r summary_table %>% nrow()`** Clusters/Working Groups have been included: CCCM, Cash, ERL, Education, FSl, Nutrition, Protection, SNFI and WASH. Health has been excluded due to not having any admin4-level data.
+One consolidated multisector dataset has been developed. r summary_table %>% nrow()`Clusters/Working Groups have been included: CCCM, Cash, ERL, Education, FSl, Nutrition, Protection, SNFI and WASH. Health has been excluded due to not reporting any admin4-level data.
 
 Overall, FSL has the broadest footprint of any cluster, being present in **`r filter(summary_table, cluster == "FSL") %>% pull(communities)`** communities, with ERL having the smallest, being present in **`r filter(summary_table, cluster == "ERL") %>% pull(communities)`**. CCCM's footprint is much larger than what is shown below because ISIMM monitoring activities have not been included in these totals.
 
@@ -281,11 +309,11 @@ summary_table %>%
 
 The most obvious limitation, from a multisector perspective, is the exclusion of the Health data. It has been read in, but it cannot be combined with the rest of the data as there is no health reporting at admin4, likely due to them reporting based on the catchment area of each health facility. 
 
-It is possible to perform a less-accurate analysis at admin3 that includes all clusters (and would involve discarding much more data), but the Cash Working Group sees more value in an admin4-level analysis. 
+It is possible to perform a less-accurate analysis at admin3 that includes all clusters (and would involve discarding much more data), but the Cash Working Group sees more value in an admin4-level analysis. The higher the level of aggregation, the more undercounting and more imprecise figures will be -- this is discussed in the [section 6.3](https://northwest-syria-cash-working-group.github.io/intercluster_4Ws_review/#unique-beneficiaries-and-admin5-calculations) in the annexes. 
 
-The second major limitation in this analysis is the availability of data. No cluster has provided more than 2 months of data in 2023 to OCHA. More Cash data is available because this is a CWG report and though only the January FSL 4Ws were provided, the remaining data were extracted from the [FSL Emergency Response Tracker](https://docs.google.com/spreadsheets/d/1KGqt-3YDh2k8qNCksOJAndRPO56Gq6pGs6esEQtIFIw/edit#gid=1890981115). 
+The second major limitation in this analysis is the availability of data. No cluster has provided more than 2 months of data in 2023 to OCHA. More Cash data is available because this is a CWG report and though only the January FSL 4Ws were provided, the remaining data were extracted from the [FSL Emergency Response Tracker](https://docs.google.com/spreadsheets/d/1KGqt-3YDh2k8qNCksOJAndRPO56Gq6pGs6esEQtIFIw/edit#gid=1890981115){target="_blank"}. 
 
-However, judging from the sheer number of FSL (FSL alone reported reaching `r filter(com, cluster == "FSL" & month == "jan" & project_status %in% c("Completed", "Ongoing")) %>% {n_distinct(.$admin4pcode)}` communities just in January 2023) and WASH beneficiary frequencies, it is likely that many agencies have already reported the full extent of their support this year i.e. that much fewer new individuals are likely to be reached and that the agencies will largely focus on repeated activities to existing beneficiaries. 
+However, judging from the sheer number of FSL (FSL alone reported reaching `r filter(com, cluster == "FSL" & month == "jan" & project_status %in% c("Completed", "Ongoing")) %>% {n_distinct(.$admin4pcode)}` communities just in January 2023) and WASH beneficiary frequencies, it is likely that many agencies have already reported the full extent of their support this year i.e. that much fewer new individuals are likely to be reached and that the agencies will largely focus on repeated activities for existing beneficiaries. 
 
 Though this bode ill for fair allocation and responsiveness to changes in context, it should still be monitored which clusters and agencies still have room to expand or alter their footprints, so that the gaps in coverage may be addressed. 
 
@@ -364,7 +392,7 @@ com %>%
   mutate(pc_ben = beneficiaries / sum(beneficiaries), 
          pc_pop = total_pop / sum(total_pop, na.rm = TRUE)) %>% 
   arrange(desc(beneficiaries)) %>% 
-  mutate(cum_pc = cumsum(pc_ben))
+  mutate(cum_pc = cumsum(pc_ben)) 
   summarise(pc_ben = sum(pc_ben[beneficiaries > 190000]), 
             pc_pop = sum(pc_pop[beneficiaries > 190000]))
 
@@ -444,7 +472,7 @@ In only one of these communities is the percentage of the population reached eve
 
 However, from a cash programming standpoint, whilst city centres are important to commerce, typically market-based interventions seek widespread change over a large area, as opposed to having activities concentrated in certain areas. This is because there is usually an upper limit for consumption (though one may argue that almost none of our beneficiaries are close to this upper limit), but it is still important that cash circulates throughout all affected areas, not just in the urban core or specific areas that agencies have expressed their interest in. 
 
-It is imperative to expand coverage outside of these overallocated communities. The full list of communities by the beneficiary frequencies may be downloaded [here](https://raw.githubusercontent.com/northwest-syria-cash-working-group/intercluster_4Ws_review/main/data/benficiaries_by_communities.csv). This is link to a CSV, if using Excel, *Ctrl + A* and *Crtl + C* and *Ctrl + V* into the spreadsheet. 
+It is imperative to expand coverage outside of these overallocated communities. The full list of communities by the beneficiary frequencies may be downloaded [here](https://raw.githubusercontent.com/northwest-syria-cash-working-group/intercluster_4Ws_review/main/data/benficiaries_by_communities.csv){target="_blank"}. This is link to a CSV, if using Excel, *Ctrl + A* and *Crtl + C* and *Ctrl + V* into the spreadsheet. 
 
 ```{r eval=FALSE}
 com %>% 
@@ -543,7 +571,7 @@ To reiterate, for market-based interventions, widespread change is much more pre
 
 Perhaps there might operational considerations or donor priorities that might explain some of this skew. But ultimately, at this time, the CWG is unable to provide any programmatic justification for the current allocation of beneficiary frequencies in NW Syria. 
 
-A more multisectoral perspective is offered in [section 4](https://northwest-syria-cash-working-group.github.io/intercluster_4Ws_review/#multisector-programming). 
+A more multisectoral perspective is offered in the section [Multisector programming](https://northwest-syria-cash-working-group.github.io/intercluster_4Ws_review/#multisector-programming){target="_blank"}. 
 
 
 ### 2.4 Coverage 
@@ -896,7 +924,7 @@ An earthquake score was calculated, taking into account both severity and magnit
 
 Going forward, partners should prioritise communities in the upper-left quadrant (above-average earthquake score, below-average beneficiary allocations), followed by those in the lower-left quadrant (below-average earthquake score, below-average beneficiary allocations); particular attention should be paid to the communities flush against the y-axis --- these have no beneficiary allocations at all. 
 
-Download the full dataset [here](https://raw.githubusercontent.com/northwest-syria-cash-working-group/intercluster_4Ws_review/main/data/benficiaries_by_communities.csv). This is link to a CSV, if using Excel, *Ctrl + A* and *Crtl + C* and *Ctrl + V* into the spreadsheet. 
+Download the full dataset [here](https://raw.githubusercontent.com/northwest-syria-cash-working-group/intercluster_4Ws_review/main/data/benficiaries_by_communities.csv){target="_blank"}. This is link to a CSV, if using Excel, *Ctrl + A* and *Crtl + C* and *Ctrl + V* into the spreadsheet. 
 
 <br>
 
@@ -940,6 +968,20 @@ com %>%
 
   
 ```
+
+
+
+```{r eval=FALSE}
+reference_table %>% 
+  group_by(eq_damage = ifelse(!is.na(eq_score), "eq_damage", "no_damage")) %>% 
+  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE), 
+            total_pop = sum(total_pop, na.rm = TRUE)) %>% 
+  mutate(pc_ben = round(beneficiaries / sum(beneficiaries) * 100, digits = 2), 
+         pc_pop = round(total_pop / sum(total_pop) * 100, digits = 2))
+  
+  
+```
+
 
 
 <br><br><br>
@@ -1320,7 +1362,7 @@ com %>%
 
 <br>
 
-However, only the correlations between Education-Nutrition and Education-Protection are markedly higher. Nutrition and WASH only co-occurring 44% of the time is not particularly laudable, given the [footprint](https://northwest-syria-cash-working-group.github.io/intercluster_4Ws_review/#consolidation) of each of those clusters. 
+However, only the correlations between Education-Nutrition and Education-Protection are markedly higher. Nutrition and WASH only co-occurring 44% of the time is not particularly laudable, given the [footprint](https://northwest-syria-cash-working-group.github.io/intercluster_4Ws_review/#consolidation){target="_blank"} of each of those clusters. 
 
 Likewise, FSL and SNFI are so relatively-highly concentrated may be due to concerted inter-cluster coordination, or due to the very large footprint of FSL partners. What is beyond the scope of this report, and the CWG, is understanding the intentionality, or lack thereof, of these results. 
 
@@ -1469,7 +1511,7 @@ com %>%
 * Encourage management and coordination actors to consider slightly more complex metrics and to take a more evidence-driven view towards programme management. It is acknowledged that the information is slightly more complex than what would normally be presented; however, it is still a simplification of the reality in the field --- note that PDM data and AAP feedback will also need to be synthesised by management into actionable decisions. Processing complex data to arrive at considered programmatic and operational decisions is the bare-minimum qualification for response management. The Cash Working Group is, of course, willing to provide more detail and clarification on any of the points in this report. 
 
 
-* Use the reference dataset provided [here](https://raw.githubusercontent.com/northwest-syria-cash-working-group/intercluster_4Ws_review/main/data/benficiaries_by_communities.csv) to be more considered in your programming. Intentionally seek areas that are underallocated. When using the link, *Ctrl + A* and *Crtl + C* and *Ctrl + V* into the spreadsheet. 
+* Use the reference dataset provided [here](https://raw.githubusercontent.com/northwest-syria-cash-working-group/intercluster_4Ws_review/main/data/benficiaries_by_communities.csv){target="_blank"} to be more considered in your programming. Intentionally seek areas that are underallocated. When using the link, *Ctrl + A* and *Crtl + C* and *Ctrl + V* into the spreadsheet. 
 
 <br><br><br> 
 
@@ -1482,33 +1524,6 @@ Download the full dataset [here](https://raw.githubusercontent.com/northwest-syr
 <br>
 
 ```{r}
-reference_table <- com %>% 
-  filter(project_status %in% c("Completed", "Ongoing") & 
-           activity %out% c("ISIMM")) %>% 
-  group_by(admin4pcode) %>% 
-  slice(which.max(beneficiaries)) %>% 
-  ungroup() %>% 
-  select(admin1pcode, admin2pcode, admin3pcode, admin4pcode, 
-         beneficiaries) %>% 
-  left_join(com %>%
-              filter(project_status %in% c("Completed", "Ongoing") &
-                       activity %out% c("ISIMM")) %>%
-              group_by(admin4pcode) %>% 
-              summarise(beneficiary_frequencies = sum(beneficiaries, na.rm = TRUE), 
-                        clusters = n_distinct(cluster, na.rm = TRUE)), 
-            by = "admin4pcode") %>% 
-  right_join(pop %>% select(total_pop, admin4pcode), 
-             by = "admin4pcode") %>% 
-  left_join(eq %>% 
-              select(wounded_dead, 
-                     wounded_dead_100k, 
-                     damaged_houses, 
-                     damaged_houses_100k, 
-                     admin4pcode), 
-            by = "admin4pcode") %>% 
-  left_join(eq_score$data %>% 
-              select(eq_score, admin4pcode), 
-            by = "admin4pcode")
 
 reference_table %>% 
   left_join(pop %>% 
@@ -1557,7 +1572,7 @@ To aid in prioritisation, the CWG has developed an Earthquake Score, taking into
 
 The earthquake score should be used as an aid in allocation resources. When explaining to partners and communities how targets have been set, it can be easily explained that a score was developed based on the above four variables. 
 
-For a more detailed explanation, please see this document on the [Betti-Verma formula](http://medim.ceps.lu/stata/mdepriv_v3.pdf) to understand the math behind how these variables were weighted. Though, in brief, the Betti-Vermi formula is a method for selecting a subset of predictor variables in a multiple regression model, while accounting for the presence of multicollinearity among the predictors. The criterion is based on the concept of "contribution", which is defined as the degree to which a predictor variable contributes to the prediction of the outcome variable, over and above the contributions of the other predictor variables in the model.
+For a more detailed explanation, please see this document on the [Betti-Verma formula](http://medim.ceps.lu/stata/mdepriv_v3.pdf){target="_blank"} to understand the math behind how these variables were weighted. Though, in brief, the Betti-Vermi formula is a method for selecting a subset of predictor variables in a multiple regression model, while accounting for the presence of multicollinearity among the predictors. The criterion is based on the concept of "contribution", which is defined as the degree to which a predictor variable contributes to the prediction of the outcome variable, over and above the contributions of the other predictor variables in the model.
 
 The specific code of the earthquake score is: 
 
@@ -1582,7 +1597,7 @@ eq_score <- eq %>%
 
 As a note on severity rankings or ratings, it is highly undesirable to use simplified 1-5 or 1-10 (ordinal scale) scores to allocate resources. Their construction actually involves the loss of much detail and invalidates the collection of detailed data i.e. why should the actual case fatality rate matter if we just reduce to a score between 1 to 5? Not to mention the questionable validity of all-purpose ranking tables. 
 
-Additionally, the development of a singular earthquake score is already an oversimplication: it would be far better to have a score for magnitude, a score for severity and a score for pre-existing vulnerability. For more information on severity models, please refer to this [ACAPS technical note](https://www.acaps.org/sites/acaps/files/resources/files/acaps_technical_note_severity_measures_aug_2016_0.pdf), which incidentally provides a very clear review of the severity rankings constructed for Syria. 
+Additionally, the development of a singular earthquake score is already an oversimplication: it would be far better to have a score for magnitude, a score for severity and a score for pre-existing vulnerability. For more information on severity models, please refer to this [ACAPS technical note](https://www.acaps.org/sites/acaps/files/resources/files/acaps_technical_note_severity_measures_aug_2016_0.pdf){target="_blank"}, which incidentally provides a very clear review of the severity rankings constructed for Syria. 
 
 Finally, it must also be noted that most natural phenomena and human behaviours occur on a log-normal scale (i.e. right-skewed, with a long tail): this includes income, mortality rates, morbidity rates, infectivity, population sizes etc. 1-5 scales are impractical for documenting phenomena that follow a log-normal distribution. 
 
@@ -1664,11 +1679,13 @@ There is no codebook or beneficiary calculation guide for the different cluster 
 
 As such, the code below documents what has been shared orally with OCHA. Each cluster/working group (the CWG included) is advised to develop their own guidebooks. Whilst this may not ensure that beneficiary calculations between clusters are comparable, it will at least ensure that they are replicable. 
 
-For reference, a [PDF](https://github.com/northwest-syria-cash-working-group/intercluster_4Ws_review/raw/main/cluster_calculations.pdf) documenting the various cluster calculations behind their cumulative beneficiaries reached can be found at the link. 
+For reference, a [PDF](https://github.com/northwest-syria-cash-working-group/intercluster_4Ws_review/raw/main/cluster_calculations.pdf){target="_blank"} documenting the various cluster calculations behind their cumulative beneficiaries reached can be found at the link. 
 
 Typically, a codebook would include these calculations in addition to an explanation of each column in their 4Ws templates. 
 
 However, as mentioned these calculations are not comparable --- some require admin5 data to work, whilst others make use of `unique_beneficiary` or `previously_assisted` columns not present in other templates. These cluster calculations have been recorded as a reference and have not been factored into this document as they cannot be reconciled with each other. 
+
+
 
 
 
