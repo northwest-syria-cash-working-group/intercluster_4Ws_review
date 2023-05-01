@@ -246,6 +246,7 @@ tribble(
 ```
 
 
+
 # 1. Introduction
 
 In order to report on all cash- and voucher-based activities, not just Multipurpose Cash, the Cash Working Group has undertaken a review of all extant 4Ws to understand their interoperability, review multisector programming and extract basic information such as: 
@@ -1790,6 +1791,8 @@ For reference, a [PDF](https://github.com/northwest-syria-cash-working-group/mul
 Typically, a codebook would include these calculations in addition to an explanation of each column in their 4Ws templates. 
 
 However, as mentioned these calculations are not comparable --- some require admin5 data to work, whilst others make use of `unique_beneficiary` or `previously_assisted` columns not present in other templates. These cluster calculations have been recorded as a reference and have not been factored into this document as they cannot be reconciled with each other, nor, we note, were they ever intended to be. 
+
+Beneficiary disaggregations have also not been considered in this review --- it was decided it would be too much work for comparatively little gain, given that the majority of clusters and partners are simply using census or MSNA percentages to backfill their demographic data. 
 
 
 

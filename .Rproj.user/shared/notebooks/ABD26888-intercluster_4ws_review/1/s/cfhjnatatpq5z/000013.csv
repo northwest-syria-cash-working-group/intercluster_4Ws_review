@@ -1,6 +1,0 @@
-"0","filter(summary_table, cluster == ""FSL"") %>% pull(communities)
-"
-"1","[1]"
-"1"," 564"
-"1","
-"

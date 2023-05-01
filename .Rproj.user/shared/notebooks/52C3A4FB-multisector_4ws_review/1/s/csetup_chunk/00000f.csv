@@ -68,12 +68,6 @@ Attaching package: ‘viridis’
 "
 "0","library(patchwork)"
 "0","library(DT)"
-"2","Registered S3 methods overwritten by 'htmltools':
-  method               from         
-  print.html           tools:rstudio
-  print.shiny.tag      tools:rstudio
-  print.shiny.tag.list tools:rstudio
-"
 "2","Registered S3 method overwritten by 'htmlwidgets':
   method           from         
   print.htmlwidget tools:rstudio
@@ -139,7 +133,7 @@ Attaching package: ‘flextable’
 [31mx[30m [34mmagrittr[30m::[32mset_names()[30m masks [34mpurrr[30m::set_names()
 [31mx[30m [34myardstick[30m::[32mspec()[30m     masks [34mreadr[30m::spec()
 [31mx[30m [34mrecipes[30m::[32mstep()[30m       masks [34mstats[30m::step()
-[34m*[30m Use [32mtidymodels_prefer()[30m to resolve common conflicts.[39m
+[34m*[30m Search for functions across packages at [32mhttps://www.tidymodels.org/find/[30m[39m
 "
 "0","library(widyr)"
 "0","library(tidytext)"
