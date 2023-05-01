@@ -85,3 +85,39 @@ com %>%
 * The number of beneficiary frequencies at admin4. This, together with the number of activities, will be used to determine how industry-wide resources have been allocated across Northwest Syria and if those allocations have been fair i.e. are there communities of similar pre-existing vulnerability and earthquake damage that have received drastically different levels of support? The number of activities and the number of beneficiary frequencies are what are most visible to communities anyway and will be interpreted by affected persons as a proxy of the level of humanitarian interest. 
 
 As a by-product of calculating these data, the following information has also been calculated: 
+
+  
+WVI
+  
+reference_table %>% 
+  left_join(com %>% 
+              filter(cluster == "Cash" & project_status %in% c("Completed", "Ongoing")) %>% 
+              group_by(admin4pcode) %>% 
+              summarise(cash_ben = sum(beneficiaries, na.rm = TRUE)), 
+            by = "admin4pcode") %>% 
+  mutate(total_pop = ifelse(total_pop == 0, beneficiaries, total_pop)) %>% 
+  mutate(pc_ben_freq = beneficiary_frequencies / total_pop, 
+         pc_ben = beneficiaries / total_pop) %>% 
+  filter(admin2pcode %in% c("SY0203", "SY0703", "SY0704")) %>% 
+  # ggplot(aes(x = pc_ben_freq)) + 
+  # geom_histogram() + 
+  # scale_x_log10()
+  filter(pc_ben_freq <= .6) %>% 
+  # write_csv("./data/admin4_wvi.csv")
+  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE), 
+            beneficiary_frequencies = sum(beneficiary_frequencies, na.rm = TRUE), 
+            total_pop = sum(total_pop, na.rm = TRUE))
+
+locations %>% 
+  filter(admin2name_en %in% c("Harim", "Afrin", "Jisr-Ash-Shugur")) %>% 
+  distinct(admin2pcode)
+
+locations %>% filter(str_detect(admin2name_en, "Jisr"))
+
+reference_table %>% 
+  left_join(com %>% 
+              filter(cluster == "Cash" & project_status %in% c("Completed", "Ongoing")) %>% 
+              group_by(admin4pcode) %>% 
+              summarise(cash_ben = sum(beneficiaries, na.rm = TRUE)), 
+            by = "admin4pcode") %>% 
+  write_csv("./data/admin4_reference.csv")

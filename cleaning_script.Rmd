@@ -540,7 +540,7 @@ com <- rbind(
   
   prot %>% 
     filter(unit == "# people") %>% 
-    mutate(beneficiaries = total_achieved_as_per_unit, 
+    mutate(beneficiaries = total_reached, 
            month = str_to_lower(str_sub(month, start = 6L, end = 8L)), 
            project_status = "Completed", 
            cluster = "Protection", 

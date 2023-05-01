@@ -1,6 +1,6 @@
 ---
 title: "DRAFT Intercluster coverage and gaps review"
-author: "Based on 4Ws data"
+author: "Based on Northwest Syria 4Ws data"
 date:  "`r format(Sys.time(), '%d %B, %Y')`"
 output:
   html_document:
@@ -315,7 +315,7 @@ The second major limitation in this analysis is the availability of data. No clu
 
 However, judging from the sheer number of FSL (FSL alone reported reaching `r filter(com, cluster == "FSL" & month == "jan" & project_status %in% c("Completed", "Ongoing")) %>% {n_distinct(.$admin4pcode)}` communities just in January 2023) and WASH beneficiary frequencies, it is likely that many agencies have already reported the full extent of their support this year i.e. that much fewer new individuals are likely to be reached and that the agencies will largely focus on repeated activities for existing beneficiaries. 
 
-Though this bode ill for fair allocation and responsiveness to changes in context, it should still be monitored which clusters and agencies still have room to expand or alter their footprints, so that the gaps in coverage may be addressed. 
+Though this does bode ill for fair allocation and responsiveness to changes in context, it should still be monitored which clusters and agencies still have room to expand or alter their footprints, so that the gaps in coverage may be addressed. Admittedly, this report was about 2 months too late to make any difference in emergency-phase decision making --- though that doesn't absolve clusters and agencies of trying to course correct. 
 
 
 
@@ -433,7 +433,7 @@ com %>%
 
 <br>
 
-Specifically, these severely-overallocated communities are: 
+Coverage, here, is defined as `beneficiary_frequencies / total_population`. Specifically, these severely-overallocated communities are: 
 
 <br>
 
@@ -526,7 +526,7 @@ pop %>% filter(admin4pcode %in% c("C4126", "C1426", "C1202", "C1564")) %>%
   select(admin1name_en, admin3name_en, admin4name_en)
 ```
 
-The situation is strikingly similar for FSL: their top 10 communities also fr, 49% of their beneficiary allocations, with their top 4 communities --- Al Bab (C4126), Jandairis (C1426) and Azaz (C1202) in Aleppo and Dana (C1564) in Idleb forming 30% of their beneficiary frequencies. 
+The situation is strikingly similar for FSL: their top 10 communities also form, 49% of their beneficiary allocations, with their top 4 communities --- Al Bab (C4126), Jandairis (C1426) and Azaz (C1202) in Aleppo and Dana (C1564) in Idleb forming 30% of their beneficiary frequencies. 
 
 ```{r eval = FALSE}
 com %>% 
@@ -715,9 +715,13 @@ A point of investigation would be whether this has to do with small communities 
 
 ### 2.5 Does earthquake damage matter? 
 
-Did humanitarian partners factor earthquake damage into their post-January beneficiary allocations? In short, only the magnitude of earthquake damage is taken into account, as can be seen by the plots below. The severity of earthquake damage has had no effect on the allocation of beneficiaries. 
+Did humanitarian partners factor earthquake damage into their post-January beneficiary allocations? 
 
-Magnitude (the number of dead and wounded and the number of damaged houses) is positively correlated with beneficiaries reached. In general, the higher the number of damaged houses and persons wounded and dead per community, the higher the number of beneficiaries reached. 
+In short, only the magnitude of earthquake damage is taken into account, as can be seen by the plots below. The intensity of earthquake damage has had no effect on the allocation of beneficiaries. 
+
+Magnitude (the number of dead and wounded and the number of damaged houses) is positively correlated with beneficiaries reached. 
+
+The blue lines (just a linear regression line) show that, in general, the higher the number of damaged houses and persons wounded and dead per community, the higher the number of beneficiaries reached. Each point in the plots below is a single community. 
 
 <br>
 
@@ -774,7 +778,7 @@ com %>%
 
 However, upon checking this hypothesis, whilst the effect is statistically significant, the magnitude of damage is not as good a predictor of beneficiaries reached as the plots above indicate. 
 
-When comparing the number of January 2023 beneficiaries with the number of damaged houses (bearing in mind that there should be no real relationship with the Kahramanmaras earthquake which occurred on February 6 2023), it is observed that there was still a positive and statistically significant relationship. 
+When comparing the number of January 2023 beneficiaries with the number of damaged houses (bearing in mind that January allocations should have no real relationship with the Kahramanmaras earthquake which occurred on February 6 2023), it is observed that there was still a positive and statistically significant relationship. 
 
 And, with reference to the plot below on the right, the main underlying factor behind beneficiary allocations does just seem to be the total population of the community. 
 
@@ -825,7 +829,7 @@ com %>%
 
 This is fully borne out in the statistics: whilst damaged houses are much more predictive of beneficiary allocations post-January than they are of January allocations, ultimately its predictive power pales in comparison to the size of the total population. 
 
-This high degree of alignment with the total population only makes sense if needs are uniform across NW Syria, in direct contradiction with the MSNA, actual earthquake damage and the severity ratings. 
+This high degree of alignment with the total population only makes sense if needs are uniform across NW Syria, in direct contradiction with the MSNA, actual earthquake damage and the JIAF severity ratings. 
 
 <br>
 
@@ -883,7 +887,7 @@ com %>%
 
 <br>
 
-Now that we now that the magnitude of earthquake damage has a slight effect on how beneficiaries were allocated post-January 2023, let us examine whether the intensity of earthquake damage (the proportion of a population that has been affected) has any bearing on beneficiary allocations: 
+Now that we know that the magnitude of earthquake damage has a slight effect on how beneficiaries were allocated post-January 2023, let us examine whether the intensity of earthquake damage (the proportion of a population that has been affected) has any bearing on beneficiary allocations: 
 
 <br>
 
@@ -918,9 +922,11 @@ com %>%
 
 Decidedly not. The relationships, as can be seen by the angles of the blue lines are either either flat, or trending downward. Neither relationship is statistically significant. 
 
-Partners are advised to pay attention to both magnitude and severity in their beneficiary allocations and not just the total population of an area. That magnitude of damage is important is pretty straightforward, but intensity must be factored in as well. Another way of thinking about it is: two communities, each with 100 damaged houses, but one has 1,000 residents and the other has 10,000 --- which one should have a higher beneficiary and budgetary allocation, what would be a fair way to divide up your limited resources? 
+Partners are advised to pay attention to both magnitude and intensity in their beneficiary allocations and not just the total population of an area. That magnitude of damage is important is pretty straightforward, but intensity must be factored in as well. Another way of thinking about it is: two communities, each with 100 damaged houses, but one has 1,000 residents and the other has 10,000 --- which one should have a higher beneficiary and budgetary allocation, what would be a fair way to divide up your limited resources? 
 
-An earthquake score was calculated, taking into account both severity and magnitude. Below, it is plotted against each communities' share of the total beneficiary allocations to-date. 
+Further research is also needed to compare allocations to pre-existing vulnerability so that all three fundamental elements of a severity measure (intensity, magnitude and pre-existing vulnerability) may be considered. 
+
+An earthquake score was calculated, taking into account both intensity and magnitude. Below, it is plotted against each communities' share of the total beneficiary allocations to-date. 
 
 Going forward, partners should prioritise communities in the upper-left quadrant (above-average earthquake score, below-average beneficiary allocations), followed by those in the lower-left quadrant (below-average earthquake score, below-average beneficiary allocations); particular attention should be paid to the communities flush against the y-axis --- these have no beneficiary allocations at all. 
 
@@ -1014,7 +1020,7 @@ com %>%
 
 <br>
 
-Overall, CWG partners have disbursed the most cash out of any cluster/working group, with FSL coming in second (even with the inclusion of the FSL live tracker data). The highest per person transfer values are from ERL.  
+Overall, CWG partners have disbursed the most cash out of any cluster/working group, with FSL coming in second (even with the inclusion of the FSL live tracker data). Commonsensically, the highest per person transfer values are from ERL.  
 
 <br><br>
 
@@ -1087,7 +1093,7 @@ has_delivery_modality <- com %>%
 
 <br>
 
-**`r has_delivery_modality %>% filter(has_delivery_modality == "Yes") %>% pull(beneficiaries)`%** of beneficiary frequencies were reported with a delivery modality specified. Mainly CCCM and WASH have templates that do not require the reporting of a delivery modality. Less than 10% of Nutrition's activities were also reported without delivery modalities. As mentioned, it would not be incorrect to assume that almost all of the beneficiaries with no modality specified (`NA`) would be in-kind. 
+**`r has_delivery_modality %>% filter(has_delivery_modality == "Yes") %>% pull(beneficiaries)`%** of beneficiary frequencies were reported with a delivery modality specified. CCCM and WASH have templates that do not require the reporting of a delivery modality. Less than 10% of Nutrition's activities were also reported without delivery modalities. As mentioned, it would not be incorrect to assume that almost all of the beneficiaries with no modality specified (`NA`) would be in-kind. 
 
 
 <br>
@@ -1204,9 +1210,7 @@ sum_table %>%
 
 <br>
 
-Immediately, were Education, ERL, FSL and SNFI partners to directly provide their 4Ws to the CWG, exactly how they would normally submit it to their Cluster Coordinators and IMs, they could be directly integrated in current CWG reporting with minimal issues. It should also be mentioned that the proposed Whole-of-Syria 4Ws intercluster reporting template is also in full compliance with cash reporting standards, though it is unclear if that template will ever be enforced. 
-
-
+Immediately, were Education, ERL, FSL and SNFI partners to directly provide their 4Ws to the CWG, exactly how they would normally submit it to their Cluster Coordinators and IMs, they could be directly integrated in current CWG reporting with minimal issues. It should also be mentioned that the proposed Whole-of-Syria 4Ws intercluster reporting template is also in full compliance with cash reporting standards, though it is unclear if that template will ever be enforced.
 
 
 <br><br><br>
@@ -1239,7 +1243,7 @@ com %>%
 
 <br>
 
-In general, the more clusters present in a community, the higher the number of beneficiaries.  
+In general, the more clusters present in a community, the higher the number of beneficiaries. In the boxplots below, the number of of beneficiaries is shown on the x-axis, and the number of clusters per community is on the y-axis. 
 
 <br>
 
@@ -1362,17 +1366,16 @@ com %>%
 
 <br>
 
-However, only the correlations between Education-Nutrition and Education-Protection are markedly higher. Nutrition and WASH only co-occurring 44% of the time is not particularly laudable, given the [footprint](https://northwest-syria-cash-working-group.github.io/intercluster_4Ws_review/#consolidation){target="_blank"} of each of those clusters. 
+Though how much these co-occurences was planned for cannot be determined --- it is not possible to deduce intentionality from 4Ws (that's something that I would point an evaluator towards), and Nutrition and WASH do have quite large [footprints](https://northwest-syria-cash-working-group.github.io/intercluster_4Ws_review/#consolidation){target="_blank"}. For one, the coincidence between Cash and WASH is not intentional --- this is not something we have ever considered. 
 
-Likewise, FSL and SNFI are so relatively-highly concentrated may be due to concerted inter-cluster coordination, or due to the very large footprint of FSL partners. What is beyond the scope of this report, and the CWG, is understanding the intentionality, or lack thereof, of these results. 
-
-Clicking through to the end of the results, it is observed that the presence of ERL is lowly correlated with a wide range of clusters, including those to which it has quite natural programmatic ties --- there are any number of reasons for this. 
+Clicking through to the end of the results, it is observed that the presence of ERL activities is lowly-correlated with a wide range of clusters, including those to which it has quite natural programmatic ties --- there are any number of reasons for this. 
 
 It could be that clusters/working groups with larger footprints were not judicious in their emergency-phase targeting, which ERL sought to mitigate in its own targeting. Or that medium-term FSL and Cash activities were interpreted to have met some portion of the early recovery needs, allowing ERL to expand to other areas.
 
 It would be fallacious to assume that no inter-cluster coordination has occurred: multi-sector objectives are defined in the logframe, but their impacts on programmatic decisions is not clear. Additionally, what further hampers multi-sector programming is the whether the change the response seeks is broad (reaching as many as possible) or deep (concentrating service delivery in key areas). 
 
-So, it would be correct to assume that inter-cluster coordination has not been codified --- as in, there is a level of strategic thinking missing between overall Strategic Objectives and Sector Objectives. The definition of where and how Cluster join and build on each other remains to be defined. Though of course, this might not be true within individual agencies, though given the anonymisation of partner names across clusters, this cannot be verified. 
+So, it would be correct to assume that inter-cluster coordination has not been codified --- as in, there is a level of strategic thinking missing between overall Strategic Objectives and Sector Objectives. The definition of where and how Clusters can join in and build on each other remains to be defined --- perhaps this will be rectified in the development of the Phase 2 Life-Sustaining Response. 
+Of course, this might not be true within individual agencies, though given the anonymisation of partner names across clusters, this cannot be verified. 
 
 <br><br>
 
@@ -1383,12 +1386,9 @@ Upon examining intercluster activity pairs (activities from the same cluster and
 
 Looking at the list in the interactive table below, ranked in order of how often they their correlations, we see that there is definite intentionality amongst UNICEF-led cluster activities, in particular, there seems to be quite definite intercluster coordination between Protection and Education. 
 
-if one sorts the list below by correlations in ascending order, it is noted that many Nutrition and FSL are poorly correlated with activities from other clusters --- 
+Please sort and explore the table by `correlation`, number of `communities` and `clusters.` Please also find a [CSV](https://github.com/northwest-syria-cash-working-group/intercluster_4Ws_review/raw/main/data/activity_pairs.csv){target="_blank"} of all activity pairs that have occurred at least twice, their counts and their correlations. It is hoped that others will find more meaning in the data. 
 
-
-The examination of intercluster activity pairs (activity pairs from the same cluster have been filtered out), does indicate a lack of intentionality. For the top-ranking pairs, there is no 
-
-However, CWG partners should rejoice that multipurpose cash matches well with any activity, and can even stand alone. Though they still need to be aware of overallocations. 
+As for the Cash Working Group, we can see no clear patterns in data i.e. there are no intercluster activities offered as a package like malnutrition screening paired with food baskets or shelter support with WASH assistance. Sorting by number of communities does give a false impression of the state of intercluster coordination --- one need only check the actual correlation. 
 
 <br>
 
@@ -1422,11 +1422,12 @@ com %>%
             caption = htmltools::tags$caption(style = 'caption-side: top; 
                                     text-align: center; font-size:120% ;',
                                     "Cluster pairs, correlations and co-occurences"))
+
 ```
 
 <br>
 
-Though, there are clear limits to UNICEF-led intercluster coordination, seeing as, if you were to sort the list by correlations in ascending order, many Nutrition and FSL activities are poorly coorrelated with activities from other clusters. This is likely due to FSL having the largest footprint and the largest number of communities where they are operating alone (followed by Nutrition). 
+Though, there are clear limits to UNICEF-led intercluster coordination, seeing as, if you were to sort the list by correlations in ascending order, many Nutrition and WASH activities are poorly correlated with activities from other clusters. This is likely due to these clusters having relatively large footprints.
 
 
 
@@ -1482,7 +1483,7 @@ com %>%
 
 * Prioritise support for areas which have had the least coverage. Conversely, avoid allocating any additional resources to communities where the gaps are comparatively small or have negative gaps. Any market-based intervention, including MPC, should seek widespread, if comparatively less thorough, change rather than concentrated support. 
 
-* Concentrated support is the purview of clusters working through service-delivery or in-kind modalities --- pairing WASH with Shelter, Protection services with Nutrition screening. Do not lose sight that raising consumption, even by a little bit, has many knock-on effects and supports many more indirect beneficiaries. 
+* Concentrated support is the purview of clusters working through service-delivery or in-kind modalities --- pairing WASH with Shelter, Protection services with Nutrition screening. Do not lose sight that raising consumption across a wide population, even by a little bit, has many knock-on effects and supports many more indirect beneficiaries. 
 
 * Prioritise providing Multipurpose Cash assistance to areas which are covered only by one other cluster, particularly if the only support provided has been non-FSL. MPC, after all, is a no-regret, multisector transfer. 
 
@@ -1517,7 +1518,7 @@ com %>%
 
 # 6. Annexes
 
-### 6.1 Interactive reference table 
+### 6.1 Community level reference table 
 
 Download the full dataset [here](https://raw.githubusercontent.com/northwest-syria-cash-working-group/intercluster_4Ws_review/main/data/benficiaries_by_communities.csv). This is link to a CSV, if using Excel, *Ctrl + A* and *Crtl + C* and *Ctrl + V* into the spreadsheet. 
 
@@ -1560,8 +1561,60 @@ reference_table %>%
 
 <br><br>
 
+### 6.2 Community-level cluster beneficiary frequencies
 
-### 6.2 Earthquake score and severity measures
+Here is another table showing beneficiary frequencies by Cluster, at community level. This dataset may be downloaded [here](https://raw.githubusercontent.com/northwest-syria-cash-working-group/intercluster_4Ws_review/main/data/admin4_cluster_beneficiary_frequencies.csv). As with other links, if using Excel, *Ctrl + A* and *Crtl + C* and *Ctrl + V* into the spreadsheet.
+
+<br>
+
+```{r}
+com %>% 
+  filter(project_status %in% c("Completed", "Ongoing") & 
+           activity %out% c("ISIMM")) %>% 
+  group_by(admin4pcode, cluster) %>% 
+  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE)) %>% 
+  ungroup() %>%  
+  pivot_wider(names_from = cluster, values_from = beneficiaries) %>% 
+  mutate(beneficiary_frequencies = rowSums(.[ , c(2:9)], na.rm = TRUE)) %>% 
+  right_join(pop %>% select(total_pop, admin4pcode), 
+             by = "admin4pcode") %>% 
+  left_join(locations %>% 
+              select(district = admin2name_en, 
+                     sub_district = admin3name_en, 
+                     community = location_name_en, 
+                     admin4pcode), 
+            by = "admin4pcode") %>%
+  arrange(desc(beneficiary_frequencies)) %>% 
+  select(district, sub_district, community, 
+         Cash, Education, FSL, 
+         Nutrition, Protection, SNFI, 
+         WASH, CCCM, ERL, 
+         beneficiary_frequencies, total_pop, 
+         admin4pcode) %>% 
+  rename(frequencies = beneficiary_frequencies) %>% 
+  datatable(options = list(pageLength = 10, scrollX = TRUE, scrollY = TRUE), 
+            filter = list(position = "top", clear = FALSE),
+            caption = htmltools::tags$caption(style = 'caption-side: top; 
+                                    text-align: center; font-size:120% ;',
+                                    "Community-level cluster beneficiary frequencies")) %>% 
+  formatCurrency(c("total_pop", "Cash", "Education", 
+                   "FSL", "Nutrition", "Protection", 
+                   "SNFI", "WASH", "CCCM", "ERL", 
+                   "frequencies"), 
+                 currency = "", interval = 3, mark = ",") %>%
+  formatRound(c("total_pop", "Cash", "Education", 
+                   "FSL", "Nutrition", "Protection", 
+                   "SNFI", "WASH", "CCCM", "ERL", 
+                   "frequencies"), digits = 0)
+  
+
+```
+
+
+<br><br>
+
+
+### 6.3 Earthquake score and severity measures
 
 To aid in prioritisation, the CWG has developed an Earthquake Score, taking into account the following indicators at admin4: 
 
@@ -1604,7 +1657,7 @@ Finally, it must also be noted that most natural phenomena and human behaviours 
 
 <br><br>
 
-### 6.3 Unique beneficiaries and admin5 calculations
+### 6.4 Unique beneficiaries and admin5 calculations
 
 The gold standard for calculating unique beneficiaries is to use an intercluster, interagency beneficiary database. This is not an expensive solution and all agencies will still be able to use their preferred software, only needing to ensure that certain common variables (ID number, name, surname, address, etc.) are in all databases. 
 
@@ -1673,7 +1726,7 @@ Ultimately, using the figure at admin4 is commonsensical.
 
 <br><br>
 
-### 6.4 Lack of cluster-level documentation 
+### 6.5 Lack of cluster-level documentation 
 
 There is no codebook or beneficiary calculation guide for the different cluster 4Ws. 
 
