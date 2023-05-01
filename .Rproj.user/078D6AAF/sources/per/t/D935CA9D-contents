@@ -21,7 +21,7 @@ always_allow_html: yes
   display: block;
   height: 70px;
   margin: 2em 20px 40px 20px;
-  background-image: url("https://github.com/northwest-syria-cash-working-group/intercluster_4Ws_review/raw/main/NWS-CWG%20logo.PNG");
+  background-image: url("https://github.com/northwest-syria-cash-working-group/multisector_4Ws_review/raw/main/NWS-CWG%20logo.PNG");
   background-size: contain;
   background-position: center center;
   background-repeat: no-repeat;
@@ -262,7 +262,7 @@ However, in the course of this review, the consolidation of the 4W data has crea
 
 The intended audience of this document are programme managers, coordinators and other persons involved in programmatic and operational decision making. Though there is a specific section on cash, this review is multisectoral in nature, given that the CWG's purview is multipurpose cash and it would inadequate to limit the scope to any one cluster or sector.
 
-However, inter-cluster coordination is not the responsibility of the Cash Working Group. Though the recommendations and findings are targeted at improving overall programme quality. We welcome any and all actors to make their own interpretations of the data. All [code](https://github.com/northwest-syria-cash-working-group/intercluster_4Ws_review){target="_blank"} and [data](https://github.com/northwest-syria-cash-working-group/intercluster_4Ws_review/raw/main/data/com.csv){target="_blank"} are available for download. There is no intention to make this a regular CWG product.
+However, inter-cluster coordination is not the responsibility of the Cash Working Group. Though the recommendations and findings are targeted at improving overall programme quality. We welcome any and all actors to make their own interpretations of the data. All [code](https://github.com/northwest-syria-cash-working-group/multisector_4Ws_review){target="_blank"} and [data](https://github.com/northwest-syria-cash-working-group/multisector_4Ws_review/raw/main/data/com.csv){target="_blank"} are available for download. There is no intention to make this a regular CWG product.
 
 This document does not distinguish between HRP and Earthquake interventions (and neither will most affected communities) as they are being implemented in the same places by the same agencies, though this is data that can be extracted from some 4Ws. 
 
@@ -312,7 +312,7 @@ summary_table %>%
 
 The most obvious limitation, from a multisector perspective, is the exclusion of the Health data. It has been read in, but it cannot be combined with the rest of the data as there is no health reporting at admin4, likely due to them reporting based on the catchment area of each health facility. 
 
-It is possible to perform a less-accurate analysis at admin3 that includes all clusters (and would involve discarding much more data), but the Cash Working Group sees more value in an admin4-level analysis. The higher the level of aggregation, the more undercounting and more imprecise figures will be -- this is discussed in the [section 6.4](https://northwest-syria-cash-working-group.github.io/intercluster_4Ws_review/#unique-beneficiaries-and-admin5-calculations) in the annexes. 
+It is possible to perform a less-accurate analysis at admin3 that includes all clusters (and would involve discarding much more data), but the Cash Working Group sees more value in an admin4-level analysis. The higher the level of aggregation, the more undercounting and more imprecise figures will be -- this is discussed in the [section 6.4](https://northwest-syria-cash-working-group.github.io/multisector_4Ws_review/#unique-beneficiaries-and-admin5-calculations) in the annexes. 
 
 The second major limitation in this analysis is the availability of data. No cluster has provided more than 2 months of data in 2023 to OCHA. More Cash data is available because this is a CWG report and though only the January FSL 4Ws were provided, the remaining data were extracted from the [FSL Emergency Response Tracker](https://docs.google.com/spreadsheets/d/1KGqt-3YDh2k8qNCksOJAndRPO56Gq6pGs6esEQtIFIw/edit#gid=1890981115){target="_blank"}. 
 
@@ -475,7 +475,7 @@ In only one of these communities is the percentage of the population reached eve
 
 However, from a cash programming standpoint, whilst city centres are important to commerce, typically market-based interventions seek widespread change over a large area, as opposed to having activities concentrated in certain areas. This is because there is usually an upper limit for consumption (though one may argue that almost none of our beneficiaries are close to this upper limit), but it is still important that cash circulates throughout all affected areas, not just in the urban core or specific areas that agencies have expressed their interest in. 
 
-It is imperative to expand coverage outside of these overallocated communities. The full list of communities by the beneficiary frequencies may be downloaded [here](https://raw.githubusercontent.com/northwest-syria-cash-working-group/intercluster_4Ws_review/main/data/benficiaries_by_communities.csv){target="_blank"}. This is link to a CSV, if using Excel, *Ctrl + A* and *Crtl + C* and *Ctrl + V* into the spreadsheet. 
+It is imperative to expand coverage outside of these overallocated communities. The full list of communities by the beneficiary frequencies may be downloaded [here](https://raw.githubusercontent.com/northwest-syria-cash-working-group/multisector_4Ws_review/main/data/benficiaries_by_communities.csv){target="_blank"}. This is link to a CSV, if using Excel, *Ctrl + A* and *Crtl + C* and *Ctrl + V* into the spreadsheet. 
 
 ```{r eval=FALSE}
 com %>% 
@@ -574,10 +574,11 @@ To reiterate, for market-based interventions, widespread change is much more pre
 
 Perhaps there might operational considerations or donor priorities that might explain some of this skew. But ultimately, at this time, the CWG is unable to provide any programmatic justification for the current allocation of beneficiary frequencies in NW Syria. 
 
-A more multisectoral perspective is offered in the section [Multisector programming](https://northwest-syria-cash-working-group.github.io/intercluster_4Ws_review/#multisector-programming). 
+A more multisectoral perspective is offered in the section [Multisector programming](https://northwest-syria-cash-working-group.github.io/multisector_4Ws_review/#multisector-programming). 
 
+<br><br>
 
-### 2.4 Coverage 
+### 2.4 Reached 
 
 ```{r}
 overallocated_communities <- com %>% 
@@ -607,7 +608,7 @@ pc_covered_mean <- com %>%
 
 ```
 
-There are **`r overallocated_communities`** communities where the number of unique individuals reached (highest number of any activity) is in excess of 95% of the community population. Below is a histogram of communities by the percentage of their populations reached. The average percentage of a community's population in NW Syria covered is **`r pc_covered_mean %>% mutate(pc = round(pc * 100, digits = 2)) %>% pull(pc)`%**, which is slightly nonsensical and only goes to show how averages tend to mask deeper issues. 
+There are **`r overallocated_communities`** communities where the number of unique individuals reached (highest number of any activity) is in excess of 95% of the community population. Below is a histogram of communities by the percentage of their populations reached. The average percentage of a community's population in NW Syria reached is **`r pc_covered_mean %>% mutate(pc = round(pc * 100, digits = 2)) %>% pull(pc)`%**, which is slightly nonsensical and only goes to show how averages tend to mask deeper issues. 
 
 Overallocation in communities with high beneficiary numbers and, likely, higher numbers of partners (though this cannot be ascertained due to the anonymisation of partner names) have skewed overall averages. If it were possible to conduct this analysis at admin5, it is likely that the skew would be even worse. 
 
@@ -933,7 +934,7 @@ An earthquake score was calculated, taking into account both intensity and magni
 
 Going forward, partners should prioritise communities in the upper-left quadrant (above-average earthquake score, below-average beneficiary allocations), followed by those in the lower-left quadrant (below-average earthquake score, below-average beneficiary allocations); particular attention should be paid to the communities flush against the y-axis --- these have no beneficiary allocations at all. 
 
-Download the full dataset [here](https://raw.githubusercontent.com/northwest-syria-cash-working-group/intercluster_4Ws_review/main/data/benficiaries_by_communities.csv){target="_blank"}. This is link to a CSV, if using Excel, *Ctrl + A* and *Crtl + C* and *Ctrl + V* into the spreadsheet. 
+Download the full dataset [here](https://raw.githubusercontent.com/northwest-syria-cash-working-group/multisector_4Ws_review/main/data/benficiaries_by_communities.csv){target="_blank"}. This is link to a CSV, if using Excel, *Ctrl + A* and *Crtl + C* and *Ctrl + V* into the spreadsheet. 
 
 <br>
 
@@ -1369,7 +1370,7 @@ com %>%
 
 <br>
 
-Though how much these co-occurences was planned for cannot be determined --- it is not possible to deduce intentionality from 4Ws (that's something that I would point an evaluator towards), and Nutrition and WASH do have quite large [footprints](https://northwest-syria-cash-working-group.github.io/intercluster_4Ws_review/#consolidation). For one, the coincidence between Cash and WASH is not intentional --- this is not something we have ever considered. 
+Though how much these co-occurences was planned for cannot be determined --- it is not possible to deduce intentionality from 4Ws (that's something that I would point an evaluator towards), and Nutrition and WASH do have quite large [footprints](https://northwest-syria-cash-working-group.github.io/multisector_4Ws_review/#consolidation). For one, the coincidence between Cash and WASH is not intentional --- this is not something we have ever considered. 
 
 Clicking through to the end of the results, it is observed that the presence of ERL activities is lowly-correlated with a wide range of clusters, including those to which it has quite natural programmatic ties --- there are any number of reasons for this. 
 
@@ -1389,7 +1390,7 @@ Upon examining intercluster activity pairs (activities from the same cluster and
 
 Looking at the list in the interactive table below, ranked in order of how often they their correlations, we see that there is definite intentionality amongst UNICEF-led cluster activities, in particular, there seems to be quite definite intercluster coordination between Protection and Education. 
 
-Please sort and explore the table by `correlation`, number of `communities` and `clusters.` Please also find a [CSV](https://github.com/northwest-syria-cash-working-group/intercluster_4Ws_review/raw/main/data/activity_pairs.csv){target="_blank"} of all activity pairs that have occurred at least twice, their counts and their correlations. It is hoped that others will find more meaning in the data. 
+Please sort and explore the table by `correlation`, number of `communities` and `clusters.` Please also find a [CSV](https://raw.githubusercontent.com/northwest-syria-cash-working-group/multisector_4Ws_review/main/data/activity_pairs.csv){target="_blank"} of all activity pairs that have occurred at least twice, their counts and their correlations. It is hoped that others will find more meaning in the data. 
 
 As for the Cash Working Group, we can see no clear patterns in data i.e. there are no intercluster activities offered as a package like malnutrition screening paired with food baskets or shelter support with WASH assistance. Sorting by number of communities does give a false impression of the state of intercluster coordination --- one need only check the actual correlation. 
 
@@ -1515,7 +1516,7 @@ com %>%
 * Encourage management and coordination actors to consider slightly more complex metrics and to take a more evidence-driven view towards programme management. It is acknowledged that the information is slightly more complex than what would normally be presented; however, it is still a simplification of the reality in the field --- note that PDM data and AAP feedback will also need to be synthesised by management into actionable decisions. Processing complex data to arrive at considered programmatic and operational decisions is the bare-minimum qualification for response management. The Cash Working Group is, of course, willing to provide more detail and clarification on any of the points in this report. 
 
 
-* Use the reference dataset provided [here](https://raw.githubusercontent.com/northwest-syria-cash-working-group/intercluster_4Ws_review/main/data/benficiaries_by_communities.csv){target="_blank"} to be more considered in your programming. Intentionally seek areas that are under-allocated. When using the link, *Ctrl + A* and *Crtl + C* and *Ctrl + V* into the spreadsheet. 
+* Use the reference dataset provided [here](https://raw.githubusercontent.com/northwest-syria-cash-working-group/multisector_4Ws_review/main/data/benficiaries_by_communities.csv){target="_blank"} to be more considered in your programming. Intentionally seek areas that are under-allocated. When using the link, *Ctrl + A* and *Crtl + C* and *Ctrl + V* into the spreadsheet. 
 
 <br><br><br> 
 
@@ -1523,7 +1524,7 @@ com %>%
 
 ### 6.1 Community level reference table 
 
-Download the full dataset [here](https://raw.githubusercontent.com/northwest-syria-cash-working-group/intercluster_4Ws_review/main/data/benficiaries_by_communities.csv). This is link to a CSV, if using Excel, *Ctrl + A* and *Crtl + C* and *Ctrl + V* into the spreadsheet. 
+Download the full dataset [here](https://raw.githubusercontent.com/northwest-syria-cash-working-group/multisector_4Ws_review/main/data/benficiaries_by_communities.csv). This is link to a CSV, if using Excel, *Ctrl + A* and *Crtl + C* and *Ctrl + V* into the spreadsheet. 
 
 <br>
 
@@ -1566,7 +1567,7 @@ reference_table %>%
 
 ### 6.2 Community-level cluster beneficiary frequencies
 
-Here is another table showing beneficiary frequencies by Cluster, at community level. This dataset may be downloaded [here](https://raw.githubusercontent.com/northwest-syria-cash-working-group/intercluster_4Ws_review/main/data/admin4_cluster_beneficiary_frequencies.csv). As with other links, if using Excel, *Ctrl + A* and *Crtl + C* and *Ctrl + V* into the spreadsheet.
+Here is another table showing beneficiary frequencies by Cluster, at community level. This dataset may be downloaded [here](https://raw.githubusercontent.com/northwest-syria-cash-working-group/multisector_4Ws_review/main/data/admin4_cluster_beneficiary_frequencies.csv). As with other links, if using Excel, *Ctrl + A* and *Crtl + C* and *Ctrl + V* into the spreadsheet.
 
 <br>
 
@@ -1662,7 +1663,7 @@ Finally, it must also be noted that most natural phenomena and human behaviours 
 
 ### 6.4 Unique beneficiaries and admin5 calculations
 
-The gold standard for calculating unique beneficiaries is to use an intercluster, interagency beneficiary database. This is an inexpensive solution and all agencies will still be able to use their preferred software, only needing to ensure that certain common variables (ID number, name, surname, address, etc.) are in all databases. 
+The gold standard for calculating unique beneficiaries is to use an multisector, interagency beneficiary database. This is an inexpensive solution and all agencies will still be able to use their preferred software, only needing to ensure that certain common variables (ID number, name, surname, address, etc.) are in all databases. 
 
 However, given the political impracticality of such a solution (though it remains very feasible technically), the easier solution is to calculate beneficiaries by selecting the highest number reached by any activity at site level. 
 
@@ -1735,7 +1736,7 @@ There is no codebook or beneficiary calculation guide for the different cluster 
 
 As such, the code below documents what has been shared orally with OCHA. Each cluster/working group (the CWG included) is advised to develop their own guidebooks. Whilst this may not ensure that beneficiary calculations between clusters are comparable, it will at least ensure that they are replicable. 
 
-For reference, a [PDF](https://github.com/northwest-syria-cash-working-group/intercluster_4Ws_review/raw/main/cluster_calculations.pdf){target="_blank"} documenting the various cluster calculations behind their cumulative beneficiaries reached can be found at the link. 
+For reference, a [PDF](https://github.com/northwest-syria-cash-working-group/multisector_4Ws_review/raw/main/cluster_calculations.pdf){target="_blank"} documenting the various cluster calculations behind their cumulative beneficiaries reached can be found at the link. 
 
 Typically, a codebook would include these calculations in addition to an explanation of each column in their 4Ws templates. 
 
