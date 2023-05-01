@@ -1,5 +1,5 @@
 ---
-title: "DRAFT Intercluster coverage and gaps review"
+title: "Intercluster coverage and gaps review"
 author: "Based on Northwest Syria 4Ws data"
 date:  "`r format(Sys.time(), '%d %B, %Y')`"
 output:
@@ -222,10 +222,13 @@ tribble(
   "CWG", "Cash Working Group",
   "ERL", "Early Recovery and Livelihoods", 
   "FSL", "Food Security and Livelihoods",
+  "HNAP", "Humanitarian Needs Assessment Programme", 
   "HNO", "Humanitarian Needs Overview",
   "HRP", "Humanitarian Response Plan",
   "IDP", "Internally Displaced Person", 
+  "ISIMM", "IDP Sites Integrated Monitoring Matrix",
   "MPC", "Multipurpose Cash",
+  "MSNA", "Multisector Needs Assessment", 
   "NWS", "Northwest Syria", 
   "OCHA", "UN Office for the Coordination of Humanitarian Affairs",
   "SNFI", "Shelter and Non-Food Items", 
@@ -239,13 +242,13 @@ tribble(
   set_table_properties(layout = "autofit") %>%
   fontsize(j = 1:2, size = 10) %>% 
   fontsize(j = 1:2, size = 10, part = "header") %>% 
-  line_spacing(part = "all", space = .2) 
+  line_spacing(part = "all", space = .25) 
 ```
 
 
 # 1. Introduction
 
-In order to report on all cash- and voucher-based activities, not just Multipurpose Cash, the Cash Working Group (CWG) has undertaken a review of all extant 4Ws to understand their interoperability, review multisector programming and extract basic information such as: 
+In order to report on all cash- and voucher-based activities, not just Multipurpose Cash, the Cash Working Group has undertaken a review of all extant 4Ws to understand their interoperability, review multisector programming and extract basic information such as: 
 
 * The percentage of individuals who have received cash assistance of any kind
 * The percentage of individuals who have received multi-purpose cash assistance 
@@ -571,7 +574,7 @@ To reiterate, for market-based interventions, widespread change is much more pre
 
 Perhaps there might operational considerations or donor priorities that might explain some of this skew. But ultimately, at this time, the CWG is unable to provide any programmatic justification for the current allocation of beneficiary frequencies in NW Syria. 
 
-A more multisectoral perspective is offered in the section [Multisector programming](https://northwest-syria-cash-working-group.github.io/intercluster_4Ws_review/#multisector-programming){target="_blank"}. 
+A more multisectoral perspective is offered in the section [Multisector programming](https://northwest-syria-cash-working-group.github.io/intercluster_4Ws_review/#multisector-programming). 
 
 
 ### 2.4 Coverage 
@@ -926,7 +929,7 @@ Partners are advised to pay attention to both magnitude and intensity in their b
 
 Further research is also needed to compare allocations to pre-existing vulnerability so that all three fundamental elements of a severity measure (intensity, magnitude and pre-existing vulnerability) may be considered. 
 
-An earthquake score was calculated, taking into account both intensity and magnitude. Below, it is plotted against each communities' share of the total beneficiary allocations to-date. 
+An earthquake score was calculated, taking into account both intensity and magnitude. Below, it is plotted against each communities' share of the total beneficiary allocations to-date. For more detail on the earthquake score, please refer to the annexes. 
 
 Going forward, partners should prioritise communities in the upper-left quadrant (above-average earthquake score, below-average beneficiary allocations), followed by those in the lower-left quadrant (below-average earthquake score, below-average beneficiary allocations); particular attention should be paid to the communities flush against the y-axis --- these have no beneficiary allocations at all. 
 
@@ -1366,7 +1369,7 @@ com %>%
 
 <br>
 
-Though how much these co-occurences was planned for cannot be determined --- it is not possible to deduce intentionality from 4Ws (that's something that I would point an evaluator towards), and Nutrition and WASH do have quite large [footprints](https://northwest-syria-cash-working-group.github.io/intercluster_4Ws_review/#consolidation){target="_blank"}. For one, the coincidence between Cash and WASH is not intentional --- this is not something we have ever considered. 
+Though how much these co-occurences was planned for cannot be determined --- it is not possible to deduce intentionality from 4Ws (that's something that I would point an evaluator towards), and Nutrition and WASH do have quite large [footprints](https://northwest-syria-cash-working-group.github.io/intercluster_4Ws_review/#consolidation). For one, the coincidence between Cash and WASH is not intentional --- this is not something we have ever considered. 
 
 Clicking through to the end of the results, it is observed that the presence of ERL activities is lowly-correlated with a wide range of clusters, including those to which it has quite natural programmatic ties --- there are any number of reasons for this. 
 
@@ -1512,7 +1515,7 @@ com %>%
 * Encourage management and coordination actors to consider slightly more complex metrics and to take a more evidence-driven view towards programme management. It is acknowledged that the information is slightly more complex than what would normally be presented; however, it is still a simplification of the reality in the field --- note that PDM data and AAP feedback will also need to be synthesised by management into actionable decisions. Processing complex data to arrive at considered programmatic and operational decisions is the bare-minimum qualification for response management. The Cash Working Group is, of course, willing to provide more detail and clarification on any of the points in this report. 
 
 
-* Use the reference dataset provided [here](https://raw.githubusercontent.com/northwest-syria-cash-working-group/intercluster_4Ws_review/main/data/benficiaries_by_communities.csv){target="_blank"} to be more considered in your programming. Intentionally seek areas that are underallocated. When using the link, *Ctrl + A* and *Crtl + C* and *Ctrl + V* into the spreadsheet. 
+* Use the reference dataset provided [here](https://raw.githubusercontent.com/northwest-syria-cash-working-group/intercluster_4Ws_review/main/data/benficiaries_by_communities.csv){target="_blank"} to be more considered in your programming. Intentionally seek areas that are under-allocated. When using the link, *Ctrl + A* and *Crtl + C* and *Ctrl + V* into the spreadsheet. 
 
 <br><br><br> 
 
@@ -1648,7 +1651,7 @@ eq_score <- eq %>%
 
 <br>
 
-As a note on severity rankings or ratings, it is highly undesirable to use simplified 1-5 or 1-10 (ordinal scale) scores to allocate resources. Their construction actually involves the loss of much detail and invalidates the collection of detailed data i.e. why should the actual case fatality rate matter if we just reduce to a score between 1 to 5? Not to mention the questionable validity of all-purpose ranking tables. 
+As a note on severity rankings or ratings, it is highly undesirable to use simplified 1-5 or 1-10 (ordinal scale) scores to allocate resources. Their construction actually involves the loss of much detail and invalidates the collection of detailed data i.e. why should the exact case fatality rate matter if we just reduce to a score between 1 to 5? Not to mention the questionable validity of all-purpose ranking tables. 
 
 Additionally, the development of a singular earthquake score is already an oversimplication: it would be far better to have a score for magnitude, a score for severity and a score for pre-existing vulnerability. For more information on severity models, please refer to this [ACAPS technical note](https://www.acaps.org/sites/acaps/files/resources/files/acaps_technical_note_severity_measures_aug_2016_0.pdf){target="_blank"}, which incidentally provides a very clear review of the severity rankings constructed for Syria. 
 
@@ -1659,11 +1662,11 @@ Finally, it must also be noted that most natural phenomena and human behaviours 
 
 ### 6.4 Unique beneficiaries and admin5 calculations
 
-The gold standard for calculating unique beneficiaries is to use an intercluster, interagency beneficiary database. This is not an expensive solution and all agencies will still be able to use their preferred software, only needing to ensure that certain common variables (ID number, name, surname, address, etc.) are in all databases. 
+The gold standard for calculating unique beneficiaries is to use an intercluster, interagency beneficiary database. This is an inexpensive solution and all agencies will still be able to use their preferred software, only needing to ensure that certain common variables (ID number, name, surname, address, etc.) are in all databases. 
 
-However, given the political impracticality of such a solution, much less the potential attention it might attract from unsavoury actors, the easier solution is to calculate beneficiaries by selecting the highest number reached by any activity at site level. 
+However, given the political impracticality of such a solution (though it remains very feasible technically), the easier solution is to calculate beneficiaries by selecting the highest number reached by any activity at site level. 
 
-However, site-level (camp, facility, school, etc.) analysis is impossible at this moment and consequently, the calculation of unique beneficiaries at admin5. In this document, beneficiaries have been calculated at admin4, which resolves the issue of double counting, but also introduces the issue of possible undercounting when compared to a figure generated by site-level (admin5) calculations. 
+However, site-level (camp, facility, school, etc.) analysis is also impossible at this moment and consequently, so is the calculation of unique beneficiaries at admin5. In this document, beneficiaries have been calculated at admin4, which resolves the issue of double counting, but also introduces the issue of possible undercounting when compared to a figure generated by site-level (admin5) calculations. 
 
 <br>
 
@@ -1688,13 +1691,13 @@ com %>%
 
 <br>
 
-A precursor to admin5 calculations would be the development of a master location list, not just of camps (meaning all camps, not just ones recognised by HNAP), but schools, health facilities, WASH facilities and so on. 
+A precursor to admin5 calculations would be the development of a master location list, not just of camps (meaning all camps, not just ones recognised by HNAP), but of schools, health facilities, WASH facilities and so on. 
 
-There is currently no owner for this intercluster process. And this is very far outside of the purview of the CWG, though it does severely affect reporting quality. 
+There is currently no owner for this intercluster process. And this is very far outside of the purview of the CWG, though it does severely affect our reporting quality. 
 
-It is further recommended that either entirely Arabic or entirely romanised names be used --- many clusters combine both, making reading and matching relatively impossible in digital formats (largely due to conflicts in how spelling, but also how left-to-right and right-to-left text is processed by computers). 
+It is further recommended that either entirely Arabic or entirely romanised names be used --- many clusters combine both, making reading and matching relatively impossible in digital formats (largely due to conflicts in spelling, but also how left-to-right and right-to-left text are processed by computers). 
 
-As long as the admin5 locations are not cleaned up, it makes no sense for us to ask clusters like SNFI or ERL to report at admin5 because we don't get any value from it. 
+As long as the admin5 locations are not cleaned up, it makes no sense for us to ask clusters like SNFI or ERL to report at admin5 because we wouldn't get any additional value from it. 
 
 As a thought exercise, a Frankenstein calculation of unique beneficiaries has been developed: 
 
@@ -1736,7 +1739,7 @@ For reference, a [PDF](https://github.com/northwest-syria-cash-working-group/int
 
 Typically, a codebook would include these calculations in addition to an explanation of each column in their 4Ws templates. 
 
-However, as mentioned these calculations are not comparable --- some require admin5 data to work, whilst others make use of `unique_beneficiary` or `previously_assisted` columns not present in other templates. These cluster calculations have been recorded as a reference and have not been factored into this document as they cannot be reconciled with each other. 
+However, as mentioned these calculations are not comparable --- some require admin5 data to work, whilst others make use of `unique_beneficiary` or `previously_assisted` columns not present in other templates. These cluster calculations have been recorded as a reference and have not been factored into this document as they cannot be reconciled with each other, nor, we note, were they ever intended to be. 
 
 
 
