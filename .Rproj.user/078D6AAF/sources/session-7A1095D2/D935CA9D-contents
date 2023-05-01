@@ -277,13 +277,14 @@ Please use the table on contents on the right to navigate through this document.
 
 * **54%** of beneficiary frequencies are from just **20** communities. Humanitarian partners are operating in **750** communities. 
 
-* There are **246** communities where the number of beneficiary frequency exceeds **95%** of the population. 
+* There are **246** communities where the number of beneficiary frequencies exceeds **95%** of the population. 
 
 * Only the magnitude of earthquake damage has had any effect on post-January beneficiary allocations. There is **no relationship between the intensity of earthquake damage and beneficiary allocations**. The greatest predictor of beneficiary allocations is population size, which would only make sense if earthquake damage and pre-existing needs were uniform. 
 
 * The total amount of cash assistance disbursed is **USD 28.8 million**.
 
-* **8.16%** of all beneficiary frequencies have received cash assistance; **16.14%** of individuals reached have received CVA of any kind. However, **57.37%** of households preferred receiving assistance only through cash, according to the MSNA (once those with no preference were filtered out). 
+* **8.16%** of all beneficiary frequencies have received cash assistance; **16.14%** of individuals reached have received CVA of any kind. However, **60%** of households preferred receiving assistance only through cash, according to the MSNA (once those with no preference were filtered out). 
+
 * **63.1%** of beneficiary frequencies were reported with a delivery modality specified. 
 
 * Outside of the CWG, the **SNFI** Cluster had the highest proportion of beneficiaries provided with CVA. 
@@ -497,7 +498,7 @@ In only one of these communities is the percentage of the population reached eve
 
 However, from a cash programming standpoint, whilst city centres are important to commerce, typically market-based interventions seek widespread change over a large area, as opposed to having activities concentrated in certain areas. This is because there is usually an upper limit for consumption (though one may argue that almost none of our beneficiaries are close to this upper limit), but it is still important that cash circulates throughout all affected areas, not just in the urban core or specific areas that agencies have expressed their interest in. 
 
-It is imperative to expand coverage outside of these overallocated communities. The full list of communities by the beneficiary frequencies may be downloaded [here](https://raw.githubusercontent.com/northwest-syria-cash-working-group/multisector_4Ws_review/main/data/benficiaries_by_communities.csv){target="_blank"}. This is link to a CSV, if using Excel, *Ctrl + A* and *Crtl + C* and *Ctrl + V* into the spreadsheet. 
+It is imperative to expand coverage outside of these overallocated communities. The full list of communities by the beneficiary frequencies may be downloaded [here](https://raw.githubusercontent.com/northwest-syria-cash-working-group/multisector_4Ws_review/main/data/benficiaries_by_communities.csv){target="_blank"}. This is link to a CSV, if using Excel, *Ctrl + A*, then *Ctrl + C* and *Ctrl + V* into the spreadsheet. 
 
 ```{r eval=FALSE}
 com %>% 
@@ -956,7 +957,7 @@ An earthquake score was calculated, taking into account both intensity and magni
 
 Going forward, partners should prioritise communities in the upper-left quadrant (above-average earthquake score, below-average beneficiary allocations), followed by those in the lower-left quadrant (below-average earthquake score, below-average beneficiary allocations); particular attention should be paid to the communities flush against the y-axis --- these have no beneficiary allocations at all. 
 
-Download the full dataset [here](https://raw.githubusercontent.com/northwest-syria-cash-working-group/multisector_4Ws_review/main/data/benficiaries_by_communities.csv){target="_blank"}. This is link to a CSV, if using Excel, *Ctrl + A* and *Crtl + C* and *Ctrl + V* into the spreadsheet. 
+Download the full dataset [here](https://raw.githubusercontent.com/northwest-syria-cash-working-group/multisector_4Ws_review/main/data/benficiaries_by_communities.csv){target="_blank"}. This is link to a CSV, if using Excel, *Ctrl + A*, then *Ctrl + C* and *Ctrl + V* into the spreadsheet. 
 
 <br>
 
@@ -1132,7 +1133,7 @@ To set a target, communities have made their preferences very clear:
 
 <br>
 
-![](./img/modality_preferences.png)
+![](https://github.com/northwest-syria-cash-working-group/multisector_4Ws_review/raw/main/img/modality_preferences.png)
 
 ```{r}
 has_delivery_modality <- com %>% 
@@ -1566,7 +1567,7 @@ com %>%
 * Encourage management and coordination actors to consider slightly more complex metrics and to take a more evidence-driven view towards programme management. It is acknowledged that the information is slightly more complex than what would normally be presented; however, it is still a simplification of the reality in the field --- note that PDM data and AAP feedback will also need to be synthesised by management into actionable decisions. Processing complex data to arrive at considered programmatic and operational decisions is the bare-minimum qualification for response management. The Cash Working Group is, of course, willing to provide more detail and clarification on any of the points in this report. 
 
 
-* Use the reference dataset provided [here](https://raw.githubusercontent.com/northwest-syria-cash-working-group/multisector_4Ws_review/main/data/benficiaries_by_communities.csv){target="_blank"} to be more considered in your programming. Intentionally seek areas that are under-allocated. When using the link, *Ctrl + A* and *Crtl + C* and *Ctrl + V* into the spreadsheet. 
+* Use the reference dataset provided [here](https://raw.githubusercontent.com/northwest-syria-cash-working-group/multisector_4Ws_review/main/data/benficiaries_by_communities.csv){target="_blank"} to be more considered in your programming. Intentionally seek areas that are under-allocated. When using the link, *Ctrl + A*, then *Ctrl + C* and *Ctrl + V* into the spreadsheet. 
 
 <br><br><br> 
 
@@ -1574,7 +1575,7 @@ com %>%
 
 ### 6.1 Community level reference table 
 
-Download the full dataset [here](https://raw.githubusercontent.com/northwest-syria-cash-working-group/multisector_4Ws_review/main/data/benficiaries_by_communities.csv). This is link to a CSV, if using Excel, *Ctrl + A* and *Crtl + C* and *Ctrl + V* into the spreadsheet. 
+Download the full dataset [here](https://raw.githubusercontent.com/northwest-syria-cash-working-group/multisector_4Ws_review/main/data/benficiaries_by_communities.csv). This is link to a CSV, if using Excel, *Ctrl + A*, then *Ctrl + C* and *Ctrl + V* into the spreadsheet. 
 
 <br>
 
@@ -1617,7 +1618,7 @@ reference_table %>%
 
 ### 6.2 Community-level cluster beneficiary frequencies
 
-Here is another table showing beneficiary frequencies by Cluster, at community level. This dataset may be downloaded [here](https://raw.githubusercontent.com/northwest-syria-cash-working-group/multisector_4Ws_review/main/data/admin4_cluster_beneficiary_frequencies.csv). As with other links, if using Excel, *Ctrl + A* and *Crtl + C* and *Ctrl + V* into the spreadsheet.
+Here is another table showing beneficiary frequencies by Cluster, at community level. This dataset may be downloaded [here](https://raw.githubusercontent.com/northwest-syria-cash-working-group/multisector_4Ws_review/main/data/admin4_cluster_beneficiary_frequencies.csv). As with other links, if using Excel, *Ctrl + A*, then *Ctrl + C* and *Ctrl + V* into the spreadsheet.
 
 <br>
 
