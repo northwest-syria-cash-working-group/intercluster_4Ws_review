@@ -1,0 +1,11 @@
+"0","fsl_tracker <- read_csv(""./data/fsl_tracker.csv"")
+"
+"2","[1mRows: [22m[34m3044[39m [1mColumns: [22m[34m33[39m"
+"2","[36m--[39m [1mColumn specification[22m [36m-------------------------------------------------------------------------[39m
+[1mDelimiter:[22m "",""
+[31mchr[39m  (23): hub, response_type, donor, project_status, implementing_partner, activity, regular...
+[32mdbl[39m   (8): frequency, quantity, families, beneficiaries, longitude_x, latitude_y, transfer_va...
+[34mdttm[39m  (2): report_date, distribution_date"
+"2","
+[36mi[39m Use `spec()` to retrieve the full column specification for this data.
+[36mi[39m Specify the column types or set `show_col_types = FALSE` to quiet this message."

@@ -90,39 +90,17 @@ pop <- read_excel("./data/Population_Data_May_2022_final_01122022_with_SADD.xlsx
          total_pop = final_est_of_total_pop_may_2022, 
          avg_family_size = family_avg_size_total_pop)
 
-names_eq <- c(
-  "date",
-  "governorate",
-  "district",
-  "sub_district",
-  "community",
-  "admin4",
-  "casualties",
-  "injuries",
-  "completely_destroyed_houses",
-  "damaged_unihabitable_houses",
-  "temporary_accommodation_centres",
-  "idps_in_all_centres",
-  "schools_as_accomodation_centres",
-  "idps_in_schools",
-  "tents_needed",
-  "blankets_mattresses_needed",
-  "temporary_accommodation_centres_available", 
-  "accessible_civil_defense",
-  "latrines_available",
-  "meals_needed_per_day",
-  "need_blood_donations",
-  "health_services_available",
-  "necessary_medical_equipment",
-  "rubble_volunteers",
-  "telecoms_available",
-  "electricity_available", 
-  "heating_fuel_needed"
-)
+consolidation_cols <- function(tbl) {
+  
+  tbl %>% 
+    select(admin1pcode, admin2pcode, admin3pcode, admin4pcode, 
+           admin5pcode, camp_name, 
+           activity, beneficiaries, 
+           month, project_status, cluster, 
+           delivery_modality, 
+           transfer_value, total_usd)
+}
 
-eq <- read_excel("./data/syria-earthquake-impact-20-march-2023.xlsx",
-                 sheet = "DATASET") %>% 
-  setNames(names_eq)
 ```
 
 
@@ -527,7 +505,7 @@ Shelter takes all beneficiaries of all activities, for the unique, use the new b
 ```{r eval=FALSE}
 # NFI reached 
 snfi %>%
-  filter(cluster == "nfi" & activity == "1.1.1.1: Provision of core NFIs" & 
+  filter(sub_cluster == "nfi" & activity == "1.1.1.1: Provision of core NFIs" & 
                   new_beneficiaries == "Yes") %>% 
   mutate(month = str_to_lower(str_sub(reporting_month, start = 1L, end = 3L))) %>% 
   group_by(month) %>% 
@@ -535,7 +513,7 @@ snfi %>%
   mutate(type = "nfi_monthly")
 
 snfi %>% 
-  filter(cluster == "shelter" & new_beneficiaries == "Yes") %>% 
+  filter(sub_cluster == "shelter" & new_beneficiaries == "Yes") %>% 
   mutate(month = str_to_lower(str_sub(reporting_month, start = 1L, end = 3L))) %>% 
   group_by(month) %>% 
   summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE)) %>% 
@@ -755,3 +733,190 @@ prot %>%
 Beneficiaries are the sum of beneficiaries in child protection, mine action, GBV and general protection. This cannot be calculated right now due to general protection not having provided how their beneficiaries are calculated. 
 
 -beneficiaries is the sum of beneficiaries in child protection, mine action, GBV and general protection 
+
+### Monthly reached 
+
+```{r}
+fsl_com <- rbind(fsl %>% 
+    mutate(month = str_to_lower(str_sub(reporting_month, start = 1L, end = 3L)), 
+           # Not sure if I should just make it all "Ongoing" instead
+           project_status = "Completed", 
+           cluster = "FSL") %>%
+      filter(reported_to_other_sector == "No") %>% 
+    consolidation_cols(), 
+  
+  fsl_tracker %>% 
+    mutate(month = month(distribution_date, label = TRUE), 
+           month = str_to_lower(month), 
+           cluster = "FSL", 
+           admin5pcode = NA_character_) %>% 
+    consolidation_cols())
+
+fsl_com %>% count(project_status)
+
+edu %>% count(status)
+
+nut %>% count(status)
+
+wash %>% count(project_status)
+
+prot %>% glimpse()
+
+snfi %>% glimpse()
+
+snfi %>% count(project_status)
+
+```
+
+
+
+```{r}
+
+admin4 <- rbind( 
+  wash %>%
+    mutate(month = str_to_lower(month)) %>% 
+    filter(project_status == "Completed") %>% 
+    group_by(month, 
+             health_facility_name, 
+             school_name, 
+             collective_shelter_name, 
+             admin5pcode, 
+             admin4pcode) %>%
+    slice(which.max(so2)) %>% 
+    group_by(admin4pcode, month) %>% 
+    summarise(beneficiaries = sum(so2, na.rm = TRUE)) %>% 
+    ungroup() %>% 
+    mutate(cluster = "WASH"),
+  
+  cash %>% 
+    group_by(month = month(distribution_date, label = TRUE)) %>% 
+    filter(!is.na(month)) %>% 
+    mutate(month = str_to_lower(month)) %>% 
+    filter(project_status == "Completed" & previously_assisted == "No") %>%
+    mutate(month = ifelse(month == "nov", "apr", month)) %>% 
+    group_by(admin4pcode, month) %>% 
+    summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE), 
+              .groups = "drop") %>% 
+    ungroup() %>% 
+    mutate(cluster = "Cash"),
+  
+  cccm %>% 
+    filter(activity == "CCCM") %>% 
+    pivot_longer(cols = (jan:dec), names_to = "month", values_to = "beneficiaries") %>% 
+    group_by(admin4pcode, month) %>%
+    slice(which.max(beneficiaries)) %>% 
+    ungroup() %>% 
+    select(admin4pcode, beneficiaries, month) %>% 
+    mutate(cluster = "CCCM"),
+  
+  erl %>%  
+    mutate(month = str_sub(implementing_month, start = 5L, end = 7L)) %>% 
+    filter(report_this_to_any_other_sector == "No" & previously_assisted == "No") %>% 
+    group_by(admin4pcode, month) %>% 
+    summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE), 
+              .groups = "drop") %>% 
+    ungroup() %>% 
+    mutate(cluster = "ERL"),
+  
+  fsl_com %>% 
+    filter(activity == "Food Baskets" & project_status != "Planned") %>% 
+    group_by(admin4pcode, month) %>% 
+    slice(which.max(beneficiaries)) %>% 
+    ungroup() %>% 
+    select(admin4pcode, beneficiaries, month) %>% 
+    mutate(cluster = "Food"),
+  
+  fsl_com %>% 
+    filter(activity %in% c("Agricultural inputs",
+                           "Animal treatment/vaccination",
+                           "Income-generating activities (IGAs)", 
+                           "Infrastructure rehabilitation",
+                           "Livestock asset restoration") &
+             project_status != "Planned") %>% 
+    group_by(admin4pcode, month) %>% 
+    slice(which.max(beneficiaries)) %>% 
+    ungroup() %>% 
+    select(admin4pcode, beneficiaries, month) %>% 
+    mutate(cluster = "Livelihoods"),
+  
+  nut %>% 
+    mutate(month = str_to_lower(str_sub(implementing_month, start = 1L, end = 3L))) %>% 
+    group_by(admin4pcode, month) %>% 
+    slice(which.max(beneficiaries)) %>% 
+    ungroup() %>% 
+    select(admin4pcode, beneficiaries, month) %>% 
+    mutate(cluster = "Nutrition"),
+  
+  edu %>% 
+    mutate(month = str_to_lower(str_sub(reporting_month, start = 4L, end = 6L))) %>% 
+    group_by(admin4pcode, month) %>% 
+    slice(which.max(beneficiaries)) %>% 
+    ungroup() %>% 
+    select(admin4pcode, beneficiaries, month) %>% 
+    mutate(cluster = "Education"),
+  
+  prot %>% 
+    mutate(month = str_to_lower(str_sub(month, start = 6L, end = 8L))) %>%
+    filter(ao_r == "Child Protection" & 
+             analysis_unit == "# people" & 
+             hrp_indicator %out% c("1.3.1", "None") & 
+             !is.na(hrp_indicator)) %>% 
+    group_by(admin4pcode, month) %>% 
+    summarise(beneficiaries = sum(total_reached, na.rm = TRUE), 
+              .groups = "drop") %>% 
+    mutate(cluster = "Child Protection"),
+  
+  prot %>% 
+    mutate(month = str_to_lower(str_sub(month, start = 6L, end = 8L))) %>%
+    filter(code_activity == "GBV100" & 
+             !is.na(hrp_indicator) & 
+             hrp_indicator %out% c("None") & 
+             analysis_unit == "# people") %>%
+    group_by(admin4pcode, month) %>% 
+    summarise(beneficiaries = sum(total_reached, na.rm = TRUE), 
+              .groups = "drop") %>%
+    mutate(cluster = "GBV"),
+  
+  prot %>% 
+    mutate(month = str_to_lower(str_sub(month, start = 6L, end = 8L))) %>% 
+    filter(ao_r == "Humanitarian Mine Action" &
+             analysis_unit == "# people") %>% 
+    group_by(admin4pcode, month) %>% 
+    summarise(beneficiaries = sum(total_reached, na.rm = TRUE), 
+              .groups = "drop") %>% 
+    mutate(cluster = "Mine Action"),
+  
+  prot %>% 
+    mutate(month = str_to_lower(str_sub(month, start = 6L, end = 8L))) %>%
+    filter(ao_r == "Protection" &
+             analysis_unit == "# people") %>% 
+    group_by(admin4pcode, month) %>% 
+    summarise(beneficiaries = sum(total_reached, na.rm = TRUE), 
+              .groups = "drop") %>% 
+    mutate(cluster = "General Protection"),
+  
+  snfi %>% 
+    filter(sub_cluster == "nfi" & activity == "1.1.1.1: Provision of core NFIs" & 
+                    new_beneficiaries == "Yes") %>%  
+    mutate(month = str_to_lower(str_sub(reporting_month, start = 1L, end = 3L))) %>% 
+    group_by(admin4pcode, month) %>% 
+    summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE), 
+              .groups = "drop") %>% 
+    mutate(cluster = "NFI"),
+  
+  snfi %>% 
+    filter(sub_cluster == "shelter" & new_beneficiaries == "Yes") %>%  
+    mutate(month = str_to_lower(str_sub(reporting_month, start = 1L, end = 3L))) %>% 
+    group_by(admin4pcode, month) %>% 
+    summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE), 
+              .groups = "drop") %>% 
+    mutate(cluster = "Shelter")
+  
+)
+
+admin4 %>% 
+  write_csv("./data/admin4_cluster_months_beneficiaries.csv")
+  
+```
+
+

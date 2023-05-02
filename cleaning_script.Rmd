@@ -1507,6 +1507,14 @@ rbind(
 ```
 
 
+
+```{r}
+glimpse(edu)
+```
+
+
+
+
 # 3. Annexes -- 4W templates 
 
 ### Cash 
@@ -1519,6 +1527,9 @@ cash %>%
   mutate(month = str_to_lower(month)) %>% 
   summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE)) %>% 
   mutate(type = "cash_monthly")
+
+
+  
 ```
 
 
