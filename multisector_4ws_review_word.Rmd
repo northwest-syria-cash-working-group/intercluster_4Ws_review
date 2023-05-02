@@ -3,38 +3,10 @@ title: "Multisector coverage and gaps review"
 author: "Based on Northwest Syria 4Ws data"
 date:  "`r format(Sys.time(), '%d %B, %Y')`"
 output:
-  html_document:
-    code_download: yes
-    theme: readable
+  word_document:
     toc: yes
-    toc_depth: 4
-    toc_float: yes
-    number_sections: no
-    collapsed: no
 always_allow_html: yes
 ---
-
-```{css, echo=FALSE}
-
-#TOC::before {
-  content: "";
-  display: block;
-  height: 70px;
-  margin: 2em 20px 40px 20px;
-  background-image: url("https://github.com/northwest-syria-cash-working-group/multisector_4Ws_review/raw/main/NWS-CWG%20logo.PNG");
-  background-size: contain;
-  background-position: center center;
-  background-repeat: no-repeat;
-}
-```
-
-```{=html}
-<style>
-    body .main-container {
-        max-width: 1280px;
-    }
-</style>
-```
 
 
 ```{r setup, include=FALSE}
@@ -1579,7 +1551,7 @@ Download the full dataset [here](https://raw.githubusercontent.com/northwest-syr
 
 <br>
 
-```{r}
+```{r eval=FALSE}
 
 reference_table %>% 
   left_join(pop %>% 
@@ -1622,7 +1594,7 @@ Here is another table showing beneficiary frequencies by Cluster, at community l
 
 <br>
 
-```{r}
+```{r eval=FALSE}
 com %>% 
   filter(project_status %in% c("Completed", "Ongoing") & 
            activity %out% c("ISIMM")) %>% 
@@ -1794,13 +1766,3 @@ Typically, a codebook would include these calculations in addition to an explana
 However, as mentioned these calculations are not comparable --- some require admin5 data to work, whilst others make use of `unique_beneficiary` or `previously_assisted` columns not present in other templates. These cluster calculations have been recorded as a reference and have not been factored into this document as they cannot be reconciled with each other, nor, we note, were they ever intended to be. 
 
 Beneficiary disaggregations have also not been considered in this review --- it was decided it would be too much work for comparatively little gain, given that the majority of clusters and partners are simply using census or MSNA percentages to backfill their demographic data. 
-
-
-
-
-
-
-
-
-
-
