@@ -1,0 +1,28 @@
+"0","com %>% glimpse()
+"
+"1","Rows: 45,387"
+"1",""
+"1","
+"
+"1","Columns: 15"
+"1",""
+"1","
+"
+"1","$ admin1pcode       [3m[38;5;246m<chr>[39m[23m ""SY07"", ""SY07"", ""SY02"", ""SY07"", ""SY07"", ""SY07"", ""SY07"", ""SY07"", ""SY07"", ""SY07"", ""~
+$ admin2pcode       [3m[38;5;246m<chr>[39m[23m ""SY0703"", ""SY0703"", ""SY0200"", ""SY0700"", ""SY0703"", ""SY0703"", ""SY0704"", ""SY0704"", ""~
+$ admin3pcode       [3m[38;5;246m<chr>[39m[23m ""SY070301"", ""SY070301"", ""SY020004"", ""SY070005"", ""SY070301"", ""SY070301"", ""SY070401~
+$ admin4pcode       [3m[38;5;246m<chr>[39m[23m ""C4130"", ""C4130"", ""C6766"", ""C3949"", ""C4131"", ""C4124"", ""C4231"", ""C4231"", ""C4231"", ~
+$ admin5pcode       [3m[38;5;246m<chr>[39m[23m ""CP000829"", ""CP000800"", NA, NA, NA, NA, ""CP000113"", ""CP000113"", ""CP000113"", ""CP00~
+$ camp_name         [3m[38;5;246m<chr>[39m[23m ""Ataa(Atmeh) 2 / عطاء2(أطمة)"", ""Al Reeh Al Mursalah / الريح المرسلة"", NA, NA, NA,~
+$ activity          [3m[38;5;246m<chr>[39m[23m ""New people reached with GBV services  - GBV100"", ""New people reached with GBV se~
+$ beneficiaries     [3m[38;5;246m<dbl>[39m[23m 4, 14, 14, 16, 20, 10, 333, 14, 3, 4, 3, 348, 9, 2, 282, 28, 132, 8, 25, 11, 9, 1~
+$ month             [3m[38;5;246m<chr>[39m[23m ""jan"", ""jan"", ""jan"", ""jan"", ""jan"", ""jan"", ""jan"", ""jan"", ""jan"", ""jan"", ""jan"", ""jan~
+$ project_status    [3m[38;5;246m<chr>[39m[23m ""Completed"", ""Completed"", ""Completed"", ""Completed"", ""Completed"", ""Completed"", ""Co~
+$ cluster           [3m[38;5;246m<chr>[39m[23m ""Protection"", ""Protection"", ""Protection"", ""Protection"", ""Protection"", ""Protection~
+$ delivery_modality [3m[38;5;246m<chr>[39m[23m ""Service delivery/support"", ""Service delivery/support"", ""Service delivery/support~
+$ transfer_value    [3m[38;5;246m<dbl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N~
+$ total_usd         [3m[38;5;246m<dbl>[39m[23m NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N~
+$ site              [3m[38;5;246m<chr>[39m[23m ""CP000829"", ""CP000800"", ""C6766"", ""C3949"", ""C4131"", ""C4124"", ""CP000113"", ""CP000113~"
+"1",""
+"1","
+"
