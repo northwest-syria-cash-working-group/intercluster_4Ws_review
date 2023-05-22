@@ -123,5 +123,101 @@ reference_table %>%
   write_csv("./data/admin4_reference.csv")
 
 
+### Activity pairs -- most correlated
+
+
+com %>%
+  filter(activity != "ISIMM") %>% 
+  filter(!is.na(admin4pcode) & !is.na(activity)) %>% 
+  pairwise_count(activity, admin4pcode, sort = TRUE, upper = FALSE) %>% 
+  left_join(com %>%
+              filter(activity != "ISIMM") %>%
+              filter(!is.na(admin4pcode) & !is.na(activity)) %>%
+              pairwise_cor(activity, admin4pcode, sort = TRUE, upper = FALSE), 
+            by = c("item1", "item2")) %>% 
+  left_join(com %>%
+              distinct(cluster1 = cluster, activity),
+            by = c("item1" = "activity")) %>% 
+  left_join(com %>% 
+              distinct(cluster2 = cluster, activity),
+            by = c("item2" = "activity")) %>% 
+  filter(cluster1 != cluster2) %>% 
+  rename(activity1 = item1, 
+         activity2 = item2) %>% 
+  mutate_at(vars(activity1, activity2), ~ str_sub(., start = 0L, end = 60L)) %>% 
+  mutate(correlation = round(correlation, digits = 3)) %>% 
+  select(activity1, activity2, corr = correlation, `com.` = n, cluster1, cluster2) %>% 
+  arrange(desc(corr)) %>% 
+  filter(`com.` > 20)  %>% 
+  # head(10) %>% 
+  flextable() %>% 
+  theme_zebra() %>% 
+  set_caption("Most correlated activity pairs") %>% 
+  set_table_properties(layout = "autofit", width = .99) %>% 
+  fontsize(size = 9, j = 1:2)
+
+  
+### Activity pairs -- most common
+  
+
+com %>%
+  filter(activity != "ISIMM") %>% 
+  filter(!is.na(admin4pcode) & !is.na(activity)) %>% 
+  pairwise_count(activity, admin4pcode, sort = TRUE, upper = FALSE) %>% 
+  left_join(com %>%
+              filter(activity != "ISIMM") %>%
+              filter(!is.na(admin4pcode) & !is.na(activity)) %>%
+              pairwise_cor(activity, admin4pcode, sort = TRUE, upper = FALSE), 
+            by = c("item1", "item2")) %>% 
+  left_join(com %>%
+              distinct(cluster1 = cluster, activity),
+            by = c("item1" = "activity")) %>% 
+  left_join(com %>% 
+              distinct(cluster2 = cluster, activity),
+            by = c("item2" = "activity")) %>% 
+  filter(cluster1 != cluster2) %>% 
+  rename(activity1 = item1, 
+         activity2 = item2) %>% 
+  mutate_at(vars(activity1, activity2), ~ str_sub(., start = 0L, end = 60L)) %>% 
+  mutate(correlation = round(correlation, digits = 3)) %>% 
+  select(activity1, activity2, corr = correlation, `com.` = n, cluster1, cluster2) %>% 
+  arrange(desc(`com.`)) %>% 
+  filter(`com.` > 20)  %>% 
+  head(10) %>% 
+  flextable() %>% 
+  theme_zebra() %>% 
+  set_caption("Most common activity pairs") %>% 
+  set_table_properties(layout = "autofit", width = .99)
+
+
+  
+  ### Cluster pairs
+
+com %>% 
+  filter(activity != "ISIMM") %>% 
+  group_by(cluster, admin4pcode) %>% 
+  summarise(count = n()) %>% 
+  pairwise_cor(cluster, admin4pcode, value = count, 
+               method = c("spearman"), upper = FALSE) %>% 
+  arrange(desc(correlation)) %>% 
+  left_join(
+    com %>% 
+      filter(activity != "ISIMM") %>% 
+      pairwise_count(cluster, admin4pcode), 
+    by = c("item1", "item2")
+  ) %>% 
+  rename(cluster1 = item1, 
+         cluster2 = item2, 
+         communities = n) %>% 
+  mutate(correlation = round(correlation, digits = 3)) %>% 
+  # filter(cluster1 == "CWG" | cluster2 == "CWG") %>% 
+  head(10)
+flextable() %>% 
+  theme_zebra() %>% 
+  set_caption("Most correlated cluster pairs") %>% 
+  set_table_properties(layout = "autofit", width = .7)
+
+
+
 
 

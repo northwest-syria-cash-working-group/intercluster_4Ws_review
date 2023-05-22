@@ -1,8 +1,0 @@
-"0","com %>% 
-  filter(cluster == ""Cash"" & project_status == ""Completed"") %>% 
-  {sum(.$total_usd, na.rm = TRUE)}
-"
-"1","[1]"
-"1"," 16924731"
-"1","
-"

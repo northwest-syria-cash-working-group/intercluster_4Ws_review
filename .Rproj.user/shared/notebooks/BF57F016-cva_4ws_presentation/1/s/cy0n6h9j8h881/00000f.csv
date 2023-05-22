@@ -1,6 +1,0 @@
-"0","paste0(round((com %>% filter(project_status %in% c(""Completed"", ""Ongoing"") & activity != ""ISIMM"" & delivery_modality %in% c(""Cash"", ""Voucher"")) %>% {sum(.$total_usd, na.rm = TRUE)})  / 1000000, digits = 1), "" million"")
-"
-"1","[1]"
-"1"," ""54.4 million"""
-"1","
-"
