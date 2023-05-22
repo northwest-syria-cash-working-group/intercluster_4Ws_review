@@ -342,7 +342,8 @@ cash_pc <- com %>%
 
 ```
 
-**`r paste0(round(com %>% filter(project_status %in% c("Completed", "Ongoing") & activity != "ISIMM") %>% mutate(cva = ifelse(delivery_modality %in% c("Cash", "Voucher"), beneficiaries, 0)) %>%  {sum(.$cva, na.rm = TRUE)} / 1000000, digits = 2), " million")`** beneficiary frequencies reached by CVA. This is **`r cva_pc`%** of all beneficiary frequencies. 
+**`r paste0(round(com %>% filter(project_status %in% c("Completed", "Ongoing") & activity != "ISIMM") %>% mutate(cva = ifelse(delivery_modality %in% c("Cash", "Voucher"), beneficiaries, 0)) %>%  {sum(.$cva, na.rm = TRUE)} / 1000000, digits = 2), " million")`** beneficiary frequencies reached by CVA. 
+This is **`r cva_pc`%** of all beneficiary frequencies. 
 
 
 ```{r}
@@ -543,7 +544,7 @@ top_20 <- top_20_df %>%
 ```
 
 
-Allocation is decidedly skewed: the **top 20** communities have received **`r top_20 %>% pull(pc_ben)`%** of all beneficiary frequencies, whilst having **`r top_20 %>% pull(pc_pop)`%** of the total population. Humanitarian partners have completed activities or are implementing activities in **`r com %>% filter(project_status %in% c("Completed", "Ongoing") & activity %out% c("ISIMM")) %>% {n_distinct(.$admin4pcode)}`** communities. 
+Allocation is decidedly skewed: the **top 20** communities have received **`r top_20 %>% pull(pc_ben)`%** of all beneficiary frequencies, whilst having **`r top_20 %>% pull(pc_pop)`%** of the total population. Humanitarian partners have completed activities or are implementing activities in **`r com %>% filter(!is.na(admin4pcode) & activity != "ISIMM") %>% {n_distinct(.$admin4pcode)}`** communities. 
 
 *Beneficiary frequencies (which are the number of times an individual has received assistance, inclusive double counting) are a useful metric is useful for determining how the humanitarian community has allocated its resources.* 
 
@@ -1052,6 +1053,22 @@ com %>%
 
 ### Activity pairs -- most common
 
+```{r eval=FALSE}
+com %>% 
+  filter(activity %in% c("Food Baskets", "Multipurpose cash")) %>% 
+  group_by(admin4pcode) %>% 
+  summarise(food_basket = sum(beneficiaries[activity == "Food Baskets"], na.rm = TRUE), 
+            mpc = sum(beneficiaries[activity == "Multipurpose cash"], na.rm = TRUE)) %>%
+  left_join(pop %>% 
+              select(total_pop, admin4pcode), 
+            by = "admin4pcode") %>% 
+  mutate(both = ifelse(mpc > 0 & food_basket > 0, TRUE, FALSE), 
+         over = ifelse((mpc + food_basket) > total_pop, 
+                       TRUE, FALSE))  
+  
+```
+
+
 ```{r}
 com %>%
   filter(activity != "ISIMM") %>% 
@@ -1251,7 +1268,14 @@ com %>%
 
 ---
 
+<img src = "https://github.com/northwest-syria-cash-working-group/multisector_4Ws_review/blob/main/img/severity_standard.png?raw=true" width="100%" />
 
+
+---
+
+<img src = "https://github.com/northwest-syria-cash-working-group/multisector_4Ws_review/blob/main/img/severity_frequencies.png?raw=true" width="100%" />
+
+---
 
 class: center, middle, my-one-page-font
 
