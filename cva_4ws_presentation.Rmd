@@ -1,0 +1,1294 @@
+---
+title: "CVA Response in Northwest Syria"
+author: "Analysis from 4Ws data"
+date:  "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  xaringan::moon_reader:
+    css: "my-style.css"
+    seal: false
+    self_contained: true
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{css, echo=FALSE}
+<style type="text/css">
+.remark-slide-content {
+    font-size: 25px;
+    padding: 1em 4em 1em 4em;
+}
+
+.my-one-page-font {
+  font-size: 25px;
+}
+
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, fig.width=9, message = FALSE, warning=FALSE, fig.retina = 2)
+library(tidyverse)
+library(readxl)
+library(lubridate)
+library(stringi)
+library(pander)
+library(janitor)
+library(scales)
+library(magrittr)
+library(viridis)
+library(patchwork)
+library(DT)
+library(sf)
+library(plotly)
+library(flextable)
+library(ggrepel)
+library(magrittr)
+library(readxlsb)
+library(tidymodels)
+library(widyr)
+library(tidytext)
+library(treemapify)
+library(mdepriv)
+
+theme_set(theme_light())
+
+# disabling scientific notation
+options(scipen = 100)
+
+# Hopefully this allows the DT to show up
+options(htmltools.preserve.raw = FALSE)
+
+`%out%` <- Negate(`%in%`)
+
+# function for transposing df
+transpose_df <- function(df) {
+  t_df <- data.table::transpose(df)
+  colnames(t_df) <- rownames(df)
+  rownames(t_df) <- colnames(df)
+  t_df <- t_df %>%
+    tibble::rownames_to_column(.data = .) %>%
+    tibble::as_tibble(.)
+  return(t_df)
+}
+
+# scaling functions 
+range01 <- function(x){(x-min(x))/(max(x)-min(x))}
+range_wna <- function(x){(x-min(x, na.rm = TRUE))/(max(x, na.rm = TRUE)-min(x, na.rm = TRUE))}
+
+#mode function 
+mode <- function(x) {
+  ux <- unique(x)
+  ux[which.max(tabulate(match(x, ux)))]
+}
+
+```
+
+```{r data}
+pcode3_shape <- 
+  sf::st_read("./data/syr_admbnda_uncs_unocha_20201217/syr_admbnda_adm3_uncs_unocha_20201217.shp", 
+          quiet = TRUE)
+
+nw_pcode3 <- read_excel("./data/2023HNO_PiN_Severity_detailedAoI_FORSHARE 15032023.xlsx", skip = 1, 
+                  sheet = 1) %>%
+  clean_names() %>% 
+  filter(ao_c == "NW") %>% 
+  pull(admin3pcode)
+
+locations <- read_excel("./data/Locations.xlsx") %>% 
+  clean_names()
+
+pop <- read_excel("./data/Population_Data_May_2022_final_01122022_with_SADD.xlsx", 
+           sheet = 5, 
+           skip = 2) %>% 
+  clean_names() %>% 
+  select(admin0name_en:longitude_x, 
+         final_est_of_id_ps_may_2022:family_avg_size_total_pop) %>% 
+  rename(idps = final_est_of_id_ps_may_2022, 
+         total_pop = final_est_of_total_pop_may_2022, 
+         avg_family_size = family_avg_size_total_pop) %>% 
+  filter(admin3pcode %in% nw_pcode3)
+
+names_eq <- c(
+  "date",
+  "governorate",
+  "district",
+  "sub_district",
+  "community",
+  "admin4pcode",
+  "casualties",
+  "injuries",
+  "completely_destroyed_houses",
+  "damaged_unihabitable_houses",
+  "temporary_accommodation_centres",
+  "idps_in_all_centres",
+  "schools_as_accomodation_centres",
+  "idps_in_schools",
+  "tents_needed",
+  "blankets_mattresses_needed",
+  "temporary_accommodation_centres_available", 
+  "accessible_civil_defense",
+  "latrines_available",
+  "meals_needed_per_day",
+  "need_blood_donations",
+  "health_services_available",
+  "necessary_medical_equipment",
+  "rubble_volunteers",
+  "telecoms_available",
+  "electricity_available", 
+  "heating_fuel_needed"
+)
+
+eq <- read_excel("./data/syria-earthquake-impact-20-march-2023.xlsx",
+                 sheet = "DATASET") %>% 
+  setNames(names_eq) %>% 
+  left_join(pop %>% 
+              select(admin4pcode, total_pop), 
+            by = "admin4pcode") %>% 
+  mutate(wounded_dead = casualties + injuries,
+             damaged_houses = completely_destroyed_houses + damaged_unihabitable_houses) %>% 
+  mutate(wounded_dead_100k = wounded_dead / total_pop * 100000, 
+         damaged_houses_100k = damaged_houses / total_pop * 100000)
+
+com <- read_csv("./data/com20230522.csv") %>% 
+  filter(beneficiaries > 0)
+
+hno <- read_excel("./data/2023HNO_PiN_Severity_detailedAoI_FORSHARE 15032023.xlsx", 
+                  skip = 1, 
+                  sheet = 1) %>%
+  clean_names() %>% 
+  rename(severity = x2023_hno_inter_sector_severity) %>% 
+  left_join(read_excel("./data/2023HNO_PiN_Severity_detailedAoI_FORSHARE 15032023.xlsx", 
+                       skip = 1,
+                       sheet = "Sector dataset") %>%
+              clean_names() %>%
+              select(shelter_severity:wash_severity, admin3pcode), 
+            by = "admin3pcode")
+
+eq_score <- eq %>%
+  filter(!is.infinite(wounded_dead_100k) & !is.infinite(damaged_houses_100k)) %>% 
+  mutate_at(vars(wounded_dead, damaged_houses, 
+                 wounded_dead_100k, damaged_houses_100k), ~ range_wna(.)) %>% 
+  replace_na(list(wounded_dead_100k = 0, 
+                  damaged_houses_100k = 0, 
+                  wounded_dead = 0, 
+                  damaged_houses = 0)) %>%  
+  mdepriv(c("wounded_dead", "damaged_houses", 
+            "wounded_dead_100k", "damaged_houses_100k"), 
+          method = "bv", output = "all", 
+          score_i_heading = "eq_score")
+
+reference_table <- com %>% 
+  filter(project_status %in% c("Completed", "Ongoing") & 
+           activity %out% c("ISIMM")) %>% 
+  group_by(admin4pcode) %>% 
+  slice(which.max(beneficiaries)) %>% 
+  ungroup() %>% 
+  select(admin1pcode, admin2pcode, admin3pcode, admin4pcode, 
+         beneficiaries) %>% 
+  left_join(com %>%
+              filter(project_status %in% c("Completed", "Ongoing") &
+                       activity %out% c("ISIMM")) %>%
+              group_by(admin4pcode) %>% 
+              summarise(beneficiary_frequencies = sum(beneficiaries, na.rm = TRUE), 
+                        clusters = n_distinct(cluster, na.rm = TRUE)), 
+            by = "admin4pcode") %>% 
+  right_join(pop %>% select(total_pop, admin4pcode), 
+             by = "admin4pcode") %>% 
+  left_join(eq %>% 
+              select(wounded_dead, 
+                     wounded_dead_100k, 
+                     damaged_houses, 
+                     damaged_houses_100k, 
+                     admin4pcode), 
+            by = "admin4pcode") %>% 
+  left_join(eq_score$data %>% 
+              select(eq_score, admin4pcode), 
+            by = "admin4pcode")
+
+report_date <- "19 May 2023"
+
+```
+
+
+
+
+
+# CVA Response in Northwest Syria: Analysis from 4Ws data
+
+#### Data as of `r report_date`
+
+<br>
+
+<img src = "https://github.com/northwest-syria-cash-working-group/multisector_4Ws_review/raw/main/NWS-CWG%20logo.PNG"  width="80%"/>
+
+
+
+---
+
+class: center, middle
+
+### Introduction 
+
+This presentation summarises the results of a preliminary attempt to improve cash coordination, identify multi-sectoral gaps and develop analysis that would feed into multi-sectoral programming. 
+
+The primary means of doing this was the consolidation and review of all extant 4Ws. Numerous cash (and multi-sectoral) have been calculated as part of this review. 
+
+This document distinguishes between **beneficiaries** (unique individuals reached) and **beneficiary frequencies** (the total number of times an individual has received assistance, inclusive of double counting).
+
+
+---
+
+class: center, middle
+
+### Data included 
+
+```{r}
+com %>% 
+  filter(!is.na(month) & month %in% c("jan", "feb", "mar", "apr", "may")) %>% 
+  mutate(month = factor(month, 
+                        levels = c("jan", "feb", "mar", "apr", "may"))) %>% 
+  arrange(month) %>% 
+  group_by(cluster) %>%
+  distinct(cluster, month) %>% 
+  summarise(months_reported_2023 = paste(month, collapse = ", ")) %>% 
+  ungroup() %>% 
+  flextable() %>% 
+  theme_zebra() %>% 
+  set_caption(paste0("4Ws datasets provided to OCHA, ", report_date)) %>% 
+  set_table_properties(layout = "autofit", width = .5)
+```
+
+---
+
+
+
+class: center, middle
+
+### Cash disbursed
+
+
+**USD `r paste0(round((com %>% filter(project_status %in% c("Completed", "Ongoing") & activity != "ISIMM" & delivery_modality %in% c("Cash", "Voucher")) %>% {sum(.$total_usd, na.rm = TRUE)})  / 1000000, digits = 1), " million")`** has been disbursed so far, with the cluster-wise breakdown being: 
+
+<br>
+
+
+
+```{r}
+com %>%  
+  filter(project_status %in% c("Completed", "Ongoing") & activity != "ISIMM") %>% 
+  filter(delivery_modality %in% c("Cash", "Voucher")) %>% 
+  group_by(cluster) %>% 
+  summarise(total_usd = sum(total_usd, na.rm = TRUE), 
+            ben_frequencies = sum(beneficiaries, na.rm = TRUE)) %>% 
+  filter(total_usd > 0) %>% 
+  arrange(desc(total_usd)) %>% 
+  adorn_totals("row") %>% 
+  mutate(usd_per_person = round(total_usd / ben_frequencies, digits = 2)) %>% 
+  flextable() %>% 
+  theme_zebra() %>% 
+  set_caption("Total USD disbursed and beneficiary frequencies") %>% 
+  set_table_properties(layout = "autofit", width = .6)
+
+
+```
+
+
+---
+
+
+class: center, middle
+
+
+### Breakdown of CVA by cluster
+
+```{r}
+cva_pc <- com %>%  
+  filter(project_status %in% c("Completed", "Ongoing") & activity != "ISIMM") %>% 
+  replace_na(list(delivery_modality = "NA")) %>% 
+  mutate(cva = ifelse(delivery_modality %in% c("Cash", "Voucher"), 
+                      beneficiaries, 0)) %>% 
+  summarise(cva = sum(cva, na.rm = TRUE), 
+            ben_freq = sum(beneficiaries, na.rm = TRUE)) %>% 
+  mutate(pc = round(cva / ben_freq * 100, digits = 2)) %>% 
+  pull(pc)
+```
+
+```{r}
+
+cash_pc <- com %>% 
+  filter(!is.na(admin4pcode) & 
+           activity != "ISIMM" & 
+           project_status %in% c("Completed", "Ongoing")) %>%
+  # Maximum of beneficiaries of 
+  # any activity of any cluster, at admin4
+  group_by(admin4pcode) %>% 
+  slice(which.max(beneficiaries)) %>% 
+  ungroup() %>% 
+  left_join(
+    com %>% 
+      filter(project_status %in% c("Completed", "Ongoing") & activity != "ISIMM") %>% 
+      filter(delivery_modality %in% c("Cash", "Voucher") | cluster == "Cash") %>%
+      group_by(admin4pcode) %>% 
+      slice(which.max(beneficiaries)) %>%
+      ungroup() %>% 
+      select(cash_beneficiaries = beneficiaries, admin4pcode), 
+  by = "admin4pcode"
+  ) %>% 
+  summarise(cash_beneficiaries = sum(cash_beneficiaries, na.rm = TRUE), 
+            beneficiaries = sum(beneficiaries, na.rm = TRUE)) %>% 
+  mutate(cash_pc = round(cash_beneficiaries / beneficiaries * 100, digits = 2))
+
+```
+
+**`r paste0(round(com %>% filter(project_status %in% c("Completed", "Ongoing") & activity != "ISIMM") %>% mutate(cva = ifelse(delivery_modality %in% c("Cash", "Voucher"), beneficiaries, 0)) %>%  {sum(.$cva, na.rm = TRUE)} / 1000000, digits = 2), " million")`** beneficiary frequencies reached by CVA. This is **`r cva_pc`%** of all beneficiary frequencies. 
+
+
+```{r}
+com %>%  
+  filter(project_status %in% c("Completed", "Ongoing") & activity != "ISIMM") %>% 
+  replace_na(list(delivery_modality = "NA")) %>% 
+  mutate(cva = ifelse(delivery_modality %in% c("Cash", "Voucher"), 
+                      beneficiaries, 0)) %>% 
+  group_by(cluster) %>% 
+  summarise(cva_ben_frequencies = sum(cva, na.rm = TRUE), 
+            ben_frequencies = sum(beneficiaries, na.rm = TRUE)) %>% 
+  adorn_totals("row") %>% 
+  mutate(`%_of_cluster` = round(cva_ben_frequencies / ben_frequencies * 100, digits = 2)) %>% 
+  mutate(cluster = fct_reorder(cluster, -`%_of_cluster`), 
+         cluster = fct_relevel(cluster, "Total", after = Inf)) %>% 
+  arrange(cluster) %>% 
+  flextable() %>% 
+  theme_zebra() %>% 
+  set_caption("Breakdown of CVA by Cluster") %>% 
+  set_table_properties(layout = "autofit", width = .8) 
+
+```
+
+
+---
+
+
+class: center, middle
+
+### Breakdown of CVA by activity
+
+```{r}
+com %>%  
+  filter(project_status == "Completed" | project_status == "Ongoing") %>% 
+  filter(delivery_modality %in% c("Cash", "Voucher")) %>% 
+  group_by(activity, cluster) %>% 
+  summarise(beneficiary_freq = sum(beneficiaries, na.rm = TRUE), 
+            total_usd = sum(total_usd, na.rm = TRUE)) %>% 
+  ungroup() %>% 
+  mutate(activity = ifelse(activity == "Cash Response Low", 
+                           "Cash Response non-MPC", 
+                           activity), 
+         activity = str_replace_all(activity,
+                                    "Activity 2.02 ", "")) %>% 
+  arrange(desc(beneficiary_freq)) %>% 
+  flextable() %>% 
+  theme_zebra() %>% 
+  set_caption("Breakdown of CVA by activity") %>% 
+  set_table_properties(layout = "autofit", width = .99) 
+
+
+
+```
+
+
+
+---
+
+class: center, middle
+
+### Beneficiary frequencies by modality
+
+
+
+```{r}
+com %>%  
+  filter(project_status %in% c("Completed", "Ongoing") & activity != "ISIMM") %>% 
+  replace_na(list(delivery_modality = "NA")) %>% 
+  mutate(delivery_modality = recode(delivery_modality,  
+                                    "Service delivery/support" = "Service delivery", 
+                                    "Rapide Response Team" = "Service delivery", 
+                                    "Mobile Team" = "Service delivery", 
+                                    "Training" = "Other", 
+                                    "Remote/Distance" = "Other", 
+                                    "Blended" = "Other")) %>%
+  group_by(delivery_modality) %>% 
+  summarise(beneficiary_frequencies = sum(beneficiaries, na.rm = TRUE)) %>%
+  mutate(`%_frequencies` = 
+           round(beneficiary_frequencies / sum(beneficiary_frequencies) * 100, digits = 2)) %>% 
+  arrange(desc(beneficiary_frequencies)) %>%
+  flextable() %>% 
+  theme_zebra() %>% 
+  set_caption(paste0(cva_pc, "% of beneficiary frequencies reached by cash or vouchers")) %>% 
+  set_table_properties(layout = "autofit", width = .7)
+
+```
+
+
+**`r cva_pc`%** of beneficiary frequencies were reached by either cash or voucher modalities. Though **`r cash_pc %>% pull(cash_pc)`%** of individuals or **`r cash_pc %>% pull(cash_beneficiaries) %>% format(big.mark = ",")` persons** have received cash assistance of any kind. Frequencies with no modality reported are most likely in-kind, having originated largely from WASH and CCCM. 
+
+---
+
+
+
+class: center, middle
+
+### Community preferences for modalities
+
+To set a target, communities have made their preferences very clear: 
+
+<img src = "https://github.com/northwest-syria-cash-working-group/multisector_4Ws_review/blob/main/img/modality_preferences.png?raw=true" width="80%" />
+
+---
+
+class: center, middle
+
+### Interoperability with cash reporting 
+
+```{r}
+sum_table <- tribble(
+  ~cluster, ~admin4, ~modality, ~delivery_mechanism, ~conditionality, ~transfer_value, ~frequency, 
+  "Cash", TRUE, TRUE, TRUE, TRUE, TRUE, TRUE,
+  "CCCM", TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, 
+  "Education", TRUE, FALSE, FALSE, FALSE, FALSE, FALSE,
+  "ERL", TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, 
+  "FSL", TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, 
+  "Health", FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, 
+  "Nutrition", TRUE, FALSE, TRUE, TRUE, TRUE, TRUE, 
+  "Protection", TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, 
+  "SNFI", TRUE, TRUE, TRUE, TRUE, TRUE, FALSE, 
+  "WASH", TRUE, FALSE, FALSE, FALSE, TRUE, FALSE
+) 
+
+colmatrix <- ifelse(sum_table[, -1] == TRUE, "#cceecc", "#eecccc")
+
+sum_table %>% 
+  rename(`Cluster/WG` = cluster) %>% 
+  flextable() %>% 
+  theme_zebra() %>% 
+  bg(j = 2:7, bg=colmatrix) %>% 
+  set_table_properties(layout = "autofit", width = .99) %>% 
+  set_caption("Review of 4W templates -- alignment with cash reporting standards") 
+
+
+```
+
+---
+
+class: center, middle
+
+### Unique beneficiaries
+
+From this consolidated dataset at admin4, the total number of unique individuals reach by the response in 2023 is estimated at **`r com %>% filter(!is.na(admin4pcode) & activity != "ISIMM" & project_status %in% c("Completed", "Ongoing")) %>% group_by(admin4pcode) %>% slice(which.max(beneficiaries)) %>% {sum(.$beneficiaries, na.rm = TRUE)} %>% format(big.mark = ",")`** persons. 
+
+*This figure was calculated by selecting the highest number of beneficiaries of any activity, of any sector, at the community level, after filtering out "ISIMM" monitoring activities. Only activities that were Completed or Ongoing were included.*
+
+This document distinguishes between **beneficiaries** (unique individuals reached) and **beneficiary frequencies** (the total number of times an individual has received assistance, inclusive of double counting).
+
+---
+
+class: center, middle
+
+### Beneficiary frequencies
+
+```{r}
+summary_table <- com %>%  
+  filter(project_status %in% c("Completed", "Ongoing") & 
+           activity %out% c("ISIMM")) %>% 
+  group_by(cluster) %>% 
+  summarise(ben_frequencies = sum(beneficiaries, na.rm = TRUE), 
+            communities = n_distinct(admin4pcode)) %>% 
+  arrange(desc(communities))
+
+summary_table %>% 
+  flextable() %>% 
+  theme_zebra() %>% 
+  set_caption("Footprint and reach per cluster/WG in the combined dataset") %>% 
+  footnote(i = 1, j = 2, inline = TRUE, ref_symbols = "1", part = "header",
+           as_paragraph("Beneficiary frequencies are the number of times an individual has received assistance, inclusive of double counting")) %>% 
+  set_table_properties(layout = "autofit", width = .6)
+
+```
+
+---
+
+class: center, middle
+
+###  Fair allocation
+
+
+```{r}
+top_20_df <- com %>% 
+  filter(activity != "ISIMM" & project_status %in% c("Completed", "Ongoing")) %>% 
+  group_by(admin4pcode) %>% 
+  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE)) %>% 
+  left_join(pop %>% select(total_pop, admin4pcode), 
+            by = "admin4pcode") %>% 
+  mutate(pc_ben = beneficiaries / sum(beneficiaries), 
+         pc_pop = total_pop / sum(total_pop, na.rm = TRUE)) %>% 
+  arrange(desc(beneficiaries)) %>% 
+  mutate(cum_pc = cumsum(pc_ben)) %>% 
+  head(20)  
+
+top_20 <- top_20_df %>% 
+  summarise(pc_ben = sum(pc_ben), 
+            pc_pop = sum(pc_pop)) %>% 
+  mutate_all(~ round(. * 100))
+```
+
+
+Allocation is decidedly skewed: the **top 20** communities have received **`r top_20 %>% pull(pc_ben)`%** of all beneficiary frequencies, whilst having **`r top_20 %>% pull(pc_pop)`%** of the total population. Humanitarian partners have completed activities or are implementing activities in **`r com %>% filter(project_status %in% c("Completed", "Ongoing") & activity %out% c("ISIMM")) %>% {n_distinct(.$admin4pcode)}`** communities. 
+
+*Beneficiary frequencies (which are the number of times an individual has received assistance, inclusive double counting) are a useful metric is useful for determining how the humanitarian community has allocated its resources.* 
+
+
+
+---
+
+class: center, middle
+
+```{r fig.retina=2}
+
+
+com %>% 
+  filter(activity != "ISIMM" & project_status %in% c("Completed", "Ongoing")) %>% 
+  group_by(admin4pcode) %>% 
+  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE),
+            clusters = n_distinct(cluster)) %>% 
+  left_join(pop %>% select(total_pop, admin4pcode, community = admin4name_en), 
+            by = "admin4pcode") %>% 
+  mutate(pc_ben = beneficiaries / sum(beneficiaries), 
+         pc_pop = total_pop / sum(total_pop, na.rm = TRUE)) %>% 
+  filter(beneficiaries > 0) %>% 
+  ggplot(aes(x = total_pop, y = beneficiaries)) + 
+  annotate(geom = "rect",
+           xmin = 3917, xmax = 249009, 
+            ymin = 350700, ymax = 1983254, 
+            colour = "goldenrod", alpha = 0) + 
+  geom_point(aes(size = beneficiaries, 
+                 colour = clusters), 
+             alpha = .7) +
+  scale_colour_viridis(option = "mako", direction = -1, 
+                       breaks = c(1, 3, 6, 9)) +
+  scale_size_continuous(breaks = c(100, 1000, 10000, 100000, 300000, 750000), 
+                        labels = comma) +
+  scale_x_log10(labels = comma, breaks = c(10, 100, 1000, 10000, 100000, 300000)) + 
+  scale_y_log10(labels = comma, breaks = c(10, 100, 1000, 10000, 100000, 1000000)) + 
+  labs(title = paste0("The 20 communities, within the yellow box, have received ",
+                      top_20 %>% pull(pc_ben), 
+                      "% of all beneficiary allocations"),
+       x = "Population", 
+       y = "Beneficiary freqiencies", 
+       size = "Beneficiaries")
+
+```
+
+
+---
+
+class: center, middle
+
+```{r}
+com %>% 
+  filter(activity != "ISIMM" & project_status %in% c("Completed", "Ongoing")) %>% 
+  group_by(admin4pcode) %>% 
+  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE)) %>% 
+  left_join(pop %>% select(total_pop, admin4pcode), 
+            by = "admin4pcode") %>% 
+  mutate(pc_ben = beneficiaries / sum(beneficiaries), 
+         pc_pop = total_pop / sum(total_pop, na.rm = TRUE)) %>% 
+  arrange(desc(beneficiaries)) %>% 
+  filter(admin4pcode %in% c(top_20_df$admin4pcode)) %>% 
+  left_join(locations %>% 
+              select(admin4pcode, 
+                     district = admin2name_en, 
+                     sub_district = admin3name_en, 
+                     community = location_name_en), 
+            by = "admin4pcode") %>% 
+  select(district, 
+         sub_district, 
+         community, 
+         ben_frequencies = beneficiaries, 
+         total_population = total_pop) %>% 
+  mutate(`coverage%` = round(ben_frequencies / total_population * 100, digits = 2)) %>% 
+  flextable() %>% 
+  theme_zebra() %>% 
+  set_caption("Top 20 communities with the highest number of beneficiary frequencies") %>% 
+  set_table_properties(layout = "autofit", width = .99) %>% 
+  fontsize(size = 10, j = 1:6, part = "header") %>% 
+  fontsize(size = 9, j = 1:6)
+```
+
+
+```{r eval=FALSE}
+com %>% 
+  filter(activity != "ISIMM" & project_status %in% c("Completed", "Ongoing")) %>%
+  filter(cluster == "Cash") %>% 
+  group_by(admin4pcode) %>% 
+  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE)) %>% 
+  mutate(pc_ben = beneficiaries / sum(beneficiaries)) %>% 
+  arrange(desc(pc_ben)) %>% 
+  # write_csv("./data/beneficiary_shares_admin4_cwg.csv")
+  mutate(cum_pc = cumsum(pc_ben))
+```
+
+---
+
+
+class: center, middle
+
+The list on the previous slide is full of urban, highly-populated communities. In contrast, coverage is much lower in smaller communities. Rural communities tend to have lower access to services, but it is instead urban areas that have been targeted with repeated, multi-sector interventions: 
+
+<br>
+
+```{r}
+com %>% 
+  filter(activity != "ISIMM" & project_status %in% c("Completed", "Ongoing")) %>% 
+  group_by(admin4pcode) %>% 
+  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE), 
+            clusters = n_distinct(cluster), na.rm = TRUE) %>% 
+  right_join(pop %>% select(total_pop, admin4pcode, 
+                            sub_district = admin3name_en, 
+                            admin3pcode, 
+                            governorate = admin1name_en), 
+            by = "admin4pcode") %>%
+  filter(total_pop > 0) %>% 
+  mutate(beneficiaries = ifelse(is.na(beneficiaries), 0, beneficiaries),
+         coverage = beneficiaries / total_pop, 
+         group = case_when(coverage == 0 ~ "no coverage", 
+                           coverage > 0 & coverage < 0.3 ~ "less than 30%", 
+                           coverage >= 0.3 & coverage < 1 ~ "30% - 100% coverage", 
+                           coverage > 1 ~ "more than 100% coverage", 
+                           TRUE ~ "more than 100% coverage")) %>% 
+  group_by(group) %>% 
+  summarise(ben_frequencies = sum(beneficiaries, na.rm = TRUE), 
+            population = sum(total_pop),
+            communities = n_distinct(admin4pcode), 
+            clusters = mean(clusters, na.rm = TRUE)) %>% 
+  mutate(group = fct_relevel(group, c("no coverage",
+                                      "less than 30%",
+                                      "30% - 100% coverage",
+                                      "more than 100% coverage")), 
+         `coverage%` = round(ben_frequencies / population * 100, digits = 2), 
+         clusters = ifelse(ben_frequencies == 0, 0, clusters), 
+         clusters = round(clusters, digits = 2)) %>% 
+  arrange(group) %>% 
+  rename(coverage_group = group) %>% 
+  relocate(`coverage%`, .after = population) %>% 
+  flextable() %>% 
+  theme_zebra() %>% 
+  set_caption("Coverage is heavily skewed towards urban areas and large communities") %>% 
+  set_table_properties(layout = "autofit", width = .99) %>% 
+  footnote(i = 1, j = 6, part = "header", ref_symbols = "1",
+           as_paragraph("Average number of clusters present per community"))
+  
+```
+
+---
+
+class: center, middle
+
+```{r}
+com %>% 
+  left_join(locations %>% 
+              select(admin4pcode, 
+                     district = admin2name_en, 
+                     sub_district = admin3name_en, 
+                     community = location_name_en), 
+            by = "admin4pcode") %>% 
+  filter(activity != "ISIMM" & project_status %in% c("Completed", "Ongoing")) %>%
+  filter(cluster == "Cash" & !is.na(beneficiaries) & beneficiaries > 0) %>% 
+  group_by(admin4pcode) %>% 
+  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE)) %>%  
+  arrange(desc(beneficiaries)) %>% 
+  mutate(pc_ben = round(beneficiaries / sum(beneficiaries) * 100, digits = 2), 
+         cum_pc = cumsum(pc_ben)) %>% 
+  ggplot(aes(area = beneficiaries, fill = beneficiaries)) + 
+  geom_treemap() +
+  geom_treemap_text(aes(label = admin4pcode), colour = "white", place = "centre", grow = TRUE) + 
+  scale_fill_viridis_c(option = "mako", direction = -1, end = .8) + 
+  theme(legend.position = "none", 
+        plot.caption = element_text(hjust = .5)) + 
+  labs(title = "% of MPC beneficiary frequencies per community", 
+       subtitle = "The top 10 communities form 50% of all beneficiary allocations", 
+       caption = "Each tile is a single community. The darker the colour and the larger the tile, the higher the share of beneficiary allocations.")
+    
+  
+```
+
+
+---
+
+class: center, middle
+
+```{r}
+com %>% 
+  left_join(locations %>% 
+              select(admin4pcode, 
+                     district = admin2name_en, 
+                     sub_district = admin3name_en, 
+                     community = location_name_en), 
+            by = "admin4pcode") %>% 
+  filter(activity != "ISIMM" & project_status %in% c("Completed", "Ongoing")) %>%
+  filter(cluster == "FSL" & !is.na(beneficiaries) & beneficiaries > 0) %>% 
+  group_by(admin4pcode) %>% 
+  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE)) %>%
+  arrange(desc(beneficiaries)) %>%
+  mutate(pc_ben = round(beneficiaries / sum(beneficiaries) * 100, digits = 2), 
+         cum_pc = cumsum(pc_ben)) %>% 
+  ggplot(aes(area = beneficiaries, fill = beneficiaries)) + 
+  geom_treemap() +
+  geom_treemap_text(aes(label = admin4pcode), colour = "white", place = "centre", grow = TRUE) + 
+  scale_fill_viridis_c(option = "cividis", direction = -1, end = .8) + 
+  theme(legend.position = "none", 
+        plot.caption = element_text(hjust = .5)) + 
+  labs(title = "% of FSL beneficiary frequencies per community", 
+       subtitle = "The top 10 communities form 45% of all beneficiary allocations", 
+       caption = "Each tile is a single community. The darker the colour and the larger the tile, the higher the share of beneficiary allocations.")
+
+```
+
+
+---
+
+class: center, middle
+
+### Skew is not uniform across all clusters
+
+```{r}
+check_slice <- function(tbl) {
+  tbl %>% 
+    filter(activity != "ISIMM" & project_status %in% c("Completed", "Ongoing")) %>%
+    group_by(admin4pcode, cluster) %>% 
+    summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE), 
+              .groups = "drop") %>%
+    left_join(pop %>% select(total_pop, admin4pcode), 
+              by = "admin4pcode") %>% 
+    arrange(desc(beneficiaries)) %>%
+    mutate(pc_ben = beneficiaries / sum(beneficiaries), 
+           pc_pop = total_pop / sum(total_pop, na.rm = TRUE),
+           cum_pc = cumsum(pc_ben), 
+           cum_ben = cumsum(beneficiaries), 
+           cum_pc_pop = cumsum(pc_pop)) %>% 
+    slice(10)
+}
+
+rbind(
+  com %>%
+    filter(cluster == "Protection") %>%
+    check_slice(), 
+  
+  com %>% filter(cluster == "WASH") %>% 
+    check_slice(), 
+  
+  com %>% filter(cluster == "ERL") %>% 
+    check_slice(), 
+  
+  com %>% filter(cluster == "Nutrition") %>% 
+    check_slice(), 
+  
+  com %>% filter(cluster == "Cash") %>% 
+    check_slice(), 
+  
+  com %>% filter(cluster == "Education") %>% 
+    check_slice(), 
+  
+  com %>% filter(cluster == "FSL") %>% 
+    check_slice(), 
+  
+  com %>% filter(cluster == "CCCM") %>% 
+    check_slice()
+
+) %>%
+  mutate_at(vars(cum_pc, cum_pc_pop), ~ round(. * 100, digits = 2)) %>% 
+  select(cluster, top10_freq = cum_ben, `top10_freq%[desc]` = cum_pc, `%top10_population` = cum_pc_pop) %>% 
+  arrange(desc(`top10_freq%[desc]`)) %>% 
+  flextable() %>% 
+  theme_zebra() %>% 
+  set_caption("% of beneficiary frequencies and population in the top 10 communities, by cluster") %>% 
+  set_table_properties(layout = "autofit", width = .75)
+
+```
+
+
+
+```{r eval=FALSE}
+com %>% 
+  left_join(locations %>% 
+              select(admin4pcode, 
+                     district = admin2name_en, 
+                     sub_district = admin3name_en, 
+                     community = location_name_en), 
+            by = "admin4pcode") %>% 
+  filter(activity != "ISIMM" & project_status %in% c("Completed", "Ongoing")) %>%
+  filter(cluster == "Protection" & !is.na(beneficiaries) & beneficiaries > 0) %>% 
+  group_by(admin4pcode) %>% 
+  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE)) %>%
+  arrange(desc(beneficiaries)) %>%
+  mutate(pc_ben = round(beneficiaries / sum(beneficiaries) * 100, digits = 2), 
+         cum_pc = cumsum(pc_ben)) %>% 
+  ggplot(aes(area = beneficiaries, fill = beneficiaries)) + 
+  geom_treemap() +
+  geom_treemap_text(aes(label = admin4pcode), colour = "white", place = "centre") + 
+  scale_fill_viridis_c(direction = -1, end = .8) + 
+  theme(legend.position = "none") + 
+  labs(title = "% of Protection beneficiary frequencies per community", 
+       subtitle = "The top 10 communities form 47% of all beneficiary allocations")
+
+```
+
+
+---
+
+class: center, middle
+
+### Percent reached by community
+
+
+```{r}
+overallocated_communities <- com %>% 
+  filter(!is.na(admin4pcode) & 
+           activity != "ISIMM" & 
+           project_status %in% c("Completed", "Ongoing")) %>%
+  group_by(admin4pcode) %>% 
+  slice(which.max(beneficiaries)) %>% 
+  ungroup() %>% 
+  left_join(pop %>% select(admin4pcode, total_pop),
+            by = "admin4pcode") %>% 
+  mutate(pc = beneficiaries / total_pop) %>% 
+  filter(pc >= .95) %>% nrow()
+
+pc_covered_mean <- com %>% 
+  filter(!is.na(admin4pcode) & 
+           activity != "ISIMM" & 
+           project_status %in% c("Completed", "Ongoing")) %>%
+  group_by(admin4pcode) %>% 
+  slice(which.max(beneficiaries)) %>% 
+  ungroup() %>% 
+  left_join(pop %>% select(admin4pcode, total_pop), 
+            by = "admin4pcode") %>% 
+  mutate(pc = beneficiaries / total_pop) %>%
+  filter(!is.infinite(pc)) %>% 
+  summarise(pc = mean(pc, na.rm = TRUE))
+
+```
+
+
+```{r fig.height=5.5}
+
+com %>% 
+  filter(!is.na(admin4pcode) & 
+           activity != "ISIMM" & 
+           project_status %in% c("Completed", "Ongoing")) %>%
+  group_by(admin4pcode) %>% 
+  slice(which.max(beneficiaries)) %>% 
+  ungroup() %>% 
+  left_join(pop %>% select(admin4pcode, total_pop), 
+            by = "admin4pcode") %>% 
+  mutate(pc = beneficiaries / total_pop) %>%
+  ggplot(aes(x = pc)) + 
+  geom_histogram() + 
+  geom_vline(aes(xintercept = pc), 
+             data = pc_covered_mean,
+             lty = 2, colour = "blue", alpha = .7) + 
+  geom_text(aes(label = percent(pc)), 
+            hjust = -.7, 
+            data = pc_covered_mean, y = 140) +
+  scale_x_log10(labels = percent, 
+                breaks = c(0.01, 0.1, 1, 10, 100, 1000)) + 
+  labs(x = "Percent of population covered",
+       y = "Count of communities",
+       title = "Percentage covered in communities reached by response", 
+       subtitle = "Blue line marks the mean")
+```
+
+
+Aggregation hides under-allocation in numerous communities. 
+
+
+---
+
+
+
+class: center, middle, my-one-page-font 
+
+#### Of the **`r com %>% filter(!is.na(admin4pcode) & activity != "ISIMM" & beneficiaries > 0) %>% summarise(communities = n_distinct(admin4pcode)) %>% pull(communities)`** communities humanitarian actors in NWS are responding in, **`r com %>% filter(!is.na(admin4pcode) & activity != "ISIMM") %>% group_by(admin4pcode) %>% summarise(sectors = n_distinct(cluster)) %>% filter(sectors != 1) %>% summarise(multi = n_distinct(admin4pcode)) %>% pull(multi)`** have at least 2 clusters present. 
+
+```{r}
+com %>% 
+  filter(!is.na(admin4pcode) & activity != "ISIMM") %>% 
+  group_by(admin4pcode) %>% 
+  summarise(sectors = n_distinct(cluster)) %>% 
+  ggplot(aes(x = sectors)) + 
+  geom_histogram(bins = 9) + 
+  scale_x_continuous(breaks = seq(1, 9, by = 1)) + 
+  geom_text(stat = "count", aes(label = after_stat(count)), vjust= - 0.5) +
+  expand_limits(y = 255) + 
+  labs(x = "Number of clusters/working groups", 
+       y = "Number of communities", 
+       title = "249 communities only have one cluster/WG present")
+```
+
+
+
+---
+
+class: center, middle
+
+### Communities where clusters are operating alone
+
+```{r}
+
+# Clusters operating alone
+com %>% 
+  filter(!is.na(admin4pcode) & activity != "ISIMM") %>% 
+  group_by(admin4pcode, cluster) %>% 
+  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE)) %>% 
+  ungroup() %>% 
+  pivot_wider(names_from = cluster, values_from = beneficiaries) %>%
+  mutate(clusters = rowSums(!is.na(.[,-1]))) %>% 
+  filter(clusters == 1) %>%
+  summarise(Cash = sum(!is.na(Cash)), 
+            Education = sum(!is.na(Education)), 
+            FSL = sum(!is.na(FSL)), 
+            Nutrition = sum(!is.na(Nutrition)), 
+            Protection = sum(!is.na(Protection)), 
+            SNFI = sum(!is.na(SNFI)), 
+            WASH = sum(!is.na(WASH)), 
+            ERL = sum(!is.na(ERL)), 
+            CCCM = sum(!is.na(CCCM)), 
+            Education = sum(!is.na(Education))) %>% 
+  transpose_df() %>% 
+  rename(communities_alone = `1`, 
+         cluster = rowname) %>% 
+  arrange(desc(communities_alone)) %>% 
+  left_join(com %>% 
+              filter(activity != "ISIMM" & !is.na(admin4pcode)) %>% 
+              group_by(cluster) %>% 
+              summarise(communities_total = n_distinct(admin4pcode)), 
+            by = "cluster") %>% 
+  mutate(`%_alone` = round(communities_alone / communities_total * 100, digits = 2)) %>% 
+  flextable() %>% 
+  theme_zebra() %>% 
+  set_caption("Number of communities where clusters are operating alone") %>% 
+  set_table_properties(layout = "autofit", width = .7)
+  
+  
+```
+
+---
+
+### Cluster pairs
+
+```{r}
+com %>% 
+  filter(activity != "ISIMM") %>% 
+  group_by(cluster, admin4pcode) %>% 
+  summarise(count = n()) %>% 
+  pairwise_cor(cluster, admin4pcode, value = count, 
+               method = c("spearman"), upper = FALSE) %>% 
+  arrange(desc(correlation)) %>% 
+  left_join(
+    com %>% 
+      filter(activity != "ISIMM") %>% 
+      pairwise_count(cluster, admin4pcode), 
+    by = c("item1", "item2")
+  ) %>% 
+  rename(cluster1 = item1, 
+         cluster2 = item2, 
+         communities = n) %>% 
+  mutate(correlation = round(correlation, digits = 3)) %>% 
+  head(10) %>% 
+  flextable() %>% 
+  theme_zebra() %>% 
+  set_caption("Most correlated cluster pairs") %>% 
+  set_table_properties(layout = "autofit", width = .7)
+```
+
+
+---
+
+### Activity pairs -- most correlated
+
+```{r}
+com %>%
+  filter(activity != "ISIMM") %>% 
+  filter(!is.na(admin4pcode) & !is.na(activity)) %>% 
+  pairwise_count(activity, admin4pcode, sort = TRUE, upper = FALSE) %>% 
+  left_join(com %>%
+              filter(activity != "ISIMM") %>%
+              filter(!is.na(admin4pcode) & !is.na(activity)) %>%
+              pairwise_cor(activity, admin4pcode, sort = TRUE, upper = FALSE), 
+            by = c("item1", "item2")) %>% 
+  left_join(com %>%
+              distinct(cluster1 = cluster, activity),
+            by = c("item1" = "activity")) %>% 
+  left_join(com %>% 
+              distinct(cluster2 = cluster, activity),
+            by = c("item2" = "activity")) %>% 
+  filter(cluster1 != cluster2) %>% 
+  rename(activity1 = item1, 
+         activity2 = item2) %>% 
+  mutate_at(vars(activity1, activity2), ~ str_sub(., start = 0L, end = 60L)) %>% 
+  mutate(correlation = round(correlation, digits = 3)) %>% 
+  select(activity1, activity2, corr = correlation, `com.` = n, cluster1, cluster2) %>% 
+  arrange(desc(corr)) %>% 
+  filter(`com.` > 20)  %>% 
+  head(10) %>% 
+  flextable() %>% 
+  theme_zebra() %>% 
+  set_caption("Most correlated activity pairs") %>% 
+  set_table_properties(layout = "autofit", width = .99) %>% 
+  fontsize(size = 9, j = 1:2)
+```
+
+---
+
+### Activity pairs -- most common
+
+```{r}
+com %>%
+  filter(activity != "ISIMM") %>% 
+  filter(!is.na(admin4pcode) & !is.na(activity)) %>% 
+  pairwise_count(activity, admin4pcode, sort = TRUE, upper = FALSE) %>% 
+  left_join(com %>%
+              filter(activity != "ISIMM") %>%
+              filter(!is.na(admin4pcode) & !is.na(activity)) %>%
+              pairwise_cor(activity, admin4pcode, sort = TRUE, upper = FALSE), 
+            by = c("item1", "item2")) %>% 
+  left_join(com %>%
+              distinct(cluster1 = cluster, activity),
+            by = c("item1" = "activity")) %>% 
+  left_join(com %>% 
+              distinct(cluster2 = cluster, activity),
+            by = c("item2" = "activity")) %>% 
+  filter(cluster1 != cluster2) %>% 
+  rename(activity1 = item1, 
+         activity2 = item2) %>% 
+  mutate_at(vars(activity1, activity2), ~ str_sub(., start = 0L, end = 60L)) %>% 
+  mutate(correlation = round(correlation, digits = 3)) %>% 
+  select(activity1, activity2, corr = correlation, `com.` = n, cluster1, cluster2) %>% 
+  arrange(desc(`com.`)) %>% 
+  filter(`com.` > 20)  %>% 
+  head(10) %>% 
+  flextable() %>% 
+  theme_zebra() %>% 
+  set_caption("Most common activity pairs") %>% 
+  set_table_properties(layout = "autofit", width = .99)
+```
+
+---
+
+
+class: center, middle
+
+### Was earthquake damage considered when partners allocated beneficiaries? 
+
+```{r}
+eq_plot_prep <- function(tbl) {
+  
+  tbl %>% 
+    filter(month %out% c("jan")) %>% 
+    group_by(admin4pcode) %>% 
+    slice(which.max(beneficiaries)) %>% 
+    left_join(pop %>% 
+                select(total_pop, admin4pcode), 
+              by = "admin4pcode") %>% 
+    left_join(eq %>% 
+                select(admin4pcode,  
+                       wounded_dead_100k, 
+                       damaged_houses_100k, 
+                       wounded_dead, 
+                       damaged_houses), 
+              by = "admin4pcode") %>% 
+    mutate(pc_reached = beneficiaries / total_pop)
+}
+```
+
+
+```{r}
+rbind(
+com %>% 
+  filter(month %in% c("jan")) %>% 
+  group_by(admin4pcode) %>% 
+  slice(which.max(beneficiaries)) %>% 
+  ungroup() %>% 
+  left_join(pop %>% 
+              select(total_pop, admin4pcode), 
+            by = "admin4pcode") %>% 
+  left_join(eq %>% 
+              select(admin4pcode,  
+                     wounded_dead_100k, 
+                     damaged_houses_100k, 
+                     wounded_dead, 
+                     damaged_houses), 
+            by = "admin4pcode") %>% 
+  mutate(pc_reached = beneficiaries / total_pop) %>% 
+  filter(damaged_houses > 0 & !is.na(damaged_houses)) %>%
+  select(beneficiaries, damaged_houses)  %>% 
+  lm(beneficiaries ~ damaged_houses, data = .) %>%
+  broom::glance() %>% 
+  mutate(term = "january / damaged_houses"),
+
+com %>% 
+  eq_plot_prep() %>% 
+  ungroup() %>% 
+  lm(beneficiaries ~ damaged_houses, data = .) %>% 
+  broom::glance() %>% 
+  mutate(term = "feb_onwards / damaged_houses"), 
+
+com %>% 
+  eq_plot_prep() %>% 
+  ungroup() %>% 
+  lm(beneficiaries ~ total_pop, data = .) %>% 
+  broom::glance() %>% 
+  mutate(term = "feb_onwards / total_population")
+
+) %>%  
+  select(term, r.squared, p.value) %>% 
+  mutate_at(vars(p.value), ~ formatC(., format = "e", digits = 3)) %>% 
+  mutate(r.squared = round(r.squared, digits = 3)) %>% 
+  flextable() %>% 
+  theme_zebra() %>% 
+  set_caption("Total population is ultimately much more predictive of beneficiaries than earthquake damage") %>% 
+  footnote(i = 1, j = 2, part = "header", inline = TRUE, ref_symbols = "1",
+           as_paragraph("The closer rsquared is to 1, the more predivtive a model")) %>% 
+  set_table_properties(layout = "autofit", width = .7)
+
+
+```
+
+
+#### Not really. 
+
+Only the magnitude of earthquake damage has had any effect on post-January beneficiary allocations. There is no relationship between the intensity of earthquake damage and beneficiary allocations. The greatest predictor of beneficiary allocations is population size, which would only make sense if earthquake damage and pre-existing needs were uniform.
+
+
+---
+
+### Intensity of earthquake damage not related to % reached
+
+```{r}
+com %>% 
+  eq_plot_prep() %>%
+  filter(damaged_houses_100k > 0 & pc_reached < 4) %>% 
+  ggplot(aes(x = pc_reached, y = damaged_houses_100k)) + 
+  geom_point() +
+  scale_y_log10(labels = comma) + 
+  scale_x_continuous(labels = percent) + 
+  geom_smooth(method = "lm") + 
+  labs(x = "% of population reached", 
+       y = "Damaged houses per 100,000 persons") +
+  
+com %>% 
+  eq_plot_prep() %>%
+  filter(wounded_dead_100k > 0 & pc_reached < 4) %>% 
+  ggplot(aes(x = pc_reached, y = wounded_dead_100k)) + 
+  geom_point() +
+  scale_y_log10(labels = comma) + 
+  scale_x_continuous(labels = percent) +
+  geom_smooth(method = "lm") + 
+  labs(x = "% of population reached", 
+       y = "Dead/wounded per 100,000 persons") +
+
+  plot_annotation(title = "Intensity of Earthquake damage does not predict % of population reached")
+```
+
+
+---
+class: center, middle
+
+### Then, when should partners work? 
+
+
+```{r fig.retina=2}
+
+eq_pc_ben_means <- com %>% 
+  eq_plot_prep() %>% 
+  ungroup() %>% 
+  left_join(eq_score$data %>% 
+              select(eq_score, admin4pcode), 
+            by = "admin4pcode") %>%
+  mutate(pc_ben = beneficiaries / sum(beneficiaries, na.rm = TRUE)) %>%
+  summarise(pc_ben = mean(pc_ben, na.rm = TRUE), 
+            eq_score = mean(eq_score, na.rm = TRUE), 
+            pc_reached = mean(pc_reached[!is.infinite(pc_reached)], na.rm = TRUE))
+
+com %>% 
+  eq_plot_prep() %>% 
+  ungroup() %>% 
+  left_join(eq_score$data %>% 
+              select(eq_score, admin4pcode), 
+            by = "admin4pcode") %>% 
+  mutate(pc_ben = beneficiaries / sum(beneficiaries, na.rm = TRUE)) %>%
+  ggplot(aes(x = pc_ben, y = eq_score)) + 
+  scale_x_log10(labels = percent) + 
+  scale_y_log10() + 
+  geom_vline(aes(xintercept = pc_ben), 
+             data = eq_pc_ben_means, 
+             lty = 2, colour = "blue", alpha = .6, size = 1) +
+  geom_hline(aes(yintercept = eq_score), 
+             data = eq_pc_ben_means, 
+             lty = 2, colour = "blue", alpha = .6, size = 1) +
+  geom_point(aes(size = eq_score)) +
+  geom_text_repel(aes(label = admin4pcode), 
+                  size = 2, colour = "grey50") +
+  labs(title = "Partners should prioritse communities in upper-left quadrant", 
+       subtitle = "Followed by the lower-left quadrant\nBlue lines are means", 
+       x = "% of total beneficiaries",
+       y = "Earthquake score", 
+       size = "EQ\nscore")
+
+
+  
+```
+
+---
+
+
+
+class: center, middle, my-one-page-font
+
+### Summary of key findings 1
+
+* The total number of individuals reached is **`r com %>% filter(!is.na(admin4pcode) & activity != "ISIMM" & project_status %in% c("Completed", "Ongoing")) %>% group_by(admin4pcode) %>% slice(which.max(beneficiaries)) %>% {sum(.$beneficiaries, na.rm = TRUE)} %>% format(big.mark = ",")`**. 
+
+* The total amount of cash assistance disbursed is **USD `r com %>% filter(project_status %in% c("Completed", "Ongoing") & activity != "ISIMM" & delivery_modality %in% c("Cash", "Voucher")) %>% {sum(.$total_usd, na.rm = TRUE)} %>% format(big.mark = ",")`**.
+
+* **`r cva_pc`%** of all beneficiary frequencies have received cash assistance; **`r cash_pc %>% pull(cash_pc)`%** of individuals reached have received CVA of any kind. However, **60%** of households preferred receiving assistance only through cash, according to the MSNA (once those with no preference were filtered out). 
+
+* Outside of the CWG, the **SNFI** Cluster had the highest proportion of beneficiaries provided with CVA. 
+
+* **`r top_20 %>% pull(pc_ben)`%** of beneficiary frequencies are from just **20** communities. Humanitarian partners are operating in **`r com %>% filter(!is.na(admin4pcode) & activity != "ISIMM") %>% {n_distinct(.$admin4pcode)}`** communities. 
+
+* There are **`r overallocated_communities`** communities where the number of unique beneficiaries exceeds **95%** of the population. 
+
+---
+
+class: center, middle, my-one-page-font
+
+### Summary of key findings 2
+
+* **75.5%** of beneficiary frequencies were reported with a delivery modality specified. 
+
+* Only the magnitude of earthquake damage has had any effect on post-January beneficiary allocations. There is **no relationship between the intensity of earthquake damage and beneficiary allocations**. The greatest predictor of beneficiary allocations is population size, which would only make sense if earthquake damage and pre-existing needs were uniform. 
+
+
+* There are **249** communities in which a single cluster is operating alone. The most common cluster operating solo is FSL. 
+
+* The cluster pairs with the highest correlations (i.e. having activities in the same community) were **Education-Nutrition**, **Education-Protection** followed by **Nutrition-WASH**, all led by UNICEF. However, activity pairs provide no discernible pattern that would indicate intentional inter-cluster programming.  
+ 
+
+
+
+
+
+
+
+

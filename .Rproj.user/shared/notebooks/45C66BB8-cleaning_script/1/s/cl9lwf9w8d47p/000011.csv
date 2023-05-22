@@ -1,0 +1,15 @@
+"0","cash %>% 
+  filter(str_detect(cluster, ""Multipurpose"")) %>% 
+    mutate(month = month(end_date, label = TRUE), 
+           month = str_to_lower(month), 
+           activity = ""multipurpose cash"", 
+           cluster = ""Cash"", 
+           delivery_modality = ""Cash"") %>% 
+    consolidation_cols() %>% 
+  filter(project_status == ""Completed"") %>% 
+  {sum(.$total_usd, na.rm = TRUE)}
+"
+"1","[1]"
+"1"," 17382878"
+"1","
+"

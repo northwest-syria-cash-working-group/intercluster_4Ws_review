@@ -1,0 +1,56 @@
+"0","check %>% 
+  left_join(pcode3_shape,
+            by = c(""admin3pcode"" = ""ADM3_PCODE"")) %>% 
+  filter(ADM1_PCODE %in% c(""SY02"", ""SY07"", ""SY11"") & !is.na(nws_pin)) %>% 
+  st_as_sf() %>%
+  ggplot() + 
+  geom_sf(size = .1, colour = ""grey70"", 
+          aes(fill = alt_severity)) + 
+  geom_sf_text(aes(label = ADM3_EN), size = 1.5, colour = ""grey70"", 
+               trans = ""log"") +
+  scale_fill_viridis(direction = -1, option = ""mako"") +
+  theme_void() + 
+  
+check %>% 
+  left_join(pcode3_shape,
+            by = c(""admin3pcode"" = ""ADM3_PCODE"")) %>% 
+  filter(ADM1_PCODE %in% c(""SY02"", ""SY07"", ""SY11"") & !is.na(nws_pin)) %>% 
+  st_as_sf() %>%
+  ggplot() + 
+  geom_sf(size = .1, colour = ""grey70"", 
+          aes(fill = alt_access)) +
+  geom_sf_text(aes(label = ADM3_EN), size = 1.5, colour = ""grey70"") +
+  scale_fill_viridis(direction = -1, option = ""mako"") + 
+  theme_void() + 
+  
+check %>% 
+  left_join(pcode3_shape,
+            by = c(""admin3pcode"" = ""ADM3_PCODE"")) %>% 
+  filter(ADM1_PCODE %in% c(""SY02"", ""SY07"", ""SY11"") & !is.na(nws_pin)) %>% 
+  st_as_sf() %>%
+  ggplot() + 
+  geom_sf(size = .1, colour = ""grey70"", 
+          aes(fill = beneficiaries)) + 
+  geom_sf_text(aes(label = ADM3_EN), size = 1.5, colour = ""grey70"") +
+  scale_fill_viridis(direction = -1, option = ""cividis"",  
+               # trans = ""log"", 
+               labels = comma) +
+  theme_void() + 
+
+check %>% 
+  left_join(pcode3_shape,
+            by = c(""admin3pcode"" = ""ADM3_PCODE"")) %>% 
+  filter(ADM1_PCODE %in% c(""SY02"", ""SY07"", ""SY11"") & !is.na(nws_pin)) %>% 
+  st_as_sf() %>%
+  ggplot() + 
+  geom_sf(size = .1, colour = ""grey70"", 
+          aes(fill = population)) + 
+  geom_sf_text(aes(label = ADM3_EN), size = 1.5, colour = ""grey70"", 
+               trans = ""log"") +
+  scale_fill_viridis(direction = -1, option = ""mako"", 
+                     trans = ""log"", 
+                     labels = comma) +
+  theme_void()    
+"
+"2","Warning: [38;5;238mIgnoring unknown parameters: `trans`[39m"
+"2","Warning: [38;5;238mIgnoring unknown parameters: `trans`[39m"

@@ -1,8 +1,0 @@
-"0","com %>% 
-  group_by(cluster, admin4pcode) %>% 
-  summarise(count = n()) %>% 
-  pairwise_cor(cluster, admin4pcode, value = count, 
-               method = c(""spearman""), upper = FALSE) %>% 
-  arrange(desc(correlation))
-"
-"2","`summarise()` has grouped output by 'cluster'. You can override using the `.groups` argument."

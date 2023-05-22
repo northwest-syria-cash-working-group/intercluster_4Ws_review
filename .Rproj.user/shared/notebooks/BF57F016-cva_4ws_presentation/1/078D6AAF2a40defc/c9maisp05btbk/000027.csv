@@ -1,0 +1,38 @@
+"0","check <- com %>% 
+  filter(!is.na(admin4pcode) & activity != ""ISIMM"" & 
+           project_status %in% c(""Completed"", ""Ongoing"")) %>% 
+  group_by(admin4pcode) %>% 
+  slice(which.max(beneficiaries)) %>% 
+  ungroup() %>% 
+  group_by(admin3pcode) %>% 
+  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE)) %>% 
+  right_join(hno %>% 
+              select(admin3pcode, severity, nws_pin), 
+            by = ""admin3pcode"") %>% 
+  right_join(pop %>% 
+              group_by(admin3pcode) %>% 
+              summarise(population = sum(total_pop, na.rm = TRUE), 
+                        .groups = ""drop"")) %>% 
+  left_join(com %>% 
+              filter(!is.na(admin4pcode) & activity != ""ISIMM"" &
+                       project_status %in% c(""Completed"", ""Ongoing"")) %>%
+              group_by(admin3pcode) %>% 
+              summarise(frequencies = sum(beneficiaries, na.rm = TRUE), 
+                        .groups = ""drop""), 
+            by = ""admin3pcode"") %>% 
+  left_join(eq_admin3$data %>% 
+              select(admin3pcode, eq_score_admin3), 
+            by = ""admin3pcode"") %>% 
+  left_join(alt_severity$data %>% 
+              select(admin3pcode, alt_severity), 
+            by = ""admin3pcode"") %>% 
+  left_join(access %>% 
+              select(admin3pcode, access_score = three_point_severity_score), 
+            by = ""admin3pcode"") %>% 
+  left_join(alt_access$data %>% 
+              select(alt_access, admin3pcode), 
+            by = ""admin3pcode"") %>% 
+  mutate(pc_reached = frequencies / population,
+         coverage = beneficiaries / population)  
+"
+"2","Joining with `by = join_by(admin3pcode)`"
