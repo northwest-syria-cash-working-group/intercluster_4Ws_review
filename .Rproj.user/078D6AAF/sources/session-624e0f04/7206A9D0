@@ -1,0 +1,30 @@
+{
+    "id": "7206A9D0",
+    "path": "~/R/intercluster_4Ws_review/cleaning_script.Rmd",
+    "project_path": "cleaning_script.Rmd",
+    "type": "r_markdown",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1684675673820.0,
+    "source_on_save": false,
+    "relative_order": 2,
+    "properties": {
+        "tempName": "Untitled1",
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "904,0",
+        "scrollLine": "898",
+        "last_setup_crc32": "",
+        "docOutlineSize": "77",
+        "docOutlineVisible": "1"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1684756362,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1684756362059,
+    "read_only": false,
+    "read_only_alternatives": []
+}

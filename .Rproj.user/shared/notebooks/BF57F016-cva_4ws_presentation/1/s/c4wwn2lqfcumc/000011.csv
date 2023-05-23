@@ -1,0 +1,4 @@
+"0","locations <- read_csv(""./data/locations_aoc_csv"")
+"
+"2","Error: './data/locations_aoc_csv' does not exist in current working directory ('C:/Users/seanywng/Documents/R/intercluster_4Ws_review').
+"

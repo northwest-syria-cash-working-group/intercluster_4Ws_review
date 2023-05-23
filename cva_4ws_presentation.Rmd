@@ -4,7 +4,7 @@ author: "Analysis from 4Ws data"
 date:  "`r format(Sys.time(), '%d %B, %Y')`"
 output:
   xaringan::moon_reader:
-    css: "ninjutsu"
+    css: "my-style.css"
     seal: false
     self_contained: true
     lib_dir: libs
@@ -33,7 +33,6 @@ library(tidyverse)
 library(readxl)
 library(lubridate)
 library(stringi)
-library(pander)
 library(janitor)
 library(scales)
 library(magrittr)
@@ -44,8 +43,6 @@ library(sf)
 library(plotly)
 library(flextable)
 library(ggrepel)
-library(magrittr)
-library(readxlsb)
 library(tidymodels)
 library(widyr)
 library(tidytext)
@@ -96,8 +93,7 @@ nw_pcode3 <- read_excel("./data/2023HNO_PiN_Severity_detailedAoI_FORSHARE 150320
   filter(ao_c == "NW") %>% 
   pull(admin3pcode)
 
-locations <- read_excel("./data/Locations.xlsx") %>% 
-  clean_names()
+locations <- read_csv("./data/locations_aoc.csv")
 
 pop <- read_excel("./data/Population_Data_May_2022_final_01122022_with_SADD.xlsx", 
            sheet = 5, 
@@ -214,18 +210,13 @@ report_date <- "19 May 2023"
 
 
 
-
-
 # CVA Response in Northwest Syria: Analysis from 4Ws data
 
 #### Data as of `r report_date`
 
 <br>
 
-.pull-left[.full-width[<img src = "https://github.com/northwest-syria-cash-working-group/multisector_4Ws_review/raw/main/img/ocha_logo.jpg"  width="30%"/>]]
-
-.pull-right[.full-width[<img src = "https://github.com/northwest-syria-cash-working-group/multisector_4Ws_review/raw/main/NWS-CWG%20logo.PNG"  width="30%"/>]]
-
+<img src = "https://github.com/northwest-syria-cash-working-group/multisector_4Ws_review/raw/main/combined_logo.png"  width="100%"/>
 
 
 ---
@@ -275,7 +266,7 @@ class: center, middle
 
 **USD `r paste0(round((com %>% filter(project_status %in% c("Completed", "Ongoing") & activity != "ISIMM" & delivery_modality %in% c("Cash", "Voucher")) %>% {sum(.$total_usd, na.rm = TRUE)})  / 1000000, digits = 1), " million")`** has been disbursed so far, with the cluster-wise breakdown being: 
 
-<br>
+
 
 
 ```{r}
@@ -297,7 +288,9 @@ com %>%
   theme_zebra() %>% 
   set_caption("Total USD disbursed and beneficiary frequencies") %>% 
   set_table_properties(layout = "autofit", width = .6) %>% 
-  footnote(i = 4, j = 5, ref_symbols = "1", 
+  footnote(i = 1, j = 4, ref_symbols = "1", part = "header",
+           as_paragraph("Estimation, households reached is not in the combined dataset; not all clusters reported households reached")) %>% 
+  footnote(i = 4, j = 5, ref_symbols = "2", 
            as_paragraph("Only refers to direct beneficiaries"))
 
 
@@ -519,6 +512,7 @@ summary_table <- com %>%
   arrange(desc(communities))
 
 summary_table %>% 
+  rename(`cluster/WG` = cluster) %>%
   flextable() %>% 
   theme_zebra() %>% 
   set_caption("Footprint and reach per cluster/WG in the combined dataset") %>% 
@@ -653,6 +647,7 @@ com %>%
 ---
 
 
+
 class: center, middle
 
 The list on the previous slide is full of urban, highly-populated communities. In contrast, coverage is much lower in smaller communities. Rural communities tend to have lower access to services, but it is instead urban areas that have been targeted with repeated, multi-sector interventions: 
@@ -692,15 +687,73 @@ com %>%
          clusters = round(clusters, digits = 2)) %>% 
   arrange(group) %>% 
   rename(coverage_group = group) %>% 
+  rename(`clusters/WG` = clusters) %>%
   relocate(`coverage%`, .after = population) %>% 
   flextable() %>% 
   theme_zebra() %>% 
   set_caption("Coverage is heavily skewed towards urban areas and large communities") %>% 
   set_table_properties(layout = "autofit", width = .99) %>% 
   footnote(i = 1, j = 6, part = "header", ref_symbols = "1",
-           as_paragraph("Average number of clusters present per community"))
+           as_paragraph("Average number of clusters/WG present per community"))
   
 ```
+
+
+
+
+---
+
+class: center, middle
+
+```{r fig.retina=2}
+com %>% 
+  filter(activity != "ISIMM" & project_status %in% c("Completed", "Ongoing")) %>% 
+  group_by(admin4pcode) %>% 
+  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE), 
+            clusters = n_distinct(cluster), na.rm = TRUE) %>% 
+  right_join(pop %>% select(total_pop, admin4pcode, 
+                            sub_district = admin3name_en, 
+                            admin3pcode, 
+                            governorate = admin1name_en, 
+                            community = location_name_en), 
+            by = "admin4pcode") %>%
+  left_join(locations %>% 
+              select(longitude_x, latitude_y, admin4pcode), 
+            by = "admin4pcode") %>% 
+  mutate(total_pop = ifelse(beneficiaries > 0 & total_pop == 0, 
+                            beneficiaries, 
+                            total_pop)) %>% 
+  filter(total_pop > 0) %>% 
+  mutate(beneficiaries = ifelse(beneficiaries == 0, NA_integer_, beneficiaries),
+         is_covered = ifelse(!is.na(beneficiaries), "Yes", "No")) %>% 
+  filter(total_pop > 0) %>% 
+  right_join(pcode3_shape, 
+             by = c("admin3pcode" = "ADM3_PCODE")) %>% 
+  filter(ADM1_PCODE %in% c("SY02", "SY07", "SY11") & 
+           admin4pcode %in% (pop %>% pull(admin4pcode)) & 
+           admin3pcode != "SY020500") %>%
+  st_as_sf() %>% 
+  ggplot() +
+  geom_sf(size = .1, colour = "grey70") + 
+  geom_point(aes(colour = is_covered, size = total_pop,  
+                 x = longitude_x, y = latitude_y), 
+             alpha = .5) + 
+  scale_colour_manual(values = c("#cc4778", "#0d0887")) + 
+  scale_size_continuous(labels = comma, 
+                        breaks = c(1000, 10000, 50000, 100000, 200000)) + 
+  theme_void() + 
+  theme(plot.background = element_rect(fill = "white", colour = NA)) + 
+  labs(title = "Which communities have not been reached?", 
+       subtitle = "Only shows whether a community has beneficiaries, not the percent reached", 
+       colour = "Reached?", 
+       size = "Population") + 
+  # Why did it take me so many years to learn this? 
+  guides(colour = guide_legend(order = 1), 
+         size = guide_legend(order = 2))
+
+
+```
+
 
 ---
 
@@ -771,7 +824,7 @@ com %>%
                        breaks = c(1, 3, 6, 9)) + 
   theme(plot.caption = element_text(hjust = .5)) + 
   labs(title = "% of FSL beneficiary frequencies per community", 
-       subtitle = "The top 10 communities form 50% of all beneficiary allocations", 
+       subtitle = "The top 10 communities form 45% of all beneficiary allocations", 
        caption = "Each tile is a single community. The larger the tile, the higher the share of beneficiary allocations.")
 
 ```
@@ -831,6 +884,7 @@ rbind(
   mutate_at(vars(cum_pc, cum_pc_pop), ~ round(. * 100, digits = 2)) %>% 
   select(cluster, top10_freq = cum_ben, `top10_freq%[desc]` = cum_pc, `%top10_population` = cum_pc_pop) %>% 
   arrange(desc(`top10_freq%[desc]`)) %>% 
+  rename(`cluster/WG` = cluster) %>%
   flextable() %>% 
   theme_zebra() %>% 
   set_caption("% of beneficiary frequencies and population in the top 10 communities, by cluster") %>% 
@@ -1202,12 +1256,67 @@ com %>%
 
 ---
 
-<img src = "https://github.com/northwest-syria-cash-working-group/multisector_4Ws_review/blob/main/img/severity_standard.png?raw=true" width="100%" />
+class: center, middle
+
+```{r fig.retina=2}
+com %>% 
+  filter(activity != "ISIMM" & project_status %in% c("Completed", "Ongoing")) %>% 
+  group_by(admin4pcode) %>% 
+  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE), 
+            clusters = n_distinct(cluster), na.rm = TRUE) %>% 
+  right_join(pop %>% select(total_pop, admin4pcode, 
+                            sub_district = admin3name_en, 
+                            admin3pcode, 
+                            governorate = admin1name_en, 
+                            community = location_name_en), 
+            by = "admin4pcode") %>%
+  left_join(locations %>% 
+              select(longitude_x, latitude_y, admin4pcode), 
+            by = "admin4pcode") %>% 
+  left_join(eq_score$data %>% 
+              select(eq_score, admin4pcode), 
+            by = "admin4pcode") %>% 
+  mutate(total_pop = ifelse(beneficiaries > 0 & total_pop == 0, 
+                            beneficiaries, 
+                            total_pop)) %>% 
+  filter(total_pop > 0) %>% 
+  mutate(beneficiaries = ifelse(is.na(beneficiaries), 0, beneficiaries),
+         pc_reached = beneficiaries / total_pop, 
+         pc_reached_scale = ifelse(pc_reached > 10, 10, pc_reached)) %>% 
+  right_join(pcode3_shape, 
+             by = c("admin3pcode" = "ADM3_PCODE")) %>% 
+  filter(ADM1_PCODE %in% c("SY02", "SY07", "SY11") & 
+           admin4pcode %in% (pop %>% pull(admin4pcode)) & 
+           admin3pcode != "SY020500") %>% 
+  st_as_sf() %>% 
+  ggplot() +
+  geom_sf(size = .1, colour = "grey70") + 
+  geom_point(aes(size = beneficiaries, colour = pc_reached_scale, 
+                 x = longitude_x, y = latitude_y, 
+                 text = paste0("sub_district: ", sub_district, "\n", 
+                               "community: ", community, "\n", 
+                               "admin4pcode: ", admin4pcode, "\n", 
+                               "population: ", format(total_pop, big.mark = ","), "\n", 
+                               "ben_freq: ", format(beneficiaries, big.mark = ","), "\n", 
+                               "clusters: ", clusters, "\n",  
+                               "%reached: ", round(pc_reached * 100, digits = 2), "%")), 
+             alpha = .5) + 
+  # setting NA value will not do anything if they won't even appear
+  scale_colour_viridis_c(option = "plasma", na.value = "grey25",  
+                         labels = percent) + 
+  scale_size_continuous(labels = comma, 
+                        breaks = c(0, 100, 1000, 10000, 100000, 1000000, 2000000)) +
+  theme_void() + 
+  theme(plot.background = element_rect(fill = "white", colour = NA)) + 
+  labs(title = "Map of beneficiary frequencies", 
+       subtitle = "Excludes persons reached by Health",
+       colour = "% Reached", 
+       size = "Frequencies")
 
 
----
+```
 
-<img src = "https://github.com/northwest-syria-cash-working-group/multisector_4Ws_review/blob/main/img/severity_frequencies.png?raw=true" width="100%" />
+
 
 ---
 
@@ -1241,11 +1350,39 @@ class: center, middle, my-one-page-font
 * There are **249** communities in which a single cluster is operating alone. The most common cluster operating solo is FSL. 
 
 * The cluster pairs with the highest correlations (i.e. having activities in the same community) were **Education-Nutrition**, **Education-Protection** followed by **Nutrition-WASH**, all led by UNICEF. However, activity pairs provide no discernible pattern that would indicate intentional inter-cluster programming.  
+
+
+---
+
+<img src = "https://github.com/northwest-syria-cash-working-group/multisector_4Ws_review/blob/main/img/severity_standard.png?raw=true" width="100%" />
+
+
+---
+
+<img src = "https://github.com/northwest-syria-cash-working-group/multisector_4Ws_review/blob/main/img/severity_frequencies.png?raw=true" width="100%" />
+
+---
+
+### Data and links
+
+```{js}
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+```
+
+
+All [code](https://github.com/northwest-syria-cash-working-group/multisector_4Ws_review/blob/main/cva_4ws_presentation.Rmd) and [raw data](https://github.com/northwest-syria-cash-working-group/multisector_4Ws_review/blob/main/data/com20230522.csv) are available for download. Look for the download icon. 
+
+Aggregated dataset at [community level](https://github.com/northwest-syria-cash-working-group/multisector_4Ws_review/blob/main/data/admin4_prioritisation.csv).  
+
+[Interactive version of community-level maps](interactive_maps.html).
  
-
-
-
-
 
 
 

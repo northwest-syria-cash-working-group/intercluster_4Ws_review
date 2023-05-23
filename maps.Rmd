@@ -641,6 +641,7 @@ com %>%
              ungroup() %>%
              select(beneficiaries, admin4pcode), 
            by = "admin4pcode") %>% 
+  mutate(beneficiaries = ifelse(beneficiaries == 0, NA_integer_, beneficiaries)) %>% 
    left_join(com %>%
               filter(project_status %in% c("Completed", "Ongoing") &
                        activity %out% c("ISIMM") & beneficiaries > 0) %>%
@@ -670,7 +671,7 @@ com %>%
   select(governorate, district, sub_district, community, admin4pcode, 
          beneficiaries, beneficiary_frequencies, clusters, eq_score, population = total_pop, pc_reached, 
          wounded_dead, wounded_dead_100k, damaged_houses, damaged_houses_100k, 
-         Cash, Education, FSL, Nutrition, Protection, SNFI, WASH, CCCM, ERL) %>% 
+         CWG, Education, FSL, Nutrition, Protection, SNFI, WASH, CCCM, ERL) %>% 
     write_csv("./data/admin4_prioritisation.csv")
   
   

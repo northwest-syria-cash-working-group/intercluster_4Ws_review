@@ -1,6 +1,6 @@
 "0","com %>% 
   filter(project_status %in% c(""Completed"", ""Ongoing"") & 
-           activity %out% c(""ISIMM"")) %>% 
+           activity %out% c(""ISIMM"") & beneficiaries > 0) %>% 
   group_by(admin4pcode, cluster) %>% 
   summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE)) %>% 
   ungroup() %>%  
@@ -22,9 +22,10 @@
              ungroup() %>%
              select(beneficiaries, admin4pcode), 
            by = ""admin4pcode"") %>% 
+  mutate(beneficiaries = ifelse(beneficiaries == 0, NA_integer_, beneficiaries)) %>% 
    left_join(com %>%
               filter(project_status %in% c(""Completed"", ""Ongoing"") &
-                       activity %out% c(""ISIMM"")) %>%
+                       activity %out% c(""ISIMM"") & beneficiaries > 0) %>%
               group_by(admin4pcode) %>% 
               summarise(beneficiary_frequencies = sum(beneficiaries, na.rm = TRUE),
                         clusters = n_distinct(cluster, na.rm = TRUE)), 
@@ -54,5 +55,10 @@
          Cash, Education, FSL, Nutrition, Protection, SNFI, WASH, CCCM, ERL) %>% 
     write_csv(""./data/admin4_prioritisation.csv"")
 "
-"2","Error in select(., total_pop, admin4pcode) : object 'pop' not found
+"1","[1m[33mError[39m in `select()`:[22m
+[33m![39m Can't subset columns that don't exist.
+[31mx[39m Column `Cash` doesn't exist.
+Backtrace:
+[90m 1. [39m... %>% write_csv(""./data/admin4_prioritisation.csv"")
+[90m 7. [39m[1m[94mdplyr:::select.data.frame([39m[22m...[1m[94m)[39m[22m
 "

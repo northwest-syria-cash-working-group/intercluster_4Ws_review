@@ -218,6 +218,13 @@ flextable() %>%
   set_table_properties(layout = "autofit", width = .7)
 
 
+st_read("C:/Users/seanywng/Downloads/shakemap/pga.shp") %>% 
+  st_as_sf() %>% 
+  ggplot() + 
+  geom_sf(aes(colour = PGAPOL_)) + 
+  scale_colour_viridis(option = "turbo")
+
+
 
 
 
