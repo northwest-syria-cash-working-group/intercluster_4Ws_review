@@ -1,0 +1,331 @@
+---
+title: "Maps for 4Ws presentation"
+author: "Based on Northwest Syria 4Ws data"
+date:  "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  html_document:
+    code_download: yes
+    theme: readable
+    toc: no
+    toc_depth: 4
+    toc_float: yes
+    number_sections: no
+    collapsed: no
+always_allow_html: yes
+---
+
+```{=html}
+<style>
+    body .main-container {
+        max-width: 1280px;
+    }
+</style>
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, fig.width=9, message = FALSE, warning=FALSE, fig.retina = 2)
+library(tidyverse)
+library(readxl)
+library(lubridate)
+library(stringi)
+library(janitor)
+library(scales)
+library(magrittr)
+library(viridis)
+library(patchwork)
+library(DT)
+library(sf)
+library(plotly)
+library(flextable)
+library(ggrepel)
+library(tidymodels)
+library(widyr)
+library(tidytext)
+library(treemapify)
+library(mdepriv)
+
+theme_set(theme_light())
+
+# disabling scientific notation
+options(scipen = 100)
+
+# Hopefully this allows the DT to show up
+options(htmltools.preserve.raw = FALSE)
+
+`%out%` <- Negate(`%in%`)
+
+# function for transposing df
+transpose_df <- function(df) {
+  t_df <- data.table::transpose(df)
+  colnames(t_df) <- rownames(df)
+  rownames(t_df) <- colnames(df)
+  t_df <- t_df %>%
+    tibble::rownames_to_column(.data = .) %>%
+    tibble::as_tibble(.)
+  return(t_df)
+}
+
+# scaling functions 
+range01 <- function(x){(x-min(x))/(max(x)-min(x))}
+range_wna <- function(x){(x-min(x, na.rm = TRUE))/(max(x, na.rm = TRUE)-min(x, na.rm = TRUE))}
+
+#mode function 
+mode <- function(x) {
+  ux <- unique(x)
+  ux[which.max(tabulate(match(x, ux)))]
+}
+
+```
+
+```{r data}
+
+pcode3_shape <- 
+  sf::st_read("./data/syr_admbnda_uncs_unocha_20201217/syr_admbnda_adm3_uncs_unocha_20201217.shp", 
+          quiet = TRUE)
+
+nw_pcode3 <- read_excel("./data/2023HNO_PiN_Severity_detailedAoI_FORSHARE 15032023.xlsx", skip = 1, 
+                  sheet = 1) %>%
+  clean_names() %>% 
+  filter(ao_c == "NW") %>% 
+  pull(admin3pcode)
+
+locations <- read_csv("./data/locations_aoc.csv")
+
+pop <- read_excel("./data/Population_Data_May_2022_final_01122022_with_SADD.xlsx", 
+           sheet = 5, 
+           skip = 2) %>% 
+  clean_names() %>% 
+  select(admin0name_en:longitude_x, 
+         final_est_of_id_ps_may_2022:family_avg_size_total_pop) %>% 
+  rename(idps = final_est_of_id_ps_may_2022, 
+         total_pop = final_est_of_total_pop_may_2022, 
+         avg_family_size = family_avg_size_total_pop) %>% 
+  filter(admin3pcode %in% nw_pcode3)
+
+com <- read_csv("./data/com20230522.csv") %>% 
+  filter(beneficiaries > 0) %>%
+  mutate(cluster = ifelse(cluster == "Cash", "CWG", cluster))
+
+names_eq <- c(
+  "date",
+  "governorate",
+  "district",
+  "sub_district",
+  "community",
+  "admin4pcode",
+  "casualties",
+  "injuries",
+  "completely_destroyed_houses",
+  "damaged_unihabitable_houses",
+  "temporary_accommodation_centres",
+  "idps_in_all_centres",
+  "schools_as_accomodation_centres",
+  "idps_in_schools",
+  "tents_needed",
+  "blankets_mattresses_needed",
+  "temporary_accommodation_centres_available", 
+  "accessible_civil_defense",
+  "latrines_available",
+  "meals_needed_per_day",
+  "need_blood_donations",
+  "health_services_available",
+  "necessary_medical_equipment",
+  "rubble_volunteers",
+  "telecoms_available",
+  "electricity_available", 
+  "heating_fuel_needed"
+)
+
+eq <- read_excel("./data/syria-earthquake-impact-20-march-2023.xlsx",
+                 sheet = "DATASET") %>% 
+  setNames(names_eq) %>% 
+  left_join(pop %>% 
+              select(admin4pcode, total_pop), 
+            by = "admin4pcode") %>% 
+  mutate(wounded_dead = casualties + injuries,
+             damaged_houses = completely_destroyed_houses + damaged_unihabitable_houses) %>% 
+  mutate(wounded_dead_100k = wounded_dead / total_pop * 100000, 
+         damaged_houses_100k = damaged_houses / total_pop * 100000)
+
+eq_score <- eq %>%
+  filter(!is.infinite(wounded_dead_100k) & !is.infinite(damaged_houses_100k)) %>% 
+  mutate_at(vars(wounded_dead, damaged_houses, 
+                 wounded_dead_100k, damaged_houses_100k), ~ range_wna(.)) %>% 
+  replace_na(list(wounded_dead_100k = 0, 
+                  damaged_houses_100k = 0, 
+                  wounded_dead = 0, 
+                  damaged_houses = 0)) %>%  
+  mdepriv(c("wounded_dead", "damaged_houses", 
+            "wounded_dead_100k", "damaged_houses_100k"), 
+          method = "bv", output = "all", 
+          score_i_heading = "eq_score")
+
+
+```
+
+# Which communities have not been reached? 
+
+```{r}
+is_covered_map <- com %>% 
+  filter(activity != "ISIMM" & project_status %in% c("Completed", "Ongoing")) %>% 
+  group_by(admin4pcode) %>% 
+  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE), 
+            clusters = n_distinct(cluster), na.rm = TRUE) %>% 
+  right_join(pop %>% select(total_pop, admin4pcode, 
+                            sub_district = admin3name_en, 
+                            admin3pcode, 
+                            governorate = admin1name_en, 
+                            community = location_name_en), 
+            by = "admin4pcode") %>%
+  left_join(locations %>% 
+              select(longitude_x, latitude_y, admin4pcode), 
+            by = "admin4pcode") %>% 
+  mutate(total_pop = ifelse(beneficiaries > 0 & total_pop == 0, 
+                            beneficiaries, 
+                            total_pop)) %>% 
+  filter(total_pop > 0) %>% 
+  mutate(beneficiaries = ifelse(beneficiaries == 0, NA_integer_, beneficiaries),
+         is_covered = ifelse(!is.na(beneficiaries), "Yes", "No")) %>% 
+  filter(total_pop > 0) %>% 
+  right_join(pcode3_shape, 
+             by = c("admin3pcode" = "ADM3_PCODE")) %>% 
+  filter(ADM1_PCODE %in% c("SY02", "SY07", "SY11") & 
+           admin4pcode %in% (pop %>% pull(admin4pcode)) & 
+           admin3pcode != "SY020500") %>% 
+  st_as_sf() %>% 
+  ggplot() +
+  geom_sf(size = .1, colour = "grey70") + 
+  geom_point(aes(size = total_pop, colour = is_covered, 
+                 x = longitude_x, y = latitude_y, 
+                 text = paste0("sub_district: ", sub_district, "\n", 
+                               "community: ", community, "\n", 
+                               "admin4pcode: ", admin4pcode, "\n", 
+                               "population: ", format(total_pop, big.mark = ","), "\n", 
+                               "ben_freq: ", format(beneficiaries, big.mark = ","), "\n", 
+                               "clusters: ", clusters)), 
+             alpha = .5) + 
+  scale_size_continuous(range = c(0.5, 5)) + 
+  scale_colour_manual(values = c("#cc4778", "#0d0887")) + 
+  theme_void() + 
+  theme(plot.background = element_rect(fill = "white", colour = NA)) + 
+  guides(size = "none") + 
+  labs(title = "Which communities have not been reached?", 
+       subtitle = "Size shows total population; mouse over for details", 
+       colour = "Reached?")
+
+ggplotly(is_covered_map, tooltip = c("text")) %>% 
+  plotly::style(hoveron = "point") %>% 
+  layout(title = list(text = paste0("Which communities have not been reached?", 
+                                    "<br>", "<sup>", 
+                                    "size shows total population; mouse over for details")))
+
+```
+
+
+<br><br><br>
+
+# Summary map of beneficiary frequencies
+
+```{r}
+summary_map <- com %>% 
+  filter(activity != "ISIMM" & project_status %in% c("Completed", "Ongoing")) %>% 
+  group_by(admin4pcode) %>% 
+  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE), 
+            clusters = n_distinct(cluster), na.rm = TRUE) %>% 
+  right_join(pop %>% select(total_pop, admin4pcode, 
+                            sub_district = admin3name_en, 
+                            admin3pcode, 
+                            governorate = admin1name_en, 
+                            community = location_name_en), 
+            by = "admin4pcode") %>%
+  left_join(locations %>% 
+              select(longitude_x, latitude_y, admin4pcode), 
+            by = "admin4pcode") %>% 
+  left_join(eq_score$data %>% 
+              select(eq_score, admin4pcode), 
+            by = "admin4pcode") %>% 
+  mutate(total_pop = ifelse(beneficiaries > 0 & total_pop == 0, 
+                            beneficiaries, 
+                            total_pop)) %>% 
+  filter(total_pop > 0) %>% 
+  mutate(beneficiaries = ifelse(is.na(beneficiaries), 0, beneficiaries),
+         pc_reached = beneficiaries / total_pop, 
+         pc_reached_scale = ifelse(pc_reached > 10, 10, pc_reached)) %>% 
+  right_join(pcode3_shape, 
+             by = c("admin3pcode" = "ADM3_PCODE")) %>% 
+  filter(ADM1_PCODE %in% c("SY02", "SY07", "SY11") & 
+           admin4pcode %in% (pop %>% pull(admin4pcode)) & 
+           admin3pcode != "SY020500") %>% 
+  st_as_sf() %>% 
+  ggplot() +
+  geom_sf(size = .1, colour = "grey70") + 
+  geom_point(aes(size = beneficiaries, colour = pc_reached_scale, 
+                 x = longitude_x, y = latitude_y, 
+                 text = paste0("sub_district: ", sub_district, "\n", 
+                               "community: ", community, "\n", 
+                               "admin4pcode: ", admin4pcode, "\n", 
+                               "population: ", format(total_pop, big.mark = ","), "\n", 
+                               "ben_freq: ", format(beneficiaries, big.mark = ","), "\n", 
+                               "clusters: ", clusters, "\n",  
+                               "%reached: ", round(pc_reached * 100, digits = 2), "%")), 
+             alpha = .5) + 
+  scale_size_continuous(range = c(0.5, 5)) + 
+  # setting NA value will not do anything if they won't even appear
+  scale_colour_viridis_c(option = "plasma", na.value = "grey25", 
+                         labels = percent) + 
+  theme_void() + 
+  theme(plot.background = element_rect(fill = "white", colour = NA)) + 
+  guides(size = "none") + 
+  labs(title = "Map of beneficiary frequencies", 
+       subtitle = "Size shows beneficiary frequencies; mouse over for details", 
+       colour = "% reached")
+
+ggplotly(summary_map, tooltip = c("text")) %>% 
+  plotly::style(hoveron = "point") %>% 
+  layout(title = list(text = paste0("Map of beneficiary frequencies", 
+                                    "<br>", "<sup>", 
+                                    "Size shows beneficiary frequencies; mouse over for details")))
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

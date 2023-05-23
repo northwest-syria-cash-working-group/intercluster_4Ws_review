@@ -15,7 +15,7 @@ output:
 ---
 
 ```{css, echo=FALSE}
-<style type="text/css">
+
 .remark-slide-content {
     font-size: 25px;
     padding: 1em 4em 1em 4em;
@@ -25,6 +25,9 @@ output:
   font-size: 25px;
 }
 
+.remark-font {
+  font-size: 12px;
+}
 ```
 
 ```{r setup, include=FALSE}
@@ -703,7 +706,7 @@ com %>%
 
 ---
 
-class: center, middle
+class: center, middle, remark-font
 
 ```{r fig.retina=2}
 com %>% 
@@ -755,9 +758,11 @@ com %>%
 ```
 
 
+[Interactive version](https://northwest-syria-cash-working-group.github.io/multisector_4Ws_review/interactive_maps.html/#which-communities-have-not-been-reached)
+
 ---
 
-class: center, middle
+class: center, middle, 
 
 ```{r}
 com %>% 
@@ -1256,7 +1261,7 @@ com %>%
 
 ---
 
-class: center, middle
+class: center, middle, remark-font
 
 ```{r fig.retina=2}
 com %>% 
@@ -1316,7 +1321,7 @@ com %>%
 
 ```
 
-
+[Interactive version](https://northwest-syria-cash-working-group.github.io/multisector_4Ws_review/interactive_maps.html/#summary-map-of-beneficiary-frequencies)
 
 ---
 
