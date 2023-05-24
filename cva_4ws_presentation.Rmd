@@ -758,7 +758,9 @@ com %>%
 ```
 
 
-[Interactive version](https://northwest-syria-cash-working-group.github.io/multisector_4Ws_review/interactive_maps.html/#which-communities-have-not-been-reached)
+[Interactive version](https://northwest-syria-cash-working-group.github.io/multisector_4ws_maps/#which-communities-have-not-been-reached)
+
+
 
 ---
 
@@ -1321,7 +1323,7 @@ com %>%
 
 ```
 
-[Interactive version](https://northwest-syria-cash-working-group.github.io/multisector_4Ws_review/interactive_maps.html/#summary-map-of-beneficiary-frequencies)
+[Interactive version](https://northwest-syria-cash-working-group.github.io/multisector_4ws_maps/#summary-map-of-beneficiary-frequencies)
 
 ---
 

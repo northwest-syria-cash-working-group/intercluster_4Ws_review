@@ -391,7 +391,8 @@ cash %>%
 Food baskets are used for the monthly reached for Food, filtered from `fss_activity_do_not_write` and summed from the column `beneficiaries`. 
 
 For the cumulative, FSL uses the AVERAGE of beneficiaries at community level, for some reason FSL is using sub-district. `na.rm = TRUE` is applied, only taking into account months that have beneficiaries. 
-For disaggregations, the column `females` is the totla number of females, so to determine the number of adult women, the number of girls needs to be subtracted from the `females` columns. This is the same for males. 
+
+For disaggregations, the column `females` is the total number of females, so to determine the number of adult women, the number of girls needs to be subtracted from the `females` columns. This is the same for males. 
 
 <br>
 
@@ -400,15 +401,44 @@ For disaggregations, the column `females` is the totla number of females, so to 
 # Total beneficiaries for food
 # For monthly reached 
 fsl %>% 
-  mutate(month = case_when(reporting_month == "January" ~ "jan", 
-                           TRUE ~ NA_character_)) %>% 
+  mutate(month = str_to_lower(str_sub(reporting_month, start = 1L, end = 3L))) %>% 
   filter(activity == "Food Baskets" & reported_to_other_sector == "No") %>% 
   group_by(final_implementing_partner, admin4pcode) %>% 
   slice(which.max(beneficiaries)) %>% 
   ungroup() %>% 
   group_by(month) %>% 
   summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE)) %>% 
-  mutate(type = "food_cumulative")
+  mutate(type = "food_monthly")
+
+# Cumulative calculation for food beneficiaries 
+fsl %>% 
+  mutate(month = str_to_lower(str_sub(reporting_month, start = 1L, end = 3L))) %>% 
+  filter(activity == "Food Baskets" & reported_to_other_sector == "No") %>% 
+  group_by(final_implementing_partner, admin4pcode) %>% 
+  slice(which.max(beneficiaries)) %>% 
+  ungroup() %>% 
+  group_by(month) %>% 
+  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE)) %>% 
+  summarise(beneficiaries = mean(beneficiaries, na.rm = TRUE)) %>% 
+  mutate(type = "food_cumulative") 
+
+# Monthly for livelihoods
+# How does this work with ERL? 
+fsl %>% 
+  mutate(month = case_when(reporting_month == "January" ~ "jan", 
+                           TRUE ~ NA_character_)) %>% 
+  filter(activity %in% c("Agricultural inputs",
+                         "Animal treatment/vaccination",
+                         "Income-generating activities (IGAs)", 
+                         "Infrastructure rehabilitation",
+                         "Livestock asset restoration") & 
+           reported_to_other_sector == "No") %>% 
+  group_by(final_implementing_partner, admin4pcode) %>% 
+  slice(which.max(beneficiaries)) %>% 
+  ungroup() %>% 
+  group_by(month) %>% 
+  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE)) %>% 
+  mutate(type = "livelihoods_monthly")
 
 # Cumulative beneficiaries for livelihoods
 fsl %>% 
@@ -425,7 +455,7 @@ fsl %>%
   ungroup() %>% 
   group_by(month) %>% 
   summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE)) %>% 
-  mutate(type = "livelihoods_cumulative")
+  mutate(type = "livelihoods_monthly")
   
 
 ```
@@ -734,40 +764,9 @@ Beneficiaries are the sum of beneficiaries in child protection, mine action, GBV
 
 -beneficiaries is the sum of beneficiaries in child protection, mine action, GBV and general protection 
 
+
+
 ### Monthly reached 
-
-```{r}
-fsl_com <- rbind(fsl %>% 
-    mutate(month = str_to_lower(str_sub(reporting_month, start = 1L, end = 3L)), 
-           # Not sure if I should just make it all "Ongoing" instead
-           project_status = "Completed", 
-           cluster = "FSL") %>%
-      filter(reported_to_other_sector == "No") %>% 
-    consolidation_cols(), 
-  
-  fsl_tracker %>% 
-    mutate(month = month(distribution_date, label = TRUE), 
-           month = str_to_lower(month), 
-           cluster = "FSL", 
-           admin5pcode = NA_character_) %>% 
-    consolidation_cols())
-
-fsl_com %>% count(project_status)
-
-edu %>% count(status)
-
-nut %>% count(status)
-
-wash %>% count(project_status)
-
-prot %>% glimpse()
-
-snfi %>% glimpse()
-
-snfi %>% count(project_status)
-
-```
-
 
 
 ```{r}

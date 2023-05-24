@@ -153,6 +153,7 @@ eq <- read_excel("./data/syria-earthquake-impact-20-march-2023.xlsx",
 
 ```{r read-cash, warning=FALSE}
 
+# Replace this with the relevant clean Cash dataset
 cash <- read_csv("./data/read/cbr_com_20230519.csv") %>% 
   filter(str_detect(cluster, "Multipurpose"))
 
@@ -430,6 +431,8 @@ read_sheet("https://docs.google.com/spreadsheets/d/1KGqt-3YDh2k8qNCksOJAndRPO56G
          district = ifelse(district == "idleb", "Idleb", district)) %>% 
   mutate(project_status = recode(project_status, 
                     "Implemented" = "Completed")) %>%
+  # This is how it does not overlap with CWG activities, 
+  # But I will be glad to retire this section 
   filter(activity != "Cash Response") %>% 
   write_csv(paste0("./data/read/fsl_tracker_", format(Sys.Date(), "%Y%m%d"), ".csv"))
 
@@ -467,8 +470,13 @@ fsl_clean <- function(tbl) {
     mutate(camp_name = ifelse(!is.na(camp_name_cccm_official_name), 
                               camp_name_cccm_official_name, 
                               camp_name_if_not_listed_by_the_cccm), 
-           total_usd = frequency * transfer_value * families)
-}
+           total_usd = frequency * transfer_value * families) %>% 
+    mutate(project_status = case_when(start_date < Sys.Date() & end_date > Sys.Date() ~ "Ongoing", 
+                                    end_date < Sys.Date() ~ "Completed", 
+                                    start_date > Sys.Date() ~ "Planned", 
+                                    # Just to catch the NAs, but FSL have their dates in order
+                                    TRUE ~ "Ongoing")) 
+  }
 
 fsl <- rbind(
   read_xlsb("./data/read/FSL_January 2023_5Ws_OCHA_22032023.xlsb", 
@@ -482,6 +490,8 @@ fsl <- rbind(
     fsl_clean() 
 )
 ```
+
+
 
 ```{r}
 fsl %>% write_csv("./data/read/fsl.csv")
@@ -641,7 +651,6 @@ erl <- read_csv("./data/read/erl.csv")
 
 
 
-
 ```{r consolidated-df}
 
 consolidation_cols <- function(tbl) {
@@ -663,6 +672,7 @@ com <- rbind(
     filter(unit == "# people") %>% 
     mutate(beneficiaries = total_reached, 
            month = str_to_lower(str_sub(month, start = 6L, end = 8L)), 
+           # They only seem to report completed activities
            project_status = "Completed", 
            cluster = "Protection", 
            transfer_value = NA_integer_, 
@@ -726,6 +736,7 @@ com <- rbind(
            cluster = "WASH", 
            month = str_to_lower(month)) %>% 
     # If you don't do this, you get repeats 
+    # Definitely rethink how this is read in
     group_by(activity, admin4pcode) %>% 
     slice(which.max(beneficiaries)) %>% 
     ungroup() %>% 
@@ -755,11 +766,10 @@ com <- rbind(
   
   fsl %>% 
     mutate(month = str_to_lower(str_sub(reporting_month, start = 1L, end = 3L)), 
-           # Not sure if I should just make it all "Ongoing" instead
-           project_status = "Completed", 
            cluster = "FSL") %>%
     consolidation_cols(), 
   
+  # The FSL tracker will be retired soon 
   fsl_tracker %>% 
     mutate(month = month(report_date, label = TRUE), 
            month = str_to_lower(month), 
@@ -838,717 +848,7 @@ com %>% write_csv(paste0("./data/com", format(Sys.Date(), "%Y%m%d"), ".csv"))
 ```
 
 
-
-
-```{r eval=FALSE}
-
-# WASH being problematic
-wash %>%
-    pivot_longer(cols = c(rehab_repair_water_station, 
-                          o_m, 
-                          construction_water_station, 
-                          network_rehab, 
-                          construction_water_network, 
-                          chlorination, 
-                          wq_testing, 
-                          fuel_consumption, 
-                          water_safety_plans, 
-                          water_trucking, 
-                          cash_assistance_water_trucking, 
-                          pvt_boreholes, 
-                          cash_assistance_private_boreholes, 
-                          tanks_pwd_ben, 
-                          hh_water_treatment, 
-                          hh_water_treatement_cash_assistance, 
-                          sew_rehab_repair, 
-                          sew_support, 
-                          sew_construction, 
-                          beneficiaries_toilets, 
-                          pw_d_beneficiaries_toilet, 
-                          beneficiaries_cash_toilets, 
-                          bath_new, 
-                          cash_bath,
-                          des_beneficiaries, 
-                          swm_support_benf, 
-                          hp_ben, 
-                          hp_pwd_ben, 
-                          hk_ben, 
-                          cash_hk, 
-                          pwd_beneficiaries, 
-                          wash_nfi_ben, 
-                          incinerator_health_facilities, 
-                          cholera_safe_water, 
-                          chlorin_cholera, 
-                          cholera_sew, 
-                          cholera_kit, 
-                          cholera_hp_rcce_iec, 
-                          cholera_wash_in_health), 
-                 names_to = "activity", values_to = "beneficiaries") %>% 
-  # A bit controversial, but if I don't do this, WASH will be gigantic
-  # group_by(activity, admin4pcode) %>% 
-  # slice(which.max(beneficiaries)) %>% 
-  # ungroup() %>% 
-    mutate(delivery_modality = NA_character_,
-           cluster = "WASH") %>% 
-  group_by(activity) %>% 
-  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE)) %>% 
-  arrange(desc(beneficiaries))
-
-com %>% count(project_status)
-
-
-```
-
-WASH des_beneficiaries is almost certainly disinfection or desinfeccion. However, this still doesn't allow me to remove beneficiaries from the totals, so WASH numbers will continue to be inflated, 
-
-
-### Number of unique individuals reached 
-
-The total number of unique individuals that has been reached by the response so far is `r filter(com, !is.na(admin4pcode)) %>% group_by(admin4pcode) %>% slice(which.max(beneficiaries)) %>% ungroup() %>% {sum(.$beneficiaries)} %>% format(big.mark = ",")` persons. 
-
-```{r}
-com %>% 
-  filter(cluster == "CCCM") %>% 
-  count(activity, sort = TRUE)
-```
-
-alternative calculation for unique individuals 
-frankenstein column called site 
-
-Whether it is better to calculated individuals using "site", a made up column or by admin4, which leads to significant undercounting. 
-
-Kick this issue to the OCHA IM unit for decision. 
-
-```{r}
-
-com  %>% 
-  filter(!is.na(admin4pcode) & activity != "ISIMM") %>%
-  group_by(site) %>% 
-  slice(which.max(beneficiaries)) %>% 
-  {sum(.$beneficiaries, na.rm = TRUE)}
-
-```
-
-
-
-
-```{r}
-com %>% 
-  filter(!is.na(admin4pcode) & activity != "ISIMM") %>% 
-  group_by(admin4pcode) %>% 
-  slice(which.max(beneficiaries)) %>% 
-  ungroup() %>% 
-  {sum(.$beneficiaries)} %>% format(big.mark = ",")
-
-com %>% 
-  filter(!is.na(admin4pcode) & activity != "ISIMM") %>% 
-  group_by(admin4pcode) %>% 
-  slice(which.max(beneficiaries)) %>% 
-  ungroup() %>% 
-  group_by(admin4pcode) %>% 
-  summarise(ben_freq = sum(beneficiaries)) %>% 
-  left_join(pop %>% select(admin4pcode, total_pop), 
-            by = "admin4pcode") %>% 
-  mutate(pc = ben_freq / total_pop) %>% 
-  ggplot(aes(x = total_pop, y = ben_freq)) + 
-  geom_point(aes(size = pc)) + 
-  scale_x_log10() + 
-  scale_y_log10()
-  
-```
-
-
-```{r}
-com %>% 
-  filter(!is.na(admin4pcode) & activity != "ISIMM") %>% 
-  group_by(admin4pcode) %>% 
-  slice(which.max(beneficiaries)) %>% 
-  ungroup() %>% 
-  group_by(admin4pcode) %>% 
-  summarise(ben_freq = sum(beneficiaries)) %>% 
-  left_join(pop %>% select(admin4pcode, total_pop), 
-            by = "admin4pcode") %>% 
-  mutate(pc = ben_freq / total_pop) %>% 
-  ggplot(aes(x = pc, y = ben_freq)) + 
-  geom_point(aes(size = pc), 
-             alpha = .5) + 
-  scale_x_log10(labels = percent) + 
-  scale_y_log10(labels = comma)
-```
-
-```{r}
-reached_100 <- com %>% 
-  filter(!is.na(admin4pcode) & activity != "ISIMM") %>% 
-  group_by(admin4pcode) %>% 
-  summarise(ben_freq = sum(beneficiaries), 
-            clusters = n_distinct(cluster),) %>% 
-  left_join(pop %>% select(admin4pcode, total_pop, 
-                           governorate = admin1name_en, 
-                           sub_district = admin3name_en, 
-                           community = admin4name_en), 
-            by = "admin4pcode") %>% 
-  mutate(pc = ben_freq / total_pop) %>% 
-  filter(pc > .99) %>% 
-  pull(admin4pcode)
-
-pop %>% glimpse()
-```
-
-
-```{r}
-com %>% 
-  filter(!is.na(admin4pcode) & activity != "ISIMM") %>% 
-  group_by(site) %>% 
-  slice(which.max(beneficiaries)) %>% 
-  ungroup() %>% 
-  group_by(admin4pcode) %>% 
-  summarise(ben_freq = sum(beneficiaries)) %>% 
-  left_join(pop %>% select(admin4pcode, total_pop), 
-            by = "admin4pcode") %>% 
-  mutate(pc = ben_freq / total_pop) %>%
-  ggplot(aes(x = pc)) + 
-  geom_histogram() + 
-  scale_x_log10(labels = percent) + 
-  labs(x = "Percent of population covered")
-```
-
-Histogram by site 
-
-```{r}
-com %>% 
-  filter(!is.na(admin4pcode) & activity != "ISIMM") %>% 
-  group_by(site) %>% 
-  slice(which.max(beneficiaries)) %>% 
-  ungroup() %>% 
-  group_by(admin4pcode) %>% 
-  summarise(ben_freq = sum(beneficiaries)) %>% 
-  left_join(pop %>% select(admin4pcode, total_pop), 
-            by = "admin4pcode") %>% 
-  mutate(pc = ben_freq / total_pop) %>%
-  ggplot(aes(x = pc)) + 
-  geom_histogram() + 
-  scale_x_log10(labels = percent) + 
-  labs(x = "Percent of population covered")
-```
-
-
-Export a list of communities that are heavily oversubscribed and also communities that are very undersubscribed 
-
-
-The Cash Working Group is interested in the following indicators: 
-
-* The percentage of individuals who have received cash assistance of any kind
-* The percentage of individuals who have received multi-purpose cash assistance 
-* The percentage of beneficiary frequencies, per cluster and per activity, who have received cash assistance 
-
-Site-level data is necessary for any of these calculations to take place. And the calculation of the number of unique individuals reached is an important figure to all clusters. However, the CWG has no interest in imposing its reporting policy and calculations on other clusters -- this section instead outlines how the CWG intends to process these figures, to document them for public knowledge and for ease of future revision. 
-
-To reiterate, the multi-sector reached has been calculated according to the CWG's own preferences (please download the code to see the exact conditions). Other coordination bodies and clusters should make their own determinations. 
-
-Site-level data is important in calculating the number of unique individuals reached -- this itself is an important figure for the CWG as we work to determine the percentage of beneficiaries who have received assistance through in-kind, cash or service delivery modalities. 
-
-Unique individuals are distinct from beneficiary frequencies -- a family of four receiving cash assistance, hygiene kits and emergency shelter kits represent 12 beneficiary frequencies, but are 4 unique individuals. 
-
-Beneficiary frequencies can be easily determined by summing beneficiaries reached regardless or whether they have been reached before. 
-
-The ideal way to determine the number of unique individuals reached is through an established and maintained beneficiary database. However, this option is not available to us. Whilst various clusters may have different formulae for calculating individuals reached, common approaches include a column asking whether beneficiaries have been previously assisted or taking the highest number reached out of any activity per community then summing those together. 
-
-This second option -- taking the highest number reached, by any activity, at site level -- is the best available option to avoid double counting. In fact, there will be usually be some slight undercounting. However, site-level consolidation is not currently an option. The lowest-common denominator between clusters is the community level, or admin4 (with the very notable exception of Health, which only reports at admin3, likely due to the catchment area of each health facility). 
-
-Site-level (camp, specific location in the community) data is only collected in the following templates:
-
-* WASH: camp pcodes and the specific WASH installations are collected
-* FSL: camp pcodes are collected
-* Education: camp pcodes and names are available, as are schools and their unique identifier numbers.
-* Nutrition: camp pcodes are collected, health facility names and school names are collected. 
-* Protection: camp pcodes are collected
-* Cash: camp pcodes are collected
-
-However, as will be explored in the following sections, site-level data (admin5) is of quite poor quality, largely due to the poor standardisation of site names, differing thoughts on the ownership of the geoadmins dataset as well as due to a lot of information not being collected. Therefore, pushing everyone down to reporting at admin5 without first resolving these issues would be a lot of effort for very marignal gains. 
-
-
-<br><br> 
-
-### Coordination and multi-sector footprint
-
-```{r}
-
-com %>% 
-  group_by(cluster, admin4pcode) %>% 
-  summarise(count = n()) %>% 
-  pairwise_cor(cluster, admin4pcode, value = count, 
-               method = c("spearman"), upper = FALSE) %>% 
-  arrange(desc(correlation))
-
-com %>% 
-  group_by(activity, admin4pcode) %>% 
-  summarise(count = n()) %>% 
-  pairwise_cor(activity, admin4pcode, value = count, 
-               method = c("spearman"), upper = FALSE) %>% 
-  arrange(desc(correlation)) %>% 
-  left_join(com %>% 
-              distinct(cluster1 = cluster, activity), 
-            by = c("item1" = "activity")) %>% 
-  left_join(com %>% 
-              distinct(cluster2 = cluster, activity), 
-            by = c("item2" = "activity")) %>% 
-  filter(cluster1 != cluster2)
-
-com %>%
-  filter(!is.na(admin4pcode) & !is.na(activity)) %>% 
-  pairwise_count(activity, admin4pcode, sort = TRUE)
-
-
-```
-
-All this being said, the consolidation of the 4W data does create additional opportunities 
-
-The consolidation of this 4W data creates additional opportunities for inter-cluster coordination. Inter-cluster coordination is not the purview of the Cash Working Group and OCHA is more than capable to making these opportunities for themselves. 
-
-However, it would also be remiss to not mention what new metrics would be available for analysis: 
-
-* The number of clusters per admin4 (useful for determining inter-cluster gaps i.e. are there any areas where we are doing education without shelter? Nutrition without food security?)
-* The number of activities per admin4 (similar to above, but more detailed)
-* The number of beneficiary frequencies at admin4 (collectively, what has been the level of investment in each community by the humanitarian community as a whole? Important for determining if allocations have been fair i.e. are there communities of similar pre-existing vulnerability and earthquake damage that have received drastically different levels of support?)
-
-Again, inter-cluster coordination is not the purview of the Cash Working Group, but we are happy to share all the code and data with whoever wants to take the lead for that. 
-
-# Population 
-
-```{r}
-
-# Number of communities reached so far 
-com %>%
-  filter(!is.na(admin4pcode) & activity != "ISIMM") %>%
-  summarise(communities = n_distinct(admin4pcode))
-  
-  
-```
-
-The issue with calculating these metrics is that we do not have an intercluster target. 
-
-Calculating all these metrics is pretty academic unless coordination wants to do something about it. 
-
-```{r}
-pop %>% 
-  filter(admin3pcode %in% nw_pcode3) %>% 
-  {mean(.$total_pop)}
-```
-
-
-```{r}
-com %>% 
-  left_join(pop %>% 
-              select(total_pop, admin4pcode), 
-            by = "admin4pcode") %>% 
-  filter(!is.na(admin4pcode) & activity != "ISIMM") %>% 
-  group_by(admin4pcode) %>% 
-  slice(which.max(beneficiaries)) %>% 
-  ungroup() %>% 
-  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE), 
-            population = sum(total_pop, na.rm = TRUE)) %>% 
-  mutate(pc_reached = round(beneficiaries / population * 100, digits = 2))
-```
-
-
-
-```{r}
-com %>% 
-  filter(!is.na(admin4pcode) & activity != "ISIMM") %>% 
-  group_by(admin4pcode) %>% 
-  summarise(sectors = n_distinct(cluster)) %>% 
-  ggplot(aes(x = sectors)) + 
-  geom_histogram(bins = 9) + 
-  scale_x_continuous(breaks = seq(1, 9, by = 1)) + 
-  geom_text(stat = "count", aes(label=..count..), vjust= - 0.5) +
-  expand_limits(y = 260) + 
-  labs(x = "Number of sectors", 
-       y = "Number of communities", 
-       title = "245 communities only have one cluster present")
-```
-<br>
-
-```{r}
-com %>% 
-  filter(cluster == "FSL") %>% 
-  group_by(admin4pcode) %>% 
-  slice(which.max(beneficiaries)) %>% 
-  ungroup() %>% 
-  {sum(.$beneficiaries, na.rm = TRUE)}
-
-pop %>% 
-  count(admin1pcode)
-  glimpse()
-```
-
-
-```{r}
-com %>% 
-  filter(!is.na(admin4pcode) & activity != "ISIMM") %>% 
-  group_by(admin4pcode) %>% 
-  summarise(sectors = n_distinct(cluster)) %>% 
-  filter(sectors == 1)
-```
-
-
-We note, from the table below, that the single cluster present in most of these 774 communities is CCCM.
-
-```{r}
-com %>% 
-  # Should water quality testing be included? 
-  filter(!is.na(admin4pcode)  & activity %out% c("ISIMM")) %>% 
-  group_by(cluster) %>% 
-  summarise(ben_frequencies = sum(beneficiaries, na.rm = TRUE), 
-            communities = n_distinct(admin4pcode)) %>% 
-  arrange(desc(communities)) %>% 
-  flextable() %>% 
-  theme_zebra() %>% 
-  set_caption("Footprint and reach per cluster/WG") %>% 
-  footnote(i = 1, j = 2, inline = TRUE, ref_symbols = "1", part = "header",
-           as_paragraph("Beneficiary frequencies are the number of times an individual has received assistance, regardless double counting")) %>% 
-  set_table_properties(layout = "autofit", width = .7)
-```
-
-<br>
-
-```{r}
-com %>% 
-  filter(cluster == "WASH") %>% 
-  group_by(activity) %>% 
-  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE)) %>% 
-  arrange(desc(beneficiaries))
-```
-
-
-Following CCCM, FSL has the largest footprint. SNFI and ERL have markedly more concentrated footprints. This probably has implications for the earthquake response as it will necessarily focused around Shelter. 
-
-
-<br>
-
-There are 34 communities where the only cluster present is not CCCM. In the majority of these cases, the single cluster present is either Education or Nutrition. 
-
-Export a csv of all communities which only have one cluster operating. 
-
-```{r}
-com %>% 
-  filter(!is.na(admin4pcode) ) %>% 
-  group_by(admin4pcode, cluster) %>% 
-  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE)) %>% 
-  ungroup() %>% 
-  pivot_wider(names_from = cluster, values_from = beneficiaries) %>%
-  mutate(clusters = rowSums(!is.na(.[,-1]))) %>% 
-  {mean(.$clusters, na.rm = TRUE)}
-
-com %>% 
-  filter(!is.na(admin4pcode) ) %>% 
-  group_by(admin4pcode, cluster) %>% 
-  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE)) %>% 
-  ungroup() %>% 
-  pivot_wider(names_from = cluster, values_from = beneficiaries) %>%
-  mutate(clusters = rowSums(!is.na(.[,-1]))) %>% 
-  ummarise(cash = sum(!is.na(Cash)), 
-            education = sum(!is.na(Education)), 
-            fsl = sum(!is.na(FSL)), 
-            nut = sum(!is.na(Nutrition)), 
-            prot = sum(!is.na(Protection)), 
-            snfi = sum(!is.na(SNFI)), 
-            wash = sum(!is.na(WASH)), 
-            erl = sum(!is.na(ERL)), 
-            cccm = sum(!is.na(CCCM)), 
-            edu = sum(!is.na(Education)))
-  filter(clusters == 1 & is.na(CCCM))
-  
-  filter(admin4pcode %in% reached_100) %>% 
-  {mean(.$clusters, na.rm = TRUE)}
-
-
-  summarise(cash = sum(!is.na(Cash)), 
-            education = sum(!is.na(Education)), 
-            fsl = sum(!is.na(FSL)), 
-            nut = sum(!is.na(Nutrition)), 
-            prot = sum(!is.na(Protection)), 
-            snfi = sum(!is.na(SNFI)), 
-            wash = sum(!is.na(WASH)), 
-            erl = sum(!is.na(ERL)), 
-            cccm = sum(!is.na(CCCM)), 
-            edu = sum(!is.na(Education)))
-  filter(clusters == 1 & is.na(CCCM))
-  
-```
-
-
-
-
-Multi-sector coverage is generally much better in Idleb than Aleppo. 
-
-Was this intentional? 
-
-
-
-```{r}
-com %>% 
-  filter(activity != "ISIMM") %>% 
-  filter(admin1pcode %in% c("SY02", "SY07")) %>% 
-  group_by(admin1pcode, admin4pcode) %>% 
-  summarise(clusters = n_distinct(cluster)) %>%
-  ggplot(aes(x = clusters)) + 
-  geom_histogram(bins = 10) + 
-  facet_wrap(~ admin1pcode) + 
-  scale_x_continuous(breaks = seq(0, 9, by = 1))
-  
-```
-
-```{r}
-aleppo_one_cluster <- com %>% 
-  filter(activity != "ISIMM" & admin1pcode == "SY02") %>% 
-  group_by(admin4pcode) %>% 
-  summarise(clusters = n_distinct(cluster)) %>% 
-  filter(clusters == 1) %>% 
-  pull(admin4pcode)
-  
-```
-
-```{r}
-com %>% 
-  filter(!is.na(admin4pcode) ) %>% 
-  group_by(admin4pcode, cluster) %>% 
-  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE)) %>% 
-  ungroup() %>% 
-  pivot_wider(names_from = cluster, values_from = beneficiaries) %>%
-  mutate(clusters = rowSums(!is.na(.[,-1]))) %>%  
-  filter(admin4pcode %in% aleppo_one_cluster) %>% 
-  summarise(cash = sum(!is.na(Cash)), 
-            education = sum(!is.na(Education)), 
-            fsl = sum(!is.na(FSL)), 
-            nut = sum(!is.na(Nutrition)), 
-            prot = sum(!is.na(Protection)), 
-            snfi = sum(!is.na(SNFI)), 
-            wash = sum(!is.na(WASH)), 
-            erl = sum(!is.na(ERL)), 
-            cccm = sum(!is.na(CCCM)), 
-            edu = sum(!is.na(Education)))
-```
-
-No real pattern as to why there are so many communities with only one cluster operational in Aleppo. 
-
-Main offender is FSL. 
-
-75 communities in Aleppo with only FSL. Maybe WFP has a giant contract for Aleppo and is forcing people to work there, without other clusters present. 
-
-
-```{r}
-com %>% 
-  pairwise_count(cluster, admin4pcode, upper = FALSE) %>% 
-  arrange(desc(n))
-
-com %>% 
-  pairwise_cor(cluster, admin4pcode, method = "spearman", 
-               sort = TRUE, upper = FALSE) 
-```
-
-Does Education work in camps? 
-Programmatically all ERL areas should have been covered in the emergency phase by other actors. 
-Pretty low overlap between Shelter and WASH.
-Ask what Nutrition and FSL are doing to coordinate
-
-What is the number of multisector beneficiaries per pair? 
-
-Focus a bit more on SNFI and ERL footprints. 
-
-
-```{r}
-
-com %>% filter(!is.na(camp_name) & is.na(admin5pcode)) %>% 
-  summarise(camp_no_code = n_distinct(camp_name), 
-            ben_freq = sum(beneficiaries, na.rm = TRUE)) %>% 
-  flextable() %>% 
-  theme_zebra()
-  
-```
-
-<br><br>
-
-
-### Beneficiary disaggregations 
-
-
-
-<br><br><br>
-
-### Modalities 
-
-```{r}
-glimpse(wash)
-
-wash %>% filter(!is.na(cash_hk)) %>% 
-  count(cash_hk)
-```
-
-
-4.82% of all beneficiary frequencies received cash assistance 
-
-```{r}
-com %>% 
-  count(delivery_modality, sort = TRUE)
-
-com %>% 
-  filter(activity != "ISIMM") %>% 
-  filter(project_status %in% c("Completed", "Ongoing")) %>% 
-  mutate(cash_ben = ifelse(delivery_modality == "Cash", 
-                           beneficiaries, 
-                           0)) %>% 
-  group_by(month) %>% 
-  summarise(cash_ben_freq = sum(cash_ben, na.rm = TRUE), 
-            ben_freq = sum(beneficiaries, na.rm = TRUE)) %>% 
-  mutate(cash_pc = round(cash_ben_freq / ben_freq * 100, digits = 2))
-
-# Unique individuals who received cash 
-com %>% 
-  mutate(cash_ben = ifelse(delivery_modality == "Cash", 
-                           beneficiaries, 
-                           0)) %>% 
-  group_by(admin4pcode) %>% 
-  slice(which.max(cash_ben)) %>% 
-  {sum(.$cash_ben, na.rm = TRUE)}
-
-com %>% 
-  filter(month == "FEB") %>% 
-  distinct(cluster)
-```
-
-Significant monetisation of in-kind activities during winterisation, but...
-
-WASH not having delivery modalities is due to the abnormal structure of their 4Ws -- but they must have a codebook somewhere? Same with CCCM 
-
-Nutrition activities without the delivery modality can easily be backfilled, given the clear definition of their activities, but that's for the Nutrition IMO to do.
-
-
-# Lack of documentation for 4Ws
-
-Given the high turnover in IMs and general response staff, it would be helpful to have codebooks for each of the 4Ws. 
-
-There are limits to what we can do in this document -- this is merely a review, not a formal codebook. Even if I made one, it would only be for cash. 
-
-```{r}
-com %>% 
-  filter(is.na(delivery_modality) & cluster == "Nutrition") %>% 
-  group_by(activity) %>% 
-  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE))
-```
-
-
-# Admin5/Master list of locations 
-
-Cleaning out the admin5 is a priority. 
-There needs to be a master location list of not just camps, but sites, consolidating schools, health facilities and so on. 
-
-There has to be standardisation in the names of camps and someone has to take ownership for the camps not managed by CCCM. 
-
-There are, consistently camps that partners are working in, but there is no code for. 
-
-Ideally, the owner of the master list of locations would be OCHA, since it does not only include camps. 
-
-The inclusion of site data will also allow us to define better, the number of unique individuals reached. 
-
-I think we just have to use the romanised English names when we standardise locations, just for easier reading into digital formats.
-
-As long as the admin5 are not cleaned out, it makes no sense for us to ask clusters lke SNFI or ERL to report at admin5 because we don't get any value from it. 
-
-
-```{r}
-com %>% 
-  filter(!is.na(camp_name) & is.na(admin5pcode)) %>% 
-  summarise(no_code_camps = n_distinct(camp_name))
-
-com %>% filter(!is.na(camp_name))
-```
-
-No consistency in codes or names of sites -- cf nutrition health facility names and WASH facility names 
-
-Education does not provide school names -- is this an anonymisation issue?
-WASH does provide the actual names of schools -- 211 of them, even 
-
-
-
-```{r}
-com %>% 
-  mutate(no_admin5 = ifelse(is.na(admin5pcode), 
-                            "yes", 
-                            "no")) %>% 
-  filter(activity != "ISIMM") %>% 
-  group_by(cluster, no_admin5) %>% 
-  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE)) %>% 
-  pivot_wider(names_from = no_admin5, values_from = beneficiaries) %>% 
-  mutate(total_frequencies = sum(yes, no, na.rm = TRUE), 
-         pc_missing = round(yes / total_frequencies * 100, digits = 2)) %>% 
-  select(-total_frequencies) %>% 
-  flextable() %>% 
-  theme_zebra() %>% 
-  set_caption("The impracticality of requiring partners to report at admin5") %>% 
-  set_table_properties(layout = "autofit", width = .8)
-  
-```
-
-
-### Activities
-
-```{r}
-com %>% 
-  filter(project_status %in% c("Completed", "Ongoing")) %>% 
-  
-```
-
-
-```{r}
-com %>% 
-  group_by(cluster, admin4pcode) %>% 
-  summarise(count = n()) %>% 
-  pairwise_cor(cluster, admin4pcode, value = count, 
-               method = c("spearman"), upper = FALSE) %>% 
-  arrange(desc(correlation))
-
-com %>% 
-  filter(project_status %in% c("Completed", "Ongoing") & 
-           activity != "ISIMM") %>% 
-  group_by(activity, admin4pcode) %>% 
-  summarise(count = n()) %>% 
-  pairwise_cor(activity, admin4pcode, value = count, 
-               method = c("spearman"), upper = FALSE) %>% 
-  arrange(desc(correlation)) %>% 
-  left_join(com %>% 
-              distinct(cluster1 = cluster, activity), 
-            by = c("item1" = "activity")) %>% 
-  left_join(com %>% 
-              distinct(cluster2 = cluster, activity), 
-            by = c("item2" = "activity")) %>% 
-  filter(cluster1 != cluster2)
-
-com %>% 
-  filter(project_status %in% c("Completed", "Ongoing") & 
-           activity != "ISIMM") %>% 
-  pairwise_count(activity, admin4pcode, sort = TRUE, upper = FALSE) %>% 
-  left_join(com %>% 
-              distinct(cluster1 = cluster, activity), 
-            by = c("item1" = "activity")) %>% 
-  left_join(com %>% 
-              distinct(cluster2 = cluster, activity), 
-            by = c("item2" = "activity")) %>% 
-  filter(cluster1 != cluster2)
-```
-
-```{r}
-nut %>% 
-  count(activity, sort = TRUE)
-
-nut %>% 
-  mutate(activity = str_remove_all(activity, "(6 – 59 months) | for six months| for four month|"), 
-         activity = str_replace_all(activity, 
-                                    " who received micronutrients, including iron, folate ", 
-                                    "received micronutrrients"), 
-         )
-```
-
-
+# 3. Calculations for OCHA reporting 
 
 ### Monthly
 
@@ -1631,15 +931,6 @@ rbind(
 ```
 
 
-
-```{r}
-glimpse(edu)
-```
-
-
-
-
-# 3. Annexes -- 4W templates 
 
 ### Cash 
 

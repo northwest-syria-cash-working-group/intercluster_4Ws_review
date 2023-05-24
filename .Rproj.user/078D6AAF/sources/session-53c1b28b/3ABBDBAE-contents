@@ -1,0 +1,1420 @@
+---
+title: "Untitled"
+output: html_document
+date: '2023-05-18'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, fig.width=9, message = FALSE, warning=FALSE, fig.retina = 2)
+library(tidyverse)
+library(readxl)
+library(lubridate)
+library(stringi)
+library(pander)
+library(janitor)
+library(scales)
+library(magrittr)
+library(viridis)
+library(patchwork)
+library(DT)
+library(sf)
+library(plotly)
+library(flextable)
+library(ggrepel)
+library(magrittr)
+library(readxlsb)
+library(tidymodels)
+library(widyr)
+library(tidytext)
+library(treemapify)
+library(mdepriv)
+
+theme_set(theme_light())
+
+# disabling scientific notation
+options(scipen = 100)
+
+# pander tables all in one row
+panderOptions('table.split.table', Inf)
+
+# pander thousands separator
+panderOptions("big.mark", ",")
+
+# replace 
+opts <- options(knitr.kable.NA = "")
+
+`%out%` <- Negate(`%in%`)
+
+# function for transposing df
+transpose_df <- function(df) {
+  t_df <- data.table::transpose(df)
+  colnames(t_df) <- rownames(df)
+  rownames(t_df) <- colnames(df)
+  t_df <- t_df %>%
+    tibble::rownames_to_column(.data = .) %>%
+    tibble::as_tibble(.)
+  return(t_df)
+}
+
+# scaling functions 
+range01 <- function(x){(x-min(x))/(max(x)-min(x))}
+range_wna <- function(x){(x-min(x, na.rm = TRUE))/(max(x, na.rm = TRUE)-min(x, na.rm = TRUE))}
+
+#mode function 
+mode <- function(x) {
+  ux <- unique(x)
+  ux[which.max(tabulate(match(x, ux)))]
+}
+
+```
+
+```{r data}
+pcode3_shape <- 
+  sf::st_read("./data/syr_admbnda_uncs_unocha_20201217/syr_admbnda_adm3_uncs_unocha_20201217.shp", 
+          quiet = TRUE)
+
+nw_pcode3 <- read_excel("./data/2023HNO_PiN_Severity_detailedAoI_FORSHARE 15032023.xlsx", skip = 1, 
+                  sheet = 1) %>%
+  clean_names() %>% 
+  filter(ao_c == "NW") %>% 
+  pull(admin3pcode)
+
+locations <- read_excel("./data/Locations.xlsx") %>% 
+  clean_names()
+
+pop <- read_excel("./data/Population_Data_May_2022_final_01122022_with_SADD.xlsx", 
+           sheet = 5, 
+           skip = 2) %>% 
+  clean_names() %>% 
+  select(admin0name_en:longitude_x, 
+         final_est_of_id_ps_may_2022:family_avg_size_total_pop) %>% 
+  rename(idps = final_est_of_id_ps_may_2022, 
+         total_pop = final_est_of_total_pop_may_2022, 
+         avg_family_size = family_avg_size_total_pop) %>% 
+  filter(admin3pcode %in% nw_pcode3)
+
+names_eq <- c(
+  "date",
+  "governorate",
+  "district",
+  "sub_district",
+  "community",
+  "admin4pcode",
+  "casualties",
+  "injuries",
+  "completely_destroyed_houses",
+  "damaged_unihabitable_houses",
+  "temporary_accommodation_centres",
+  "idps_in_all_centres",
+  "schools_as_accomodation_centres",
+  "idps_in_schools",
+  "tents_needed",
+  "blankets_mattresses_needed",
+  "temporary_accommodation_centres_available", 
+  "accessible_civil_defense",
+  "latrines_available",
+  "meals_needed_per_day",
+  "need_blood_donations",
+  "health_services_available",
+  "necessary_medical_equipment",
+  "rubble_volunteers",
+  "telecoms_available",
+  "electricity_available", 
+  "heating_fuel_needed"
+)
+
+eq <- read_excel("./data/syria-earthquake-impact-20-march-2023.xlsx",
+                 sheet = "DATASET") %>% 
+  setNames(names_eq) %>% 
+  left_join(pop %>% 
+              select(admin4pcode, total_pop), 
+            by = "admin4pcode") %>% 
+  mutate(wounded_dead = casualties + injuries,
+             damaged_houses = completely_destroyed_houses + damaged_unihabitable_houses) %>% 
+  mutate(wounded_dead_100k = wounded_dead / total_pop * 100000, 
+         damaged_houses_100k = damaged_houses / total_pop * 100000)
+
+com <- read_csv("./data/com20230519.csv")
+
+hno <- read_excel("./data/2023HNO_PiN_Severity_detailedAoI_FORSHARE 15032023.xlsx", 
+                  skip = 1, 
+                  sheet = 1) %>%
+  clean_names() %>% 
+  rename(severity = x2023_hno_inter_sector_severity) %>% 
+  left_join(read_excel("./data/2023HNO_PiN_Severity_detailedAoI_FORSHARE 15032023.xlsx", 
+                       skip = 1,
+                       sheet = "Sector dataset") %>%
+              clean_names() %>%
+              select(shelter_severity:wash_severity, admin3pcode), 
+            by = "admin3pcode")
+
+eq_score <- eq %>%
+  filter(!is.infinite(wounded_dead_100k) & !is.infinite(damaged_houses_100k)) %>% 
+  mutate_at(vars(wounded_dead, damaged_houses, 
+                 wounded_dead_100k, damaged_houses_100k), ~ range_wna(.)) %>% 
+  replace_na(list(wounded_dead_100k = 0, 
+                  damaged_houses_100k = 0, 
+                  wounded_dead = 0, 
+                  damaged_houses = 0)) %>%  
+  mdepriv(c("wounded_dead", "damaged_houses", 
+            "wounded_dead_100k", "damaged_houses_100k"), 
+          method = "bv", output = "all", 
+          score_i_heading = "eq_score")
+
+reference_table <- com %>% 
+  filter(project_status %in% c("Completed", "Ongoing") & 
+           activity %out% c("ISIMM")) %>% 
+  group_by(admin4pcode) %>% 
+  slice(which.max(beneficiaries)) %>% 
+  ungroup() %>% 
+  select(admin1pcode, admin2pcode, admin3pcode, admin4pcode, 
+         beneficiaries) %>% 
+  left_join(com %>%
+              filter(project_status %in% c("Completed", "Ongoing") &
+                       activity %out% c("ISIMM")) %>%
+              group_by(admin4pcode) %>% 
+              summarise(beneficiary_frequencies = sum(beneficiaries, na.rm = TRUE), 
+                        clusters = n_distinct(cluster, na.rm = TRUE)), 
+            by = "admin4pcode") %>% 
+  right_join(pop %>% select(total_pop, admin4pcode), 
+             by = "admin4pcode") %>% 
+  left_join(eq %>% 
+              select(wounded_dead, 
+                     wounded_dead_100k, 
+                     damaged_houses, 
+                     damaged_houses_100k, 
+                     admin4pcode), 
+            by = "admin4pcode") %>% 
+  left_join(eq_score$data %>% 
+              select(eq_score, admin4pcode), 
+            by = "admin4pcode")
+
+```
+
+# Alternate calculations 
+
+```{r}
+eq_admin3 <- read_excel("./data/syria-earthquake-impact-20-march-2023.xlsx",
+                 sheet = "DATASET") %>% 
+  setNames(names_eq) %>% 
+  left_join(locations %>% select(admin4pcode, admin3pcode), 
+            by = c("admin4pcode")) %>% 
+  mutate(wounded_dead = casualties + injuries,
+             damaged_houses = completely_destroyed_houses + damaged_unihabitable_houses) %>% 
+      group_by(admin3pcode) %>% 
+      summarise(wounded_dead = sum(wounded_dead, na.rm = TRUE), 
+                damaged_houses = sum(damaged_houses, na.rm = TRUE)) %>% 
+  left_join(read_excel("./data/2023HNO_PiN_Severity_detailedAoI_FORSHARE 15032023.xlsx", skip = 1, 
+                  sheet = 1) %>%
+              clean_names() %>%
+              select(admin3pcode, total_population, aoc = ao_c), 
+            by = "admin3pcode") %>% 
+  mutate(wounded_dead_100k = wounded_dead / total_population * 100000, 
+         damaged_houses_100k = damaged_houses / total_population * 100000) %>% 
+  mutate_at(vars(wounded_dead, damaged_houses, 
+                 wounded_dead_100k, damaged_houses_100k), ~ range_wna(.)) %>% 
+  mdepriv(c("wounded_dead", "damaged_houses", 
+            "wounded_dead_100k", "damaged_houses_100k"), 
+          method = "cz", output = "all", 
+          score_i_heading = "eq_score_admin3")
+
+alt_severity <- hno %>% 
+  select(admin3pcode, shelter_severity:wash_severity) %>%
+  mutate(protection_gbv_severity = as.numeric(protection_gbv_severity)) %>% 
+  # All missing data replaced with 0
+  replace(is.na(.), 0) %>% 
+  mutate_at(vars(shelter_severity:wash_severity), ~ range_wna(.)) %>% 
+  mdepriv(c("shelter_severity", "education_severity", "nutrition_severity", 
+            "nfi_severity", "erl_severity", "health_severity", 
+            "protection_severity", "protection_cp_severity", "protection_gbv_severity", 
+            "protection_ma_severity", "food_severity", "cccm_severity", "wash_severity"), 
+          method = "cz", output = "all", 
+          score_i_heading = "alt_severity")
+
+access <- 
+  read_excel("C:/Users/seanywng/OneDrive/Cloud_Docs/Syria/Data Entry Form_Access Severity Syria - NWS- September 2022.xlsx",
+             skip = 1, 
+             sheet = "SNGOs") %>% 
+  clean_names() %>% 
+  rename(admin3pcode = pcode) %>% 
+  mutate_at(vars(denial_of_the_existence_of_humanitarian_needs_or_of_entitlements_to_humanitarian_assistance:
+                   restrictions_on_or_obstruction_of_conflict_affected_populations_access_to_services_and_assistance), 
+            ~ ifelse(. == "x", 1, .)) %>% 
+  replace_na(list(
+    denial_of_the_existence_of_humanitarian_needs_or_of_entitlements_to_humanitarian_assistance = 0, 
+    restriction_of_movement_of_agencies_personnel_or_goods_into_the_affected_country =  0, 
+    restriction_of_movement_of_agencies_personnel_or_goods_within_the_affected_country = 0,
+    military_operations_and_ongoing_hostilities_impeding_humanitarian_operations = 0, 
+    violence_against_humanitarian_personnel_assets_and_facilities = 0, 
+    interference_in_the_implementation_of_humanitarian_activities= 0, 
+    presence_of_ie_ds_mines_and_ux_os = 0, 
+    physical_environment = 0, 
+    restrictions_on_or_obstruction_of_conflict_affected_populations_access_to_services_and_assistance = 0
+  )) %>% 
+  mutate_at(vars(denial_of_the_existence_of_humanitarian_needs_or_of_entitlements_to_humanitarian_assistance,
+                 violence_against_humanitarian_personnel_assets_and_facilities), 
+            ~ as.numeric(.))
+
+alt_access <- access %>% 
+  select(admin3pcode, 
+         denial_of_the_existence_of_humanitarian_needs_or_of_entitlements_to_humanitarian_assistance:
+           restrictions_on_or_obstruction_of_conflict_affected_populations_access_to_services_and_assistance) %>% 
+  mdepriv(c("restriction_of_movement_of_agencies_personnel_or_goods_into_the_affected_country", 
+            "restriction_of_movement_of_agencies_personnel_or_goods_within_the_affected_country", 
+            "military_operations_and_ongoing_hostilities_impeding_humanitarian_operations", 
+            "interference_in_the_implementation_of_humanitarian_activities", 
+            "presence_of_ie_ds_mines_and_ux_os", 
+            "physical_environment", 
+            "restrictions_on_or_obstruction_of_conflict_affected_populations_access_to_services_and_assistance"), 
+          method = "cz", output = "all", 
+          score_i_heading = "alt_access")
+
+check <- com %>% 
+  filter(!is.na(admin4pcode) & activity != "ISIMM" & 
+           project_status %in% c("Completed", "Ongoing") & 
+           beneficiaries > 0) %>% 
+  group_by(admin4pcode) %>% 
+  slice(which.max(beneficiaries)) %>% 
+  ungroup() %>% 
+  group_by(admin3pcode) %>% 
+  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE)) %>% 
+  right_join(hno %>% 
+              select(admin3pcode, severity, nws_pin), 
+            by = "admin3pcode") %>% 
+  right_join(pop %>% 
+              group_by(admin3pcode) %>% 
+              summarise(population = sum(total_pop, na.rm = TRUE), 
+                        .groups = "drop"), 
+             by = "admin3pcode") %>% 
+  left_join(com %>% 
+              filter(!is.na(admin4pcode) & activity != "ISIMM" &
+                       project_status %in% c("Completed", "Ongoing")) %>%
+              group_by(admin3pcode) %>% 
+              summarise(frequencies = sum(beneficiaries, na.rm = TRUE),
+                        clusters = n_distinct(cluster, na.rm = TRUE), 
+                        .groups = "drop"), 
+            by = "admin3pcode") %>% 
+  left_join(eq_admin3$data %>% 
+              select(admin3pcode, eq_score_admin3), 
+            by = "admin3pcode") %>% 
+  left_join(alt_severity$data %>% 
+              select(admin3pcode, alt_severity), 
+            by = "admin3pcode") %>% 
+  left_join(access %>% 
+              select(admin3pcode, access_score = three_point_severity_score), 
+            by = "admin3pcode") %>% 
+  left_join(alt_access$data %>% 
+              select(alt_access, admin3pcode), 
+            by = "admin3pcode") %>%
+  mutate(pc_reached = frequencies / population,
+         coverage = beneficiaries / population)  
+
+
+```
+
+```{r}
+com %>% 
+  group_by(admin3pcode) %>% 
+  summarise(clusters = n_distinct(cluster)) %>% 
+  arrange(desc(clusters))
+
+locations %>% 
+  filter(admin3name_en == "Badama") %>% distinct(admin3pcode)
+
+check %>% 
+  filter(admin3pcode %in% c("SY070401"))
+
+com %>% 
+  filter(activity != "ISIMM" & beneficiaries > 0) %>% 
+  filter(admin3pcode %in% c("SY070401")) %>% 
+  group_by(cluster, activity) %>% 
+  summarise(beneficiaries = sum(beneficiaries))
+```
+
+
+# Maps
+
+### Severity standard
+
+```{r fig.retina=2}
+check %>% 
+  left_join(pcode3_shape,
+            by = c("admin3pcode" = "ADM3_PCODE")) %>% 
+  filter(ADM1_PCODE %in% c("SY02", "SY07", "SY11") & !is.na(nws_pin)) %>% 
+  st_as_sf() %>%
+  ggplot() + 
+  geom_sf(size = .1, colour = "grey70", 
+          aes(fill = severity)) + 
+  geom_sf_text(aes(label = ADM3_EN), size = 2, colour = "grey70", 
+               trans = "log") +
+  scale_fill_viridis(breaks = c(3, 4, 5)) +
+  labs(title = "Severity score by sub-district") + 
+  theme_void() + 
+  theme(plot.background = element_rect(fill = "white", colour = NA)) + 
+  
+check %>% 
+  left_join(pcode3_shape,
+            by = c("admin3pcode" = "ADM3_PCODE")) %>% 
+  filter(ADM1_PCODE %in% c("SY02", "SY07", "SY11") & !is.na(nws_pin)) %>% 
+  st_as_sf() %>%
+  ggplot() + 
+  geom_sf(size = .1, colour = "grey70", 
+          aes(fill = access_score)) +
+  geom_sf_text(aes(label = ADM3_EN), size = 2, colour = "grey70") +
+  scale_fill_viridis(breaks = c(1, 2, 3)) + 
+  labs(title = "Access score by sub-district") + 
+  theme_void() + 
+  theme(plot.background = element_rect(fill = "white", colour = NA)) + 
+  
+
+check %>% 
+  left_join(pcode3_shape,
+            by = c("admin3pcode" = "ADM3_PCODE")) %>% 
+  filter(ADM1_PCODE %in% c("SY02", "SY07", "SY11") & !is.na(nws_pin)) %>% 
+  st_as_sf() %>%
+  ggplot() + 
+  geom_sf(size = .1, colour = "grey70", 
+          aes(fill = clusters)) + 
+  geom_sf_text(aes(label = ADM3_EN), size = 2, colour = "grey70", 
+               trans = "log") +
+  scale_fill_viridis(breaks = c(1,  3,  6, 9)) +
+  theme_void() + 
+  labs(title = "Number of clusters/working groups by sub-district") + 
+  theme(plot.background = element_rect(fill = "white", colour = NA)) + 
+  
+check %>% 
+  left_join(pcode3_shape,
+            by = c("admin3pcode" = "ADM3_PCODE")) %>% 
+  filter(ADM1_PCODE %in% c("SY02", "SY07", "SY11") & !is.na(nws_pin)) %>% 
+  st_as_sf() %>%
+  ggplot() + 
+  geom_sf(size = .1, colour = "grey70", 
+          aes(fill = beneficiaries)) + 
+  geom_sf_text(aes(label = ADM3_EN), size = 2, colour = "grey70") +
+  scale_fill_viridis(trans = "log", 
+                     labels = comma,
+                     breaks = c(10, 100, 1000, 10000, 100000)) +
+  theme_void() +  
+  labs(title = "Unique individuals reached by sub-district") + 
+  theme(plot.background = element_rect(fill = "white", colour = NA))  
+  
+
+ggsave("./img/severity_standard.png", dpi = 300, height = 11.7, width = 16.5, units = "in")
+  
+```
+
+
+```{r fig.retina=2}
+check %>% 
+  left_join(pcode3_shape,
+            by = c("admin3pcode" = "ADM3_PCODE")) %>% 
+  filter(ADM1_PCODE %in% c("SY02", "SY07", "SY11") & !is.na(nws_pin)) %>% 
+  st_as_sf() %>%
+  ggplot() + 
+  geom_sf(size = .1, colour = "grey70", 
+          aes(fill = alt_severity)) + 
+  geom_sf_text(aes(label = ADM3_EN), size = 2, colour = "grey70", 
+               trans = "log") +
+  scale_fill_viridis() +
+  labs(title = "Severity score (alternate calculation) by sub-district") + 
+  theme_void() + 
+  theme(plot.background = element_rect(fill = "white", colour = NA)) + 
+  
+check %>% 
+  left_join(pcode3_shape,
+            by = c("admin3pcode" = "ADM3_PCODE")) %>% 
+  filter(ADM1_PCODE %in% c("SY02", "SY07", "SY11") & !is.na(nws_pin)) %>% 
+  st_as_sf() %>%
+  ggplot() + 
+  geom_sf(size = .1, colour = "grey70", 
+          aes(fill = alt_access)) +
+  geom_sf_text(aes(label = ADM3_EN), size = 2, colour = "grey70") +
+  scale_fill_viridis() + 
+  labs(title = "Access score (alternate calculation) by sub-district") + 
+  theme_void() + 
+  theme(plot.background = element_rect(fill = "white", colour = NA)) + 
+  
+
+check %>% 
+  left_join(pcode3_shape,
+            by = c("admin3pcode" = "ADM3_PCODE")) %>% 
+  filter(ADM1_PCODE %in% c("SY02", "SY07", "SY11") & !is.na(nws_pin)) %>% 
+  st_as_sf() %>%
+  ggplot() + 
+  geom_sf(size = .1, colour = "grey70", 
+          aes(fill = pc_reached)) + 
+  geom_sf_text(aes(label = ADM3_EN), size = 2, colour = "grey70", 
+               trans = "log") +
+  scale_fill_viridis(labels = percent) +
+  theme_void() + 
+  labs(title = "Beneficiary frequencies as % of population by sub-district", 
+       fill = "frequencies/\npopulation") + 
+  theme(plot.background = element_rect(fill = "white", colour = NA)) + 
+  
+check %>% 
+  left_join(pcode3_shape,
+            by = c("admin3pcode" = "ADM3_PCODE")) %>% 
+  filter(ADM1_PCODE %in% c("SY02", "SY07", "SY11") & !is.na(nws_pin)) %>% 
+  st_as_sf() %>%
+  ggplot() + 
+  geom_sf(size = .1, colour = "grey70", 
+          aes(fill = beneficiaries)) + 
+  geom_sf_text(aes(label = ADM3_EN), size = 2, colour = "grey70") +
+  scale_fill_viridis(trans = "log", 
+                     labels = comma,
+                     breaks = c(10, 100, 1000, 10000, 100000)) +
+  theme_void() +  
+  labs(title = "Unique individuals reached by sub-district") + 
+  theme(plot.background = element_rect(fill = "white", colour = NA)) 
+
+ggsave("./img/severity_alternate.png", dpi = 300, height = 11.7, width = 16.5, units = "in")
+```
+
+### Severity frequencies
+
+```{r fig.retina=2}
+check %>% 
+  left_join(pcode3_shape,
+            by = c("admin3pcode" = "ADM3_PCODE")) %>% 
+  filter(ADM1_PCODE %in% c("SY02", "SY07", "SY11") & !is.na(nws_pin)) %>% 
+  st_as_sf() %>%
+  ggplot() + 
+  geom_sf(size = .1, colour = "grey70", 
+          aes(fill = severity)) + 
+  geom_sf_text(aes(label = ADM3_EN), size = 2, colour = "grey70", 
+               trans = "log") +
+  scale_fill_viridis(breaks = c(3, 4, 5)) +
+  labs(title = "Severity score by sub-district") + 
+  theme_void() + 
+  theme(plot.background = element_rect(fill = "white", colour = NA)) + 
+  
+check %>% 
+  left_join(pcode3_shape,
+            by = c("admin3pcode" = "ADM3_PCODE")) %>% 
+  filter(ADM1_PCODE %in% c("SY02", "SY07", "SY11") & !is.na(nws_pin)) %>% 
+  st_as_sf() %>%
+  ggplot() + 
+  geom_sf(size = .1, colour = "grey70", 
+          aes(fill = population)) + 
+  geom_sf_text(aes(label = ADM3_EN), size = 2, colour = "grey70") +
+  scale_fill_viridis(trans = "log", 
+                     labels = comma,
+                     breaks = c(10, 100, 1000, 10000, 100000, 1000000)) +
+  theme_void() +  
+  labs(title = "Population by sub-district") + 
+  theme(plot.background = element_rect(fill = "white", colour = NA)) + 
+  
+
+check %>% 
+  left_join(pcode3_shape,
+            by = c("admin3pcode" = "ADM3_PCODE")) %>% 
+  filter(ADM1_PCODE %in% c("SY02", "SY07", "SY11") & !is.na(nws_pin)) %>% 
+  st_as_sf() %>%
+  ggplot() + 
+  geom_sf(size = .1, colour = "grey70", 
+          aes(fill = pc_reached)) + 
+  geom_sf_text(aes(label = ADM3_EN), size = 2, colour = "grey70", 
+               trans = "log") +
+  scale_fill_viridis(labels = percent, trans = "log10") +
+  theme_void() + 
+  labs(title = "Beneficiary frequencies as % of population by sub-district", 
+       fill = "frequencies/\npopulation") + 
+  theme(plot.background = element_rect(fill = "white", colour = NA)) + 
+  
+check %>% 
+  left_join(pcode3_shape,
+            by = c("admin3pcode" = "ADM3_PCODE")) %>% 
+  filter(ADM1_PCODE %in% c("SY02", "SY07", "SY11") & !is.na(nws_pin)) %>% 
+  st_as_sf() %>%
+  ggplot() + 
+  geom_sf(size = .1, colour = "grey70", 
+          aes(fill = frequencies)) + 
+  geom_sf_text(aes(label = ADM3_EN), size = 2, colour = "grey70") +
+  scale_fill_viridis(trans = "log", 
+                     labels = comma,
+                     breaks = c(10, 100, 1000, 10000, 100000, 1000000)) +
+  theme_void() +  
+  labs(title = "Beneficiary frequencies by sub-district") + 
+  theme(plot.background = element_rect(fill = "white", colour = NA))  
+  
+
+ggsave("./img/severity_frequencies.png", dpi = 300, height = 11.7, width = 16.5, units = "in")
+
+```
+
+```{r}
+
+# Not a bad correlation 
+# But very low R-squared
+
+# Really there isn't enough variation in the dataset, or enough points 
+check %>% 
+  lm(frequencies ~ access_score, data = .) %>% 
+  summary()
+
+check %>% 
+  select(access_score, frequencies) %>% 
+      cor(method = "spearman", 
+          use = "pairwise.complete.obs") 
+```
+
+# Correlations 
+
+```{r}
+check %>% 
+  lm(pc_reached ~ alt_access, data = .) %>% 
+  summary()
+
+check %>% 
+  select(alt_access, pc_reached) %>% 
+      cor(method = "spearman", 
+          use = "pairwise.complete.obs")
+
+check %>% 
+  lm(pc_reached ~ alt_access, data = .) %>% 
+  summary()
+
+# Not a statistically significant relationship
+check %>% 
+  lm(pc_reached ~ severity, data = .) %>% 
+  summary()
+
+# Fairly weak correlation too
+check %>% 
+  select(alt_severity, pc_reached) %>% 
+      cor(method = "spearman", 
+          use = "pairwise.complete.obs")
+
+# Frequencies are extremely predictive of population 
+check %>% 
+  lm(frequencies ~ population, data = .) %>% 
+  summary()
+
+check %>% 
+  select(population, frequencies) %>% 
+      cor(method = "spearman", 
+          use = "pairwise.complete.obs")
+```
+
+```{r}
+com %>% 
+  filter(project_status %in% c("Completed", "Ongoing") & 
+           activity %out% c("ISIMM")) %>%
+  group_by(admin4pcode) %>%
+             slice(which.max(beneficiaries)) %>%
+             ungroup() %>%
+  {sum(.$beneficiaries)}
+
+com_old %>% 
+  filter(project_status %in% c("Completed", "Ongoing") & 
+           activity %out% c("ISIMM")) %>%
+  group_by(admin4pcode) %>%
+             slice(which.max(beneficiaries)) %>%
+             ungroup() %>%
+  {sum(.$beneficiaries)}
+```
+
+# Admin4 dataseet
+
+```{r}
+com %>% 
+  filter(project_status %in% c("Completed", "Ongoing") & 
+           activity %out% c("ISIMM") & beneficiaries > 0) %>% 
+  group_by(admin4pcode, cluster) %>% 
+  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE)) %>% 
+  ungroup() %>%  
+  pivot_wider(names_from = cluster, values_from = beneficiaries) %>% 
+  right_join(pop %>% select(total_pop, admin4pcode), 
+             by = "admin4pcode") %>% 
+  left_join(locations %>% 
+              select(governorate = admin1name_en, 
+                     district = admin2name_en, 
+                     sub_district = admin3name_en, 
+                     community = location_name_en, 
+                     admin4pcode), 
+            by = "admin4pcode") %>%
+  left_join(com %>% 
+              filter(project_status %in% c("Completed", "Ongoing") & 
+                       activity %out% c("ISIMM")) %>%
+             group_by(admin4pcode) %>%
+             slice(which.max(beneficiaries)) %>%
+             ungroup() %>%
+             select(beneficiaries, admin4pcode), 
+           by = "admin4pcode") %>% 
+  mutate(beneficiaries = ifelse(beneficiaries == 0, NA_integer_, beneficiaries)) %>% 
+   left_join(com %>%
+              filter(project_status %in% c("Completed", "Ongoing") &
+                       activity %out% c("ISIMM") & beneficiaries > 0) %>%
+              group_by(admin4pcode) %>% 
+              summarise(beneficiary_frequencies = sum(beneficiaries, na.rm = TRUE),
+                        clusters = n_distinct(cluster, na.rm = TRUE)), 
+            by = "admin4pcode") %>% 
+  right_join(pop %>% select(population = total_pop, admin4pcode), 
+             by = "admin4pcode") %>% 
+  left_join(eq %>% 
+              select(wounded_dead, 
+                     wounded_dead_100k, 
+                     damaged_houses, 
+                     damaged_houses_100k, 
+                     admin4pcode), 
+            by = "admin4pcode") %>% 
+  left_join(eq_score$data %>% 
+              select(eq_score, admin4pcode), 
+            by = "admin4pcode") %>% 
+  mutate(pc_reached = beneficiary_frequencies / population, 
+         pc_reached = ifelse(is.infinite(pc_reached), 
+                             NA_integer_, 
+                             pc_reached)) %>% 
+  mutate_at(vars(wounded_dead_100k, damaged_houses_100k), 
+            ~ round(., digits = 1)) %>% 
+  mutate_at(vars(eq_score, pc_reached), ~ round(., digits = 3)) %>% 
+  select(governorate, district, sub_district, community, admin4pcode, 
+         beneficiaries, beneficiary_frequencies, clusters, eq_score, population = total_pop, pc_reached, 
+         wounded_dead, wounded_dead_100k, damaged_houses, damaged_houses_100k, 
+         CWG, Education, FSL, Nutrition, Protection, SNFI, WASH, CCCM, ERL) %>% 
+    write_csv("./data/admin4_prioritisation.csv")
+  
+  
+
+```
+
+```{r}
+com %>% 
+  filter(admin4pcode %in% c("C4149")) %>% 
+  group_by(cluster) %>% 
+  summarise(beneficiaries = sum(beneficiaries)) %>% 
+  arrange(desc(beneficiaries))
+
+
+
+com %>% 
+  filter(admin4pcode %in% c("C4148")) %>%
+  filter(activity == "Multipurpose cash")
+  
+pop %>% filter(admin4pcode == "C4149") %>% pull(total_pop)
+
+com %>% filter(activity == "Bread/Flour distribution" & 
+                 admin4pcode == "C4141") 
+
+com %>% glimpse()
+```
+
+
+
+# Unused code from report
+
+### Number of unique individuals reached 
+
+The total number of unique individuals that has been reached by the response so far is `r filter(com, !is.na(admin4pcode)) %>% group_by(admin4pcode) %>% slice(which.max(beneficiaries)) %>% ungroup() %>% {sum(.$beneficiaries)} %>% format(big.mark = ",")` persons. 
+
+```{r}
+com %>% 
+  filter(cluster == "CCCM") %>% 
+  count(activity, sort = TRUE)
+```
+
+alternative calculation for unique individuals 
+frankenstein column called site 
+
+Whether it is better to calculated individuals using "site", a made up column or by admin4, which leads to significant undercounting. 
+
+Kick this issue to the OCHA IM unit for decision. 
+
+```{r}
+
+com  %>% 
+  filter(!is.na(admin4pcode) & activity != "ISIMM") %>%
+  group_by(site) %>% 
+  slice(which.max(beneficiaries)) %>% 
+  {sum(.$beneficiaries, na.rm = TRUE)}
+
+```
+
+
+
+
+```{r}
+com %>% 
+  filter(!is.na(admin4pcode) & activity != "ISIMM") %>% 
+  group_by(admin4pcode) %>% 
+  slice(which.max(beneficiaries)) %>% 
+  ungroup() %>% 
+  {sum(.$beneficiaries)} %>% format(big.mark = ",")
+
+com %>% 
+  filter(!is.na(admin4pcode) & activity != "ISIMM") %>% 
+  group_by(admin4pcode) %>% 
+  slice(which.max(beneficiaries)) %>% 
+  ungroup() %>% 
+  group_by(admin4pcode) %>% 
+  summarise(ben_freq = sum(beneficiaries)) %>% 
+  left_join(pop %>% select(admin4pcode, total_pop), 
+            by = "admin4pcode") %>% 
+  mutate(pc = ben_freq / total_pop) %>% 
+  ggplot(aes(x = total_pop, y = ben_freq)) + 
+  geom_point(aes(size = pc)) + 
+  scale_x_log10() + 
+  scale_y_log10()
+  
+```
+
+
+```{r}
+com %>% 
+  filter(!is.na(admin4pcode) & activity != "ISIMM") %>% 
+  group_by(admin4pcode) %>% 
+  slice(which.max(beneficiaries)) %>% 
+  ungroup() %>% 
+  group_by(admin4pcode) %>% 
+  summarise(ben_freq = sum(beneficiaries)) %>% 
+  left_join(pop %>% select(admin4pcode, total_pop), 
+            by = "admin4pcode") %>% 
+  mutate(pc = ben_freq / total_pop) %>% 
+  ggplot(aes(x = pc, y = ben_freq)) + 
+  geom_point(aes(size = pc), 
+             alpha = .5) + 
+  scale_x_log10(labels = percent) + 
+  scale_y_log10(labels = comma)
+```
+
+```{r}
+reached_100 <- com %>% 
+  filter(!is.na(admin4pcode) & activity != "ISIMM") %>% 
+  group_by(admin4pcode) %>% 
+  summarise(ben_freq = sum(beneficiaries), 
+            clusters = n_distinct(cluster),) %>% 
+  left_join(pop %>% select(admin4pcode, total_pop, 
+                           governorate = admin1name_en, 
+                           sub_district = admin3name_en, 
+                           community = admin4name_en), 
+            by = "admin4pcode") %>% 
+  mutate(pc = ben_freq / total_pop) %>% 
+  filter(pc > .99) %>% 
+  pull(admin4pcode)
+
+pop %>% glimpse()
+```
+
+
+```{r}
+com %>% 
+  filter(!is.na(admin4pcode) & activity != "ISIMM") %>% 
+  group_by(site) %>% 
+  slice(which.max(beneficiaries)) %>% 
+  ungroup() %>% 
+  group_by(admin4pcode) %>% 
+  summarise(ben_freq = sum(beneficiaries)) %>% 
+  left_join(pop %>% select(admin4pcode, total_pop), 
+            by = "admin4pcode") %>% 
+  mutate(pc = ben_freq / total_pop) %>%
+  ggplot(aes(x = pc)) + 
+  geom_histogram() + 
+  scale_x_log10(labels = percent) + 
+  labs(x = "Percent of population covered")
+```
+
+Histogram by site 
+
+```{r}
+com %>% 
+  filter(!is.na(admin4pcode) & activity != "ISIMM") %>% 
+  group_by(site) %>% 
+  slice(which.max(beneficiaries)) %>% 
+  ungroup() %>% 
+  group_by(admin4pcode) %>% 
+  summarise(ben_freq = sum(beneficiaries)) %>% 
+  left_join(pop %>% select(admin4pcode, total_pop), 
+            by = "admin4pcode") %>% 
+  mutate(pc = ben_freq / total_pop) %>%
+  ggplot(aes(x = pc)) + 
+  geom_histogram() + 
+  scale_x_log10(labels = percent) + 
+  labs(x = "Percent of population covered")
+```
+
+
+Export a list of communities that are heavily oversubscribed and also communities that are very undersubscribed 
+
+
+The Cash Working Group is interested in the following indicators: 
+
+* The percentage of individuals who have received cash assistance of any kind
+* The percentage of individuals who have received multi-purpose cash assistance 
+* The percentage of beneficiary frequencies, per cluster and per activity, who have received cash assistance 
+
+Site-level data is necessary for any of these calculations to take place. And the calculation of the number of unique individuals reached is an important figure to all clusters. However, the CWG has no interest in imposing its reporting policy and calculations on other clusters -- this section instead outlines how the CWG intends to process these figures, to document them for public knowledge and for ease of future revision. 
+
+To reiterate, the multi-sector reached has been calculated according to the CWG's own preferences (please download the code to see the exact conditions). Other coordination bodies and clusters should make their own determinations. 
+
+Site-level data is important in calculating the number of unique individuals reached -- this itself is an important figure for the CWG as we work to determine the percentage of beneficiaries who have received assistance through in-kind, cash or service delivery modalities. 
+
+Unique individuals are distinct from beneficiary frequencies -- a family of four receiving cash assistance, hygiene kits and emergency shelter kits represent 12 beneficiary frequencies, but are 4 unique individuals. 
+
+Beneficiary frequencies can be easily determined by summing beneficiaries reached regardless or whether they have been reached before. 
+
+The ideal way to determine the number of unique individuals reached is through an established and maintained beneficiary database. However, this option is not available to us. Whilst various clusters may have different formulae for calculating individuals reached, common approaches include a column asking whether beneficiaries have been previously assisted or taking the highest number reached out of any activity per community then summing those together. 
+
+This second option -- taking the highest number reached, by any activity, at site level -- is the best available option to avoid double counting. In fact, there will be usually be some slight undercounting. However, site-level consolidation is not currently an option. The lowest-common denominator between clusters is the community level, or admin4 (with the very notable exception of Health, which only reports at admin3, likely due to the catchment area of each health facility). 
+
+Site-level (camp, specific location in the community) data is only collected in the following templates:
+
+* WASH: camp pcodes and the specific WASH installations are collected
+* FSL: camp pcodes are collected
+* Education: camp pcodes and names are available, as are schools and their unique identifier numbers.
+* Nutrition: camp pcodes are collected, health facility names and school names are collected. 
+* Protection: camp pcodes are collected
+* Cash: camp pcodes are collected
+
+However, as will be explored in the following sections, site-level data (admin5) is of quite poor quality, largely due to the poor standardisation of site names, differing thoughts on the ownership of the geoadmins dataset as well as due to a lot of information not being collected. Therefore, pushing everyone down to reporting at admin5 without first resolving these issues would be a lot of effort for very marignal gains. 
+
+
+<br><br> 
+
+### Coordination and multi-sector footprint
+
+```{r}
+
+com %>% 
+  group_by(cluster, admin4pcode) %>% 
+  summarise(count = n()) %>% 
+  pairwise_cor(cluster, admin4pcode, value = count, 
+               method = c("spearman"), upper = FALSE) %>% 
+  arrange(desc(correlation))
+
+com %>% 
+  group_by(activity, admin4pcode) %>% 
+  summarise(count = n()) %>% 
+  pairwise_cor(activity, admin4pcode, value = count, 
+               method = c("spearman"), upper = FALSE) %>% 
+  arrange(desc(correlation)) %>% 
+  left_join(com %>% 
+              distinct(cluster1 = cluster, activity), 
+            by = c("item1" = "activity")) %>% 
+  left_join(com %>% 
+              distinct(cluster2 = cluster, activity), 
+            by = c("item2" = "activity")) %>% 
+  filter(cluster1 != cluster2)
+
+com %>%
+  filter(!is.na(admin4pcode) & !is.na(activity)) %>% 
+  pairwise_count(activity, admin4pcode, sort = TRUE)
+
+
+```
+
+All this being said, the consolidation of the 4W data does create additional opportunities 
+
+The consolidation of this 4W data creates additional opportunities for inter-cluster coordination. Inter-cluster coordination is not the purview of the Cash Working Group and OCHA is more than capable to making these opportunities for themselves. 
+
+However, it would also be remiss to not mention what new metrics would be available for analysis: 
+
+* The number of clusters per admin4 (useful for determining inter-cluster gaps i.e. are there any areas where we are doing education without shelter? Nutrition without food security?)
+* The number of activities per admin4 (similar to above, but more detailed)
+* The number of beneficiary frequencies at admin4 (collectively, what has been the level of investment in each community by the humanitarian community as a whole? Important for determining if allocations have been fair i.e. are there communities of similar pre-existing vulnerability and earthquake damage that have received drastically different levels of support?)
+
+Again, inter-cluster coordination is not the purview of the Cash Working Group, but we are happy to share all the code and data with whoever wants to take the lead for that. 
+
+### Population 
+
+```{r}
+
+# Number of communities reached so far 
+com %>%
+  filter(!is.na(admin4pcode) & activity != "ISIMM") %>%
+  summarise(communities = n_distinct(admin4pcode))
+  
+  
+```
+
+The issue with calculating these metrics is that we do not have an intercluster target. 
+
+Calculating all these metrics is pretty academic unless coordination wants to do something about it. 
+
+```{r}
+pop %>% 
+  filter(admin3pcode %in% nw_pcode3) %>% 
+  {mean(.$total_pop)}
+```
+
+
+```{r}
+com %>% 
+  left_join(pop %>% 
+              select(total_pop, admin4pcode), 
+            by = "admin4pcode") %>% 
+  filter(!is.na(admin4pcode) & activity != "ISIMM") %>% 
+  group_by(admin4pcode) %>% 
+  slice(which.max(beneficiaries)) %>% 
+  ungroup() %>% 
+  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE), 
+            population = sum(total_pop, na.rm = TRUE)) %>% 
+  mutate(pc_reached = round(beneficiaries / population * 100, digits = 2))
+```
+
+
+
+```{r}
+com %>% 
+  filter(!is.na(admin4pcode) & activity != "ISIMM") %>% 
+  group_by(admin4pcode) %>% 
+  summarise(sectors = n_distinct(cluster)) %>% 
+  ggplot(aes(x = sectors)) + 
+  geom_histogram(bins = 9) + 
+  scale_x_continuous(breaks = seq(1, 9, by = 1)) + 
+  geom_text(stat = "count", aes(label=..count..), vjust= - 0.5) +
+  expand_limits(y = 260) + 
+  labs(x = "Number of sectors", 
+       y = "Number of communities", 
+       title = "245 communities only have one cluster present")
+```
+<br>
+
+```{r}
+com %>% 
+  filter(cluster == "FSL") %>% 
+  group_by(admin4pcode) %>% 
+  slice(which.max(beneficiaries)) %>% 
+  ungroup() %>% 
+  {sum(.$beneficiaries, na.rm = TRUE)}
+
+pop %>% 
+  count(admin1pcode)
+  glimpse()
+```
+
+
+```{r}
+com %>% 
+  filter(!is.na(admin4pcode) & activity != "ISIMM") %>% 
+  group_by(admin4pcode) %>% 
+  summarise(sectors = n_distinct(cluster)) %>% 
+  filter(sectors == 1)
+```
+
+
+We note, from the table below, that the single cluster present in most of these 774 communities is CCCM.
+
+```{r}
+com %>% 
+  # Should water quality testing be included? 
+  filter(!is.na(admin4pcode)  & activity %out% c("ISIMM")) %>% 
+  group_by(cluster) %>% 
+  summarise(ben_frequencies = sum(beneficiaries, na.rm = TRUE), 
+            communities = n_distinct(admin4pcode)) %>% 
+  arrange(desc(communities)) %>% 
+  flextable() %>% 
+  theme_zebra() %>% 
+  set_caption("Footprint and reach per cluster/WG") %>% 
+  footnote(i = 1, j = 2, inline = TRUE, ref_symbols = "1", part = "header",
+           as_paragraph("Beneficiary frequencies are the number of times an individual has received assistance, regardless double counting")) %>% 
+  set_table_properties(layout = "autofit", width = .7)
+```
+
+<br>
+
+```{r}
+com %>% 
+  filter(cluster == "WASH") %>% 
+  group_by(activity) %>% 
+  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE)) %>% 
+  arrange(desc(beneficiaries))
+```
+
+
+Following CCCM, FSL has the largest footprint. SNFI and ERL have markedly more concentrated footprints. This probably has implications for the earthquake response as it will necessarily focused around Shelter. 
+
+
+<br>
+
+There are 34 communities where the only cluster present is not CCCM. In the majority of these cases, the single cluster present is either Education or Nutrition. 
+
+Export a csv of all communities which only have one cluster operating. 
+
+```{r}
+com %>% 
+  filter(!is.na(admin4pcode) ) %>% 
+  group_by(admin4pcode, cluster) %>% 
+  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE)) %>% 
+  ungroup() %>% 
+  pivot_wider(names_from = cluster, values_from = beneficiaries) %>%
+  mutate(clusters = rowSums(!is.na(.[,-1]))) %>% 
+  {mean(.$clusters, na.rm = TRUE)}
+
+com %>% 
+  filter(!is.na(admin4pcode) ) %>% 
+  group_by(admin4pcode, cluster) %>% 
+  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE)) %>% 
+  ungroup() %>% 
+  pivot_wider(names_from = cluster, values_from = beneficiaries) %>%
+  mutate(clusters = rowSums(!is.na(.[,-1]))) %>% 
+  ummarise(cash = sum(!is.na(Cash)), 
+            education = sum(!is.na(Education)), 
+            fsl = sum(!is.na(FSL)), 
+            nut = sum(!is.na(Nutrition)), 
+            prot = sum(!is.na(Protection)), 
+            snfi = sum(!is.na(SNFI)), 
+            wash = sum(!is.na(WASH)), 
+            erl = sum(!is.na(ERL)), 
+            cccm = sum(!is.na(CCCM)), 
+            edu = sum(!is.na(Education)))
+  filter(clusters == 1 & is.na(CCCM))
+  
+  filter(admin4pcode %in% reached_100) %>% 
+  {mean(.$clusters, na.rm = TRUE)}
+
+
+  summarise(cash = sum(!is.na(Cash)), 
+            education = sum(!is.na(Education)), 
+            fsl = sum(!is.na(FSL)), 
+            nut = sum(!is.na(Nutrition)), 
+            prot = sum(!is.na(Protection)), 
+            snfi = sum(!is.na(SNFI)), 
+            wash = sum(!is.na(WASH)), 
+            erl = sum(!is.na(ERL)), 
+            cccm = sum(!is.na(CCCM)), 
+            edu = sum(!is.na(Education)))
+  filter(clusters == 1 & is.na(CCCM))
+  
+```
+
+
+
+
+Multi-sector coverage is generally much better in Idleb than Aleppo. 
+
+Was this intentional? 
+
+
+
+```{r}
+com %>% 
+  filter(activity != "ISIMM") %>% 
+  filter(admin1pcode %in% c("SY02", "SY07")) %>% 
+  group_by(admin1pcode, admin4pcode) %>% 
+  summarise(clusters = n_distinct(cluster)) %>%
+  ggplot(aes(x = clusters)) + 
+  geom_histogram(bins = 10) + 
+  facet_wrap(~ admin1pcode) + 
+  scale_x_continuous(breaks = seq(0, 9, by = 1))
+  
+```
+
+```{r}
+aleppo_one_cluster <- com %>% 
+  filter(activity != "ISIMM" & admin1pcode == "SY02") %>% 
+  group_by(admin4pcode) %>% 
+  summarise(clusters = n_distinct(cluster)) %>% 
+  filter(clusters == 1) %>% 
+  pull(admin4pcode)
+  
+```
+
+```{r}
+com %>% 
+  filter(!is.na(admin4pcode) ) %>% 
+  group_by(admin4pcode, cluster) %>% 
+  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE)) %>% 
+  ungroup() %>% 
+  pivot_wider(names_from = cluster, values_from = beneficiaries) %>%
+  mutate(clusters = rowSums(!is.na(.[,-1]))) %>%  
+  filter(admin4pcode %in% aleppo_one_cluster) %>% 
+  summarise(cash = sum(!is.na(Cash)), 
+            education = sum(!is.na(Education)), 
+            fsl = sum(!is.na(FSL)), 
+            nut = sum(!is.na(Nutrition)), 
+            prot = sum(!is.na(Protection)), 
+            snfi = sum(!is.na(SNFI)), 
+            wash = sum(!is.na(WASH)), 
+            erl = sum(!is.na(ERL)), 
+            cccm = sum(!is.na(CCCM)), 
+            edu = sum(!is.na(Education)))
+```
+
+No real pattern as to why there are so many communities with only one cluster operational in Aleppo. 
+
+Main offender is FSL. 
+
+75 communities in Aleppo with only FSL. Maybe WFP has a giant contract for Aleppo and is forcing people to work there, without other clusters present. 
+
+
+```{r}
+com %>% 
+  pairwise_count(cluster, admin4pcode, upper = FALSE) %>% 
+  arrange(desc(n))
+
+com %>% 
+  pairwise_cor(cluster, admin4pcode, method = "spearman", 
+               sort = TRUE, upper = FALSE) 
+```
+
+Does Education work in camps? 
+Programmatically all ERL areas should have been covered in the emergency phase by other actors. 
+Pretty low overlap between Shelter and WASH.
+Ask what Nutrition and FSL are doing to coordinate
+
+What is the number of multisector beneficiaries per pair? 
+
+Focus a bit more on SNFI and ERL footprints. 
+
+
+```{r}
+
+com %>% filter(!is.na(camp_name) & is.na(admin5pcode)) %>% 
+  summarise(camp_no_code = n_distinct(camp_name), 
+            ben_freq = sum(beneficiaries, na.rm = TRUE)) %>% 
+  flextable() %>% 
+  theme_zebra()
+  
+```
+
+<br><br>
+
+
+### Beneficiary disaggregations 
+
+
+
+<br><br><br>
+
+### Modalities 
+
+```{r}
+glimpse(wash)
+
+wash %>% filter(!is.na(cash_hk)) %>% 
+  count(cash_hk)
+```
+
+
+4.82% of all beneficiary frequencies received cash assistance 
+
+```{r}
+com %>% 
+  count(delivery_modality, sort = TRUE)
+
+com %>% 
+  filter(activity != "ISIMM") %>% 
+  filter(project_status %in% c("Completed", "Ongoing")) %>% 
+  mutate(cash_ben = ifelse(delivery_modality == "Cash", 
+                           beneficiaries, 
+                           0)) %>% 
+  group_by(month) %>% 
+  summarise(cash_ben_freq = sum(cash_ben, na.rm = TRUE), 
+            ben_freq = sum(beneficiaries, na.rm = TRUE)) %>% 
+  mutate(cash_pc = round(cash_ben_freq / ben_freq * 100, digits = 2))
+
+# Unique individuals who received cash 
+com %>% 
+  mutate(cash_ben = ifelse(delivery_modality == "Cash", 
+                           beneficiaries, 
+                           0)) %>% 
+  group_by(admin4pcode) %>% 
+  slice(which.max(cash_ben)) %>% 
+  {sum(.$cash_ben, na.rm = TRUE)}
+
+com %>% 
+  filter(month == "FEB") %>% 
+  distinct(cluster)
+```
+
+Significant monetisation of in-kind activities during winterisation, but...
+
+WASH not having delivery modalities is due to the abnormal structure of their 4Ws -- but they must have a codebook somewhere? Same with CCCM 
+
+Nutrition activities without the delivery modality can easily be backfilled, given the clear definition of their activities, but that's for the Nutrition IMO to do.
+
+
+## Lack of documentation for 4Ws
+
+Given the high turnover in IMs and general response staff, it would be helpful to have codebooks for each of the 4Ws. 
+
+There are limits to what we can do in this document -- this is merely a review, not a formal codebook. Even if I made one, it would only be for cash. 
+
+```{r}
+com %>% 
+  filter(is.na(delivery_modality) & cluster == "Nutrition") %>% 
+  group_by(activity) %>% 
+  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE))
+```
+
+
+## Admin5/Master list of locations 
+
+Cleaning out the admin5 is a priority. 
+There needs to be a master location list of not just camps, but sites, consolidating schools, health facilities and so on. 
+
+There has to be standardisation in the names of camps and someone has to take ownership for the camps not managed by CCCM. 
+
+There are, consistently camps that partners are working in, but there is no code for. 
+
+Ideally, the owner of the master list of locations would be OCHA, since it does not only include camps. 
+
+The inclusion of site data will also allow us to define better, the number of unique individuals reached. 
+
+I think we just have to use the romanised English names when we standardise locations, just for easier reading into digital formats.
+
+As long as the admin5 are not cleaned out, it makes no sense for us to ask clusters lke SNFI or ERL to report at admin5 because we don't get any value from it. 
+
+
+```{r}
+com %>% 
+  filter(!is.na(camp_name) & is.na(admin5pcode)) %>% 
+  summarise(no_code_camps = n_distinct(camp_name))
+
+com %>% filter(!is.na(camp_name))
+```
+
+No consistency in codes or names of sites -- cf nutrition health facility names and WASH facility names 
+
+Education does not provide school names -- is this an anonymisation issue?
+WASH does provide the actual names of schools -- 211 of them, even 
+
+
+
+```{r}
+com %>% 
+  mutate(no_admin5 = ifelse(is.na(admin5pcode), 
+                            "yes", 
+                            "no")) %>% 
+  filter(activity != "ISIMM") %>% 
+  group_by(cluster, no_admin5) %>% 
+  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE)) %>% 
+  pivot_wider(names_from = no_admin5, values_from = beneficiaries) %>% 
+  mutate(total_frequencies = sum(yes, no, na.rm = TRUE), 
+         pc_missing = round(yes / total_frequencies * 100, digits = 2)) %>% 
+  select(-total_frequencies) %>% 
+  flextable() %>% 
+  theme_zebra() %>% 
+  set_caption("The impracticality of requiring partners to report at admin5") %>% 
+  set_table_properties(layout = "autofit", width = .8)
+  
+```
+
+
+### Activities
+
+```{r}
+com %>% 
+  filter(project_status %in% c("Completed", "Ongoing")) %>% 
+  
+```
+
+
+```{r}
+com %>% 
+  group_by(cluster, admin4pcode) %>% 
+  summarise(count = n()) %>% 
+  pairwise_cor(cluster, admin4pcode, value = count, 
+               method = c("spearman"), upper = FALSE) %>% 
+  arrange(desc(correlation))
+
+com %>% 
+  filter(project_status %in% c("Completed", "Ongoing") & 
+           activity != "ISIMM") %>% 
+  group_by(activity, admin4pcode) %>% 
+  summarise(count = n()) %>% 
+  pairwise_cor(activity, admin4pcode, value = count, 
+               method = c("spearman"), upper = FALSE) %>% 
+  arrange(desc(correlation)) %>% 
+  left_join(com %>% 
+              distinct(cluster1 = cluster, activity), 
+            by = c("item1" = "activity")) %>% 
+  left_join(com %>% 
+              distinct(cluster2 = cluster, activity), 
+            by = c("item2" = "activity")) %>% 
+  filter(cluster1 != cluster2)
+
+com %>% 
+  filter(project_status %in% c("Completed", "Ongoing") & 
+           activity != "ISIMM") %>% 
+  pairwise_count(activity, admin4pcode, sort = TRUE, upper = FALSE) %>% 
+  left_join(com %>% 
+              distinct(cluster1 = cluster, activity), 
+            by = c("item1" = "activity")) %>% 
+  left_join(com %>% 
+              distinct(cluster2 = cluster, activity), 
+            by = c("item2" = "activity")) %>% 
+  filter(cluster1 != cluster2)
+```
+
+```{r}
+nut %>% 
+  count(activity, sort = TRUE)
+
+nut %>% 
+  mutate(activity = str_remove_all(activity, "(6 – 59 months) | for six months| for four month|"), 
+         activity = str_replace_all(activity, 
+                                    " who received micronutrients, including iron, folate ", 
+                                    "received micronutrrients"), 
+         )
+```
+
+
+
+
+
+
+```{r eval=FALSE}
+
+# WASH being problematic
+wash %>%
+    pivot_longer(cols = c(rehab_repair_water_station, 
+                          o_m, 
+                          construction_water_station, 
+                          network_rehab, 
+                          construction_water_network, 
+                          chlorination, 
+                          wq_testing, 
+                          fuel_consumption, 
+                          water_safety_plans, 
+                          water_trucking, 
+                          cash_assistance_water_trucking, 
+                          pvt_boreholes, 
+                          cash_assistance_private_boreholes, 
+                          tanks_pwd_ben, 
+                          hh_water_treatment, 
+                          hh_water_treatement_cash_assistance, 
+                          sew_rehab_repair, 
+                          sew_support, 
+                          sew_construction, 
+                          beneficiaries_toilets, 
+                          pw_d_beneficiaries_toilet, 
+                          beneficiaries_cash_toilets, 
+                          bath_new, 
+                          cash_bath,
+                          des_beneficiaries, 
+                          swm_support_benf, 
+                          hp_ben, 
+                          hp_pwd_ben, 
+                          hk_ben, 
+                          cash_hk, 
+                          pwd_beneficiaries, 
+                          wash_nfi_ben, 
+                          incinerator_health_facilities, 
+                          cholera_safe_water, 
+                          chlorin_cholera, 
+                          cholera_sew, 
+                          cholera_kit, 
+                          cholera_hp_rcce_iec, 
+                          cholera_wash_in_health), 
+                 names_to = "activity", values_to = "beneficiaries") %>% 
+  # A bit controversial, but if I don't do this, WASH will be gigantic
+  # group_by(activity, admin4pcode) %>% 
+  # slice(which.max(beneficiaries)) %>% 
+  # ungroup() %>% 
+    mutate(delivery_modality = NA_character_,
+           cluster = "WASH") %>% 
+  group_by(activity) %>% 
+  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE)) %>% 
+  arrange(desc(beneficiaries))
+
+com %>% count(project_status)
+
+
+```
+
+WASH des_beneficiaries is almost certainly disinfection or desinfeccion. However, this still doesn't allow me to remove beneficiaries from the totals, so WASH numbers will continue to be inflated, 
+
+
+
+
