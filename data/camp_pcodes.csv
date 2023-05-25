@@ -1,0 +1,1493 @@
+﻿admin4Pcode,Location_Pcode,LocationName_en,Locationme_ar,location_type
+C1020,CP000613,Al Ezza / العزة,,NWS sites
+C1020,CP000614,Al Mansoura/ المنصورة,,NWS sites
+C1020,CP001219,Athar/ أثار,,NWS sites
+C1020,CP001221,Al Muhtasiboun/ المحتسبون,,NWS sites
+C1020,CP001250,Gaith Wa Rehma2 / غيث ورحمة 2,,
+C1020,CP001322,Al Homad / الحومد,,NWS sites
+C1020,CP001323,Urum Al Sughra / أورم الصغرى,,NWS sites
+C1020,CP001903,التوامة / Altawama,,NWS sites
+C1020,CP001904,Gaith and Rahma/غيث ورحمة,,NWS sites
+C1020,TEMP027,Tawamah Shelter Center,مركز ايواء التوامه,Informal Site  
+C1021,CP000490,Al Wafa (Sarmada) /  (سرمدا) الوفاء,,
+C1021,CP000576,Al-Furkan(Alkamouna)  /الفرقان (الكمونة),,
+C1021,CP000661,Basmet Amal/ بسمة أمل,,
+C1021,CP000734,Blozia  / بلوزية,,
+C1021,CP002248,Al nour Village CP002248,,Reception Center  
+C1021,TEMP031,Diniz Al haramin,,Reception Center  
+C1022,CP001878,Aleis/العيس,,NWS sites
+C1025,CP000458,Al Hersh(Borj)/ الحرش(البرج),,NWS sites
+C1025,CP000557,Sabroun (Batbo)  /  صابرون (باتبو),,NWS sites
+C1025,CP000562,AlAtshana Algharbiyah / العطشانة الغربية ,,NWS sites
+C1025,CP000563,Al Saiyalah / السيالة ,,
+C1025,CP000594,Qurtoba  / قرطبة,,
+C1025,CP001242,Al Mathana(Batbu) / المطحنة(باتبو),,NWS sites
+C1025,CP001243,Halab Alshahbaa (Batbu) / حلب الشهباء(باتبو),,NWS sites
+C1025,CP001246,Muhajaree Khan AlAsal / مهجري خان العسل,,NWS sites
+C1025,CP001270,Al Taliaa / الطليعة,,NWS sites
+C1025,CP001334,Al Badawi/ البدوي,,NWS sites
+C1025,CP001365,Al Hamoud / الحمود,,NWS sites
+C1025,CP001366,Al Yousuf / اليوسف,,NWS sites
+C1025,CP001367,Batbu Reception Center / مركز استقبال باتبو,,NWS sites
+C1025,CP001479,Najm Aldeen Arbakan / نجم الدين أربكان,,NWS sites
+C1025,CP001721,Tal Nawaz / تل نواز,,NWS sites
+C1025,CP001722,Zitan / زيتان,,NWS sites
+C1025,CP001814,Al Tareek Alabyad/ الطريق الأبيض,,NWS sites
+C1025,CP001815,Al Bari(Batbu) / البري(باتبو),,NWS sites
+C1025,CP001875,Al Jamaa Algharbi / الجامع الغربي,,NWS sites
+C1025,CP001879,Anadan / عندان,,NWS sites
+C1025,CP001880,Khan Al-Asaal / خان العسل,,NWS sites
+C1025,CP001881,Kafernaha / كفرناها,,NWS sites
+C1025,CP001882,Albesh / البش,,NWS sites
+C1025,CP001883,Al-Nour(Atareb) / النور(أتارب),,NWS sites
+C1025,CP001922,Al Salam(Batbu) / السلام(باتبو),,NWS sites
+C1025,CP001940,Al Wadi(Batbu) / الوادي(باتبو),,NWS sites
+C1025,CP002004,Al - Muhsnien / المحسنين,,NWS sites
+C1026,CP000283,Ra'a/ راع,,NWS sites
+C1026,CP001354,Al Rasheed / الرشيد,,NWS sites
+C1026,CP001355,Al Kasasieb / القصاصيب,,NWS sites
+C1035,CP000406,Al Abiad-Kafar Karmeen / الأبيض-كفر كرمين,,NWS sites
+C1036,CP000718,Hourti  / حورتي,,NWS sites
+C1036,CP001509,Al Barakat / البركات,,NWS sites
+C1036,CP001510,Al Oliwi(Atareb) / العليوي(أتارب),,NWS sites
+C1036,CP001511,Maram (Atareb) / مرام(أتارب),,NWS sites
+C1036,CP001512,Um Neer / أم نير,,NWS sites
+C1036,CP001960,Habes / حابس,,NWS sites
+C1036,CP001961,kafr Nobol (Atareb) / كفرنبل(أتارب),,NWS sites
+C1138,CP001434,Al Safa / الصفا,,NWS sites
+C1138,CP001777,Al Iman(Zarzita) / الايمان(زرزيتا),,NWS sites
+C1187,CP001032,Al Rajeh/ الراجح,,NWS sites
+C1187,CP001034,Susian/ سوسيان,,NWS sites
+C1188,CP000879,Bazagha  /بزاعة,,NWS sites
+C1190,CP001213,Su Sinbat/سو سنباط,,NWS sites
+C1190,CP001349,Al Hazori / الحزوري,,NWS sites
+C1190,CP001957,Haq Alsham / حق الشام,,NWS sites
+C1192,CP000882,Al Bourj (Lam Alshamel) / البرج(لم الشمل),,NWS sites
+C1192,CP001033,Al Bazar/ البازار,,NWS sites
+C1196,CP001204,Al Shaikh Alwan/ الشيخ علوان,,NWS sites
+C1198,CP001085,Hadath / حدث,,NWS sites
+C1198,CP001914,Al Katari Village / القرية القطرية,,NWS sites
+C1199,CP001353,Tal Jerji/تل جرجي,,NWS sites
+C1202,CP000457,Duyuf Al Sharqia/ ضيوف الشرقية ,,NWS sites
+C1202,CP001195,Qubbet Elsheikh/قبة الشيخ,,NWS sites
+C1202,CP001998, العشوائي القطاع الثاني/ Ashwai sector 2,,NWS sites
+C1202,TEMP033,Rofakaa,,Reception Center  
+C1202,TEMP061,Al-Huda Camp,مخيم الهدى,Reception Center  
+C1204,CP001792,Olan/عولان,,NWS sites
+C1206,CP001203,Shadoud/ شدود,,NWS sites
+C1209,CP001180,Qabasin/قباسين,,NWS sites
+C1209,CP001338,Mseibin / مصيبين,,NWS sites
+C1209,CP001339,Zamkah / زمكة,,NWS sites
+C1333,CP001182,Al Wadi Alkhdar / الوادي الأخضر,,NWS sites
+C1346,CP001181,Birshaya/ برشاية,,NWS sites
+C1352,CP001734,Salah Aldin(Iskan)/صلاح الدين(إسقاط),,NWS sites
+C1352,CP001735,Iskan/إسكان,,NWS sites
+C1359,CP001906,Sheikh Eldeir/شيخ الدير,,NWS sites
+C1362,CP001832,marrak Qibar / مقابل مفرق قيبار,,NWS sites
+C1364,CP001842,Al Khaldiyet(Afrin) / الخالدية(عفرين),,NWS sites
+C1366,CP000872,Albayraq  / مركز إيواء البيرق,,NWS sites
+C1366,CP001448,Jean Afrin / جين عفرين,,NWS sites
+C1366,CP001449,Pazar Afrin / بازار عفرين,,NWS sites
+C1366,CP001450,Jisr Afrin / جسر عفرين,,NWS sites
+C1366,CP001451,Makatib Maarata / مكاتب معراتة,,NWS sites
+C1366,CP001452,Malahi / ملاهي,,NWS sites
+C1366,CP001453,Markaz Thakafi / مقابل المركز الثقافي,,NWS sites
+C1366,CP001635,Hirsh AlZaidiah / حرش الزيدية,,NWS sites
+C1366,CP001636,Military Hospital/ المشفى العسكري,,NWS sites
+C1366,CP001690,Emmar 2 Center / مركز  اعمار 2,,NWS sites
+C1366,CP001703,Trendah / ترندة,,NWS sites
+C1366,CP001705,Ashrafyah (Center21) / الأشرفية(مركز21),,NWS sites
+C1366,CP001818,Salit Alsalam / صالة السلام,,NWS sites
+C1366,CP001819,Ma'mal Altanak / معمل التنك,,NWS sites
+C1366,CP001820,Salit Silvana / صالة سلفانا,,NWS sites
+C1366,CP001821,Al Aytam(Afrin) / الأيتام(عفرين),,NWS sites
+C1366,CP001822,Madrast Alsina'a(Afrin) / مدرسة الصناعة(عفرين),,NWS sites
+C1366,CP001823,Trendah Extension/ ملحق ترندة,,NWS sites
+C1366,CP001824,Maamal Block Paradise / معمل البلوك برادايس,,NWS sites
+C1366,CP001825,Maamal Isment/ معمبل الإسمنت,,NWS sites
+C1366,CP001826,Collective Center 14 Duwar Alsaraya / مركز الإيواء 14 دوار السرايا,,NWS sites
+C1366,CP001827,Manshart Alhajar / منشرة الحجر,,NWS sites
+C1366,CP001941,Center 12/ مركز إيواء 12,,NWS sites
+C1366,CP001942,Al Jadidah / الجديدة,,NWS sites
+C1366,CP001943,Center 25/ مركز إيواء 25,,NWS sites
+C1366,CP001944,Fustok Halap / فستق حلب,,NWS sites
+C1366,CP001945,Center 3/ مركو إيواء 3,,NWS sites
+C1370,CP001731,Al sijn/السجن,,NWS sites
+C1370,CP001732,Al Sakia2/الساقية 2,,NWS sites
+C1370,CP001733,Al Tal wa Al Hersh wa Al Nabaa/التل والحرش والنبعة,,NWS sites
+C1370,CP001931,Al Madrasa(Ein Dara)/المدرسة(عين دارة),,NWS sites
+C1373,CP001717,Baee/باعي,,NWS sites
+C1376,CP001718,Tal Aldaman/تل الضمان,,NWS sites
+C1376,CP001719,Al Mathana/المطحنة,,NWS sites
+C1376,CP001933,Al Bustan/البستان,,NWS sites
+C1377,CP001909,Al Miyah/المياه,,NWS sites
+C1377,CP001910,Al Sakia1/الساقية 1,,NWS sites
+C1378,CP001736,Al Gazawiya/الغزاوية,,NWS sites
+C1378,CP001907,Barmaya/برمايا,,NWS sites
+C1378,CP001908,Tal Namuz/تل ناموز,,NWS sites
+C1381,CP001841,مزرعة كنو كوكبة / Mazrait Kno Kokabih,,NWS sites
+C1386,CP001849,Mreimin / ميرمين,,NWS sites
+C1388,CP001807,Al Murbaat/المربعات,,NWS sites
+C1388,CP001808,Al Maktaba/المكتبة,,NWS sites
+C1388,CP001809,Kuptan aljabal/قبطان الجبل,,NWS sites
+C1388,CP001810,Ref Halab Aljananoubi(Afrin)/ريف حلب الجنوبي(عفرين),,NWS sites
+C1388,CP001932,Buzika/بوزيكا,,NWS sites
+C1390,CP001740,Al Kefra/الكفرة,,NWS sites
+C1390,CP001742,Mamal Al Khazanat/معمل الخزانات,,NWS sites
+C1423,CP001830,Kojman / قوجمان,,NWS sites
+C1424,CP001691,Altal wa Alnabaa / التل والنبعة,,NWS sites
+C1424,CP001833,الجمعية التعاونية/Aljamiaa Altawniah,,NWS sites
+C1424,CP001834,Alwadi(Jalma) / الوادي(جلمة),,NWS sites
+C1424,CP001949,Hanan / حنان,,NWS sites
+C1424,CP001950,Mazraat Alzaeem / مزرعة الزعيم,,NWS sites
+C1424,TEMP077,Al Mahalla -Maqla'a    -,مخيم المحلة  مقلع,Informal Site  
+C1426,CP001692,Tareek Alhamam(Janadirsi) /طريق الحمام(جنديرس),,NWS sites
+C1426,CP001693,Janadirsi Entrance / مدخل جنديرس,,NWS sites
+C1426,CP001694,Yalnquz Road/ طريق يلانقوز,,NWS sites
+C1426,CP001695,Al Muhamadyeh 2/ 2 المحمدية,,NWS sites
+C1426,CP001835,معصرة كفرصفرة/Masrat Kafar Safra,,NWS sites
+C1426,CP001836,Kherbit Aloush / خربة علوش,,NWS sites
+C1426,CP001837,صالة سنديانكي / Salat Sundianki ,,NWS sites
+C1426,CP001838, سوق الهال(جنديرس) / (Suk Alhal (Jandairis,,NWS sites
+C1426,CP001839, بافليون/ Bavlion,,NWS sites
+C1426,CP001951,Center 1  / مركز أيواء 1,,NWS sites
+C1426,TEMP022,MHD's reception center,,Reception Center  
+C1426,TEMP023,MHD's reception center,,Reception Center  
+C1426,TEMP035,ALEMAN 2 reception center,,Collective Center  
+C1426,TEMP038,arabo Shelter Center,,Reception Center  
+C1426,TEMP039,iman Shelter Center,,Reception Center  
+C1426,TEMP040,abo othman,,Informal Site  
+C1426,TEMP041,Hamza1.2.3,,Informal Site  
+C1426,TEMP042,al tell,,Informal Site  
+C1426,TEMP045,Elementary School,,School
+C1426,TEMP050,(Al-Nasr Al-Rifa'atiya Camp),,Reception Center  
+C1426,TEMP058,2 Al Iman 2,مركز ايواء الإيمان2 2,Collective Center  
+C1426,TEMP062,Baba Amro RC,مركز إيواء باباعمرو,Informal Site  
+C1426,TEMP063,Ehsas 2,2  إحساس ٢,Informal Site  
+C1426,TEMP064,Al-Bashir - mercy without limits   .,البشير .رحمة بلاحدود,Informal Site  
+C1426,TEMP065,ALZYARA SEMA,الزيارة سيما,Informal Site  
+C1426,TEMP066,Kifaf 1,1 كفاف١,Informal Site  
+C1426,TEMP067,Ajnadin,أجنادين,Informal Site  
+C1426,TEMP068,AlMazraa,  المزرعة,Reception Center  
+C1426,TEMP080,Gehan Olive press,مركز ايواء المحلق (معصرة جهان),Collective Center  
+C1426,TEMP081,Aljabal,الجبل,Reception Center  
+C1426,TEMP083,Almuhallak Alshamale,المحلق الشمالي,Reception Center  
+C1426,TEMP087,Karam,كرم,Reception Center  
+C1426,TEMP098,Shafak  Alkareem,الكرم,Informal Site  
+C1426,TEMP099,Shohadaa Zilzal 6 shbat,شهداء زلزال ٦شباط  6,Informal Site  
+C1426,TEMP100,AlHis,الحص  ,Informal Site  
+C1426,TEMP101,Albaraka,البركة,Informal Site  
+C1426,TEMP102,Almokhaiam algarbi,مخيم الغربي,Informal Site  
+C1426,TEMP103,AhlAlnakhwa,اهل النخوة  ,Informal Site  
+C1426,TEMP104,Alnadi,النادي,Informal Site  
+C1426,TEMP105,ALhishma,الحشمة  ,Informal Site  
+C1426,TEMP108,Almousa,الموسى,Informal Site  
+C1426,TEMP109,AlTot RC,إيواء التوت  ,Informal Site  
+C1426,TEMP112,AlJanobi,الجنوبي  ,Informal Site  
+C1426,TEMP113,ALBalad RC,إيواء البلد  ,Informal Site  
+C1426,TEMP115,Alnaaim,النعيم,Informal Site  
+C1426,TEMP116,KhalfAlMassara,خلف معصرة (جيهان)  ,Informal Site  
+C1426,TEMP118,AhlAboida,أهل البويضة معصرة الفلاحين  ,Informal Site  
+C1433,CP001996,Rahmat / رحمات ,,NWS sites
+C1435, CP000637,Deir Ballut/دير بلوط,,NWS sites
+C1435,CP001611,Al Muhamadyeh/ المحمدية,,NWS sites
+C1437,CP001862, أشكان/ Ashkan,,NWS sites
+C1438,CP001863,Sundianki/ سنديانكي,,NWS sites
+C1438,TEMP111,TaloofAlkhir,تآلف الخير  ,Informal Site  
+C1446,TEMP106,Alfrira  Al Baidar,الفريرية بيدر  ,Informal Site  
+C1449,CP001840, معمل بلوك طريق كفر صفرة/ Mamal Blook Kafar Safrah,,NWS sites
+C1452,CP001831,Hamshalik / حمشلك,,NWS sites
+C1484,CP001701,Tal Raju Entrance/ مدخل تل راجو,,NWS sites
+C1484,CP001702,Hobkanly / هوبكانلي,,NWS sites
+C1484,CP001853,مفرق موسيه/ Mafrak Musaih,,NWS sites
+C1484,CP001854,مامللي/ Mamilli,,NWS sites
+C1484,CP001855,Mahatit Rajo / محطة راجو,,NWS sites
+C1491,CP001848,Mosako / موساكو,,NWS sites
+C1497,CP001856,Mahatit Kno2 / محطة كنو2,,NWS sites
+C1497,CP001952,Center 2 / مركز إيواء 2,,NWS sites
+C1497,CP001953,Center 1(Sharan) / ايواء 1 (شران ),,NWS sites
+C1498,CP000871,Diyar  / ديار,,NWS sites
+C1498,CP001447,Amad / أمد,,NWS sites
+C1498,CP001858,Alshat 2/ الشط2,,NWS sites
+C1498,CP001859,مطعم الجبل قره تبة / Aljabal Kira Tabeh,,NWS sites
+C1498,CP001860,Salit rotana / صالة روتانا,,NWS sites
+C1498,CP001861,معامل الجاسم/ Maamil Aljasem,,NWS sites
+C1515,CP001661,Matenly(Khubz Alkhair)/ ماتنلي(خبز الخير),,NWS sites
+C1515,CP001662,Matenly Baydar/ ماتنلي بيدر,,NWS sites
+C1518,CP001445,Salat Almukhtar / صالة المختار,,NWS sites
+C1518,CP001696,Katmeh/ قطمة,,NWS sites
+C1518,CP001697,Katmeh Fukani / قطمة فوقاني,,NWS sites
+C1518,CP001954,Salit Media / صالة ميديا,,NWS sites
+C1519,CP001851, صالة أمانوس/Salit Amanus,,NWS sites
+C1520,CP001446,Zeyarat hanan / زيارة حنان,,NWS sites
+C1520,CP001674,Kourtek / كورتك,,NWS sites
+C1520,CP001847,Alsabih / الصبة,,NWS sites
+C1520,TEMP044,soame Shelter Center,,Informal Site  
+C1521,CP001850,حرش قسطل جندو/ Hirsh Kastak Jundo,,NWS sites
+C1522,TEMP079,KafrRoom,كفر روم  ,Informal Site  
+C1524,CP001442,Salat Alzuhur / صالة الزهور,,NWS sites
+C1524,CP001443,Salat Sywar / صالة سيوار,,NWS sites
+C1524,CP001444,Behind Salat  Orya(Habit Albaraka) / خلف صالة أوريا(حبة البركة),,NWS sites
+C1524,CP001700,Hirsh Qatmah Tehtani/ حرش قاطمة تحتاني,,NWS sites
+C1524,CP001852,قطمة 2/ Qatma 2,,NWS sites
+C1535,TEMP114,QariatNawoaAlkhir,قرية نواف الخير  ,Informal Site  
+C1547, CP000642,Abraz/أبراز,,NWS sites
+C1552, CP000639,Ma'btali/المعبطلي,,NWS sites
+C1552,CP001441,Salat Suliman / صالة سليمان,,NWS sites
+C1552,CP001699,Qatranih / قطرانية,,NWS sites
+C1552,CP001845, شيخ كيلو كوليك/ Shaikh kilo Kolik,,NWS sites
+C1557,CP000654,Mukawamah/المقاومة,,NWS sites
+C1558,CP000292,Al Zeytoun (Al Helal)/(الهلال) الزيتون,,NWS sites
+C1559,CP000294,Talil Elsham Southern/ تليل الشام جنوبي,,NWS sites
+C1561,CP000005,Old Bab Al Salame / باب السلامة القديم,,NWS sites
+C1561,CP000008,Sujjo/ سوجو,,NWS sites
+C1561,CP000291,Yazibag/ يازيباغ,,NWS sites
+C1561,CP000479,Al Rahmah (Salama) /  (السلامة) الرحمة,,NWS sites
+C1561,CP001004,Karaj Sujo / كراج سجو,,NWS sites
+C1561,CP001225,New Bab Al Salame / باب السلامة الجديد,,NWS sites
+C1561,CP001342,Tel Reffat /  تل رفعت,,NWS sites
+C1561,CP001343,Sujjo Siramik factory / سجو معمل سيراميك,,NWS sites
+C1561,CP001344,Shuhadaa’ Tal Reffat / شهداء تل رفعت,,NWS sites
+C1564,CP000364,Azaz Transit/Reception Centre/ مخيم ايواء اعزاز المؤقت (الشبيبة),,NWS sites
+C1564,CP001045,Kazeit Al Sabah/ كازية الصباح,,NWS sites
+C1564,CP001358,Tareeq Al Malaab / طريق الملعب,,NWS sites
+C1564,CP001359,Al Zuhour / الزهور,,NWS sites
+C1564,CP001526,Mohaamd Abdulkader Hamoush/ محمد عبدالقادر حموش,,NWS sites
+C1564,CP001613,Tal Debs/ تل دبس,,NWS sites
+C1564,CP001614,Nayyarah/ نيارة,,NWS sites
+C1564,CP001615,Abo Aljolan School- AlAsyanah/ مدرسة أبو الجولان-العصيانة,,NWS sites
+C1564,TEMP028,private land,,Reception Center  
+C1564,TEMP030,Sjo garage,كراج سجو,Reception Center  
+C1564,TEMP059,Central Azaz RC,مركز إيواء اعزاز المركزي,Collective Center  
+C1566,CP000003,Bab Al Iman/ باب الايمان,,NWS sites
+C1566,CP000004,Bab Al Noor/ باب النور,,NWS sites
+C1566,CP000009,"Shamarin (Dhahiat Al-Shuhada, Qatari)/ شمارين ( ضاحية الشهداء , القطري)",,NWS sites
+C1566,CP000278,Al Resalah (Al Armuda)/ الرسالة (العرموطة),,NWS sites
+C1566,CP000290,Al Rayan (Azaz) /  (اعزاز) الريان,,NWS sites
+C1566,CP000477,Tal Jubeen/ تل جبين,,NWS sites
+C1566,CP001347,مركز الايواء -شمارين / Alewaa Shamareen,,NWS sites
+C1566,CP001799,Al Tawheed(Shamarin)/ التوحيد(شمارين),,NWS sites
+C1566,CP001800,Alfajir(Shamarin) / الفجر(شمارين),,NWS sites
+C1572,TEMP036,Iqra Temporary Reception Centre,,Reception Center  
+C1573,CP002001,Tajamuaa Azez/ تجمع عزيز السكني,,NWS sites
+C1573,N/A,Niaraa RC,مركز نيارة,Reception Center  
+C1574,CP001005,Wadi Marrin  / وادي معرين,,NWS sites
+C1574,CP001997,Al Zeytoun/ الزيتون,,NWS sites
+C1577,CP001968,بحورته / Bhorta,,NWS sites
+C1579,CP001967,الزيادية / Ziyadiyeh,,NWS sites
+C1585,CP001391,الحردانة / Hardana,,NWS sites
+C1591,CP001240,Qarah Kupri / كره قوبري,,NWS sites
+C1591,CP001645,Sawamaa Aghtrin/ صوامع أخترين,,NWS sites
+C1597,CP000884,Dabeq /دابق,,NWS sites
+C1605,CP001321,Dar Alkiram / دار الكرام,,NWS sites
+C1609,CP001619,Kaeebeh/كعيبة,,NWS sites
+C1611,TEMP032,Kobtan RC,,Reception Center  
+C1615,CP001969,Wash/واش,,NWS sites
+C1616,CP001644,طاط حمص / Tat Hims,,NWS sites
+C1616,CP001675,قعر كلبين / Kaeir Kalbin,,NWS sites
+C1643,CP001337,Marea Assemblage / تجمع مارع,,NWS sites
+C1643,CP001417,Al Waleed(Mare) / الوليد(مارع),,NWS sites
+C1643,TEMP072,AlEido,العيدو,Informal Site  
+C1643,TEMP073,Al-Aboud,العبود,Informal Site  
+C1658,CP000006,Ekkdeh/ إيكدة,,NWS sites
+C1659,CP001999,Dweibeq/دويبق,,NWS sites
+C1667,CP001256,Ehteimlat(Al Marj)/احتيمالات(المرج),,NES sites
+C1669,CP000494,Elbil 1/ البل 1,,NWS sites
+C1669,CP000495,Dostluk (Friendship Camp)/الصداقة,,NWS sites
+C1671,CP000007,Al Harameen and extension/ الحرمين والتوسعة,,NWS sites
+C1671,CP002000,أهل الشام(صوران) / Ahel Al Sham(Suran),,NWS sites
+C1672,CP000966,Kafra(Hawuz)/كفرة(الحاووظ),,NWS sites
+C1672,CP001408,كفر1-2 / Kafr1-2,,NWS sites
+C2213,CP001027,El Awina /  العوينة,,NWS sites
+C2213,CP001028,Ard Aljamiaa  / أرض الجمعية,,NWS sites
+C2220,CP001031,Zoghra / زوغرة,,NWS sites
+C2223,CP001001,Al Ghalad/ الغلاض,,NWS sites
+C2225,CP001646,Madajen Alkhamees/ مداجن الخميس,,NWS sites
+C2225,CP001916,Yusef Elbeik/يوسف بك,,NWS sites
+C2227,CP000015,Jarablus (Stadium)/ جرابلس (الملعب),,NWS sites
+C2227,CP000017,Jarablus 4 (Jbel)/ المخيم رقم 4 (جبل),,NWS sites
+C2227,CP000944,Al Khalawi  / الخلاوي,,NWS sites
+C2227,CP000945,Khalf Al Malaab / خلف الملعب,,NWS sites
+C2227,CP000946,Al Haraksha/ الحراكشة,,NWS sites
+C2227,CP000947,Al koush  / الكوش,,NWS sites
+C2227,CP000948,Al Ziraa/ الزراعة,,NWS sites
+C2227,CP000949,Abo Shihab/ أبو شهاب,,NWS sites
+C2227,CP001665,Al Masar / المسار,,NWS sites
+C2227,CP001915,Al Helwanee/ الحلوانية,,NWS sites
+C2227,CP001993,Al Masref/ المصرف,,NWS sites
+C2227,CP001994,Jubanat/ جوبانات,,NWS sites
+C2227,CP001995,Bakres/ بكريز,,NWS sites
+C2227,N/A,AFAD Elementary School,مدرسة افاد الابتدائية,School
+C2230,CP002154,"Camp ATAA Third Residence, CP002154",,Planned Camp  
+C2238,CP001011,Ein Al Abeed/ عين العبيد,,NWS sites
+C2238,CP001012,Tareeq Marma Elhajar/ طريق مرمى الحجر,,NWS sites
+C2238,CP001623,Ataa(Marma Elhajar)/ عطاء(مرمى الحجر),,NWS sites
+C2238,CP001673,Ein Al Abeed(Ekhwa)/عين العبيد(قرية الأخوة),,NWS sites
+C2250,CP000906,Al Kanawi / الكناوي,,NWS sites
+C2250,CP000907, Al Matar Al Ziraai / المطار الزراعي,,NWS sites
+C2250,CP001663,Al Alkana / العلكانة,,NWS sites
+C2250,CP001913,Mirza/ ميرزا,,NWS sites
+C2254,CP001013,Al Kadi/ القاضي,,NWS sites
+C2262,CP000950,Al A'lkana / العلكانة,,NWS sites
+C2263,CP002012,Qubbet Elturkman/قبة التركمان,,NWS sites
+C2268,CP001000,Lilawa/ ليلوة,,NWS sites
+C3871,CP000709,Ritco  / ريتكو,,
+C3871,CP000739,Al Hussein  / الحسين,,
+C3871,CP000861,Al Malaab  /.الملعب,,
+C3871,CP001111,الجامعة /University,,
+C3871,CP001495,الكنايس / Al Kanayes,,
+C3871,CP001496, المحمود/ Al Mahmoud,,
+C3871,CP001497, مزرعة السميع / Al Sameià Farm,,
+C3871,CP001920,Al Kateea / القطيع,,
+C3871,CP001981,Al Shuhadaa(Idleb)/ الشهداء(ادلب),,
+C3871,CP001982,Al Thawra/ الثورة,,
+C3871,CP002006,Al-Azizia / العزيزية,,
+C3871,N/A,Al malaab,الملعب,Reception Center  
+C3871,TEMP017,Shoaib,,Reception Center  
+C3871,TEMP018,Shark Center,,Reception Center  
+C3871,TEMP019,Al qasir,,Reception Center  
+C3873,CP001316,Al Fidaa / الفداء,,
+C3873,CP001317,Al Fidaa Extension(Al Zajil) /ملحق الفداء(الزاجل),,
+C3875,CP001232,Al Khair(Arshani) / الخير(عرشاني),,
+C3878,CP001394,وادي خالد /Wadi Khahd,,
+C3879,CP001147,Kafruhin/كفروحين,,
+C3879,CP001409,بشمارون / Bishmaroun,,
+C3879,CP001563,Water Station/ محطة المياه,,
+C3904,CP001976,Al Husoun/ الحصون,,
+C3905,CP001078,الحديقة / The Hadikha ,,
+C3905,CP001080,حفيدات عائشة/Hafedat Aeshaa,,
+C3905,CP001081,عائشة بنت ابو بكر/Aieshaa bent Abo Bakr,,
+C3905,CP001083,Nadi Alfurusiah  / نادي الفروسية,,
+C3906,CP001610,Toum/طعوم,,
+C3937,CP001368,Bhora/بحورى,,
+C3938,CP001431,الرحمة(زردنا مشهد) / Al Rahmah(Zardana),,
+C3938,CP001432,الأندلس 1/Al Andalus 1,,
+C3938,CP001523,Al Maara(Shabur) / المعرة(شابور),,
+C3938,CP001558,Al Nour(Zaradna Mashehad)/ النور(زردنا مشهد),,
+C3939,CP000657,Al Hawija / الحويجة,,
+C3939,CP000694,Al Zeyara (Eman Billah)  / الزيارة(الإيمان بالله),,
+C3939,CP000722,Al Teh  / التح,,
+C3939,CP001062,تجمع مخيمات باتنته / Batentah Camp's  Mass,,
+C3939,CP001063,Al Rahman(Batenta)/ الرحمن(باتنته),,
+C3939,CP001064,المكداش/Al-mkdash,,
+C3940,CP001521,Al Teen / التين,,
+C3940,CP001599,School(Taltuneh)/ المدرسة(تلتونة),,
+C3940,CP001600,Aleuzu/ العزو,,
+C3940,CP001632,Alzahraa(Taltuneh)/الزهراء(تلتونة),,
+C3941,CP001768,تجمع مغسلة فاضل يونس/Tajmae mughsilat fadil yunis,,
+C3942,CP000692,Robaa Aljour / ربع الجور,,
+C3942,CP000693,Al Job / الجب,,
+C3942,Cp000952,Al Rahma(Kafr Yahmoul) / الرحمة(كفريحمول),,
+C3942,Cp000953,Bayt Al Sadaka(Al Dahra)/ بيت الصدقة(الضهرة),,
+C3942,Cp000954,Al Makbara / المقبرة,,
+C3942,CP001114,Abo Shhab( Kafrehmul) / أبو شهاب(كفريحول),,
+C3942,CP001115,الفرن / Al-Firin,,
+C3942,CP001116,ابو الحارث معراتة/Abo Al- Harth  Maaratah,,
+C3942,CP001117,الوداد /Al-Wedad,,
+C3942,CP001118,معمل اللبن/Al- Laban Factory,,
+C3942,CP001121,الفهد/ Al_Fahed,,
+C3942,CP001122,Sabron( Kafrehmul) / صابرون(كفريحمول),,
+C3942,CP001124,الأخوة/ Al- Okhuwah,,
+C3942,CP001125,المحو /Al_Moho,,
+C3942,CP001127,السرو/ Alsarow ,,
+C3942,CP001128,Al Aameriah( Kafrehmul)/العامرية(كفريحمول),,
+C3942,CP001130,الداهوك/ Al_Dahok,,
+C3942,CP001132,الهجرة(كفريحمول)/Al Hijra(kafryahmul),,
+C3942,CP001335,Al Amal2/ الأمل2,,
+C3942,CP001396,Ebd Alrahman(Kafrehmul) / عباد الرحمن(كفريحمول),,
+C3942,CP001397,ربيع معيصرونة / Rabee Maysrounah,,
+C3942,CP001398,الزعلانة / Al Zaalanah,,
+C3942,CP001399,أم الزيتون/ Om Al Zaytoun,,
+C3942,CP001499,القشا / Al  Qasha,,
+C3942,CP001500,البحيرة/ Al  Bohayrah,,
+C3943,CP000157,Al Fardous(Haranbush) /الفردوس(حربنوش),,
+C3943,CP000688,Maarbouna/ معربونة,,
+C3943,CP000723,Khateen(Maarrat Dibsah)  /كهاتين(معردبسة),,
+C3943,CP000740,Al Diaa 4(Al Omran) / الضياء 4(العمران),,
+C3943,CP000746,Harbnush / حربنوش,,
+C3943,CP000916,Talal / طلال,,
+C3943,CP000917,Al Rayan (Haranbush) /  الريان(حرنبوش),,
+C3943,CP000920,Hawaa Al- Janouby / حوا الجنوبي,,
+C3943,CP000922,Al- Salam (Al Rifein) / السلام (الريفين),,
+C3943,CP000923,Harbanoush 3 / حربنوش 3,,
+C3943,CP000924,Tajamuaa AlRahma(Al Qaem) / تجمع الرحمة(القائم),,
+C3943,CP000926,Al Oruba/ العروبة,,
+C3943,CP000927,Sikat Haranbush/ سكة حرنبوش,,
+C3943,CP000928, Muslm Care / مسلم كير,,
+C3943,CP000929,Al Shaikh Mustafa / الشيخ مصطفى,,
+C3943,CP000931,Al Diaa 5 / الضياء 5,,
+C3943,CP000933,Al Furqan (Haranbush) / الفرقان(حرنبوش),,
+C3943,CP000935,Al Huda(Haranbush) / الهدى(حربنوش),,
+C3943,CP000936,Ahmad Abdo Jabor / أحمد عبدو جبر,,
+C3943,CP000938,Al Tumema / الطميمة,,
+C3943,CP000940,Al- Nassem / النسيم,,
+C3943,CP000941,Al Wafaa(Haranbush)/ الوفاء(حربنوش),,
+C3943,CP000942,Al-khalaf / الخلف,,
+C3943,CP001086,Zamar(Harbanush) / زمار(حربنوش),,
+C3943,CP001090,Khan alsubul / خان السبل,,
+C3943,CP001177,Kafr Omeim / كفرعميم,,
+C3943,CP001385,الليث / Al Layth,,
+C3943,CP001386,Tal Hadya(AlMuhajreen)/ تل حدية(المهاجرين),,
+C3943,CP001387,النصر /Al Nasr,,
+C3943,CP001388,الثانوية/ Al Thanaweya,,
+C3943,CP001390,الرامى/Ramee,,
+C3943,CP001481,Al Fuqraa Llah / الفقراء لله,,
+C3943,CP001483,الطيبون/  Al-Tayboun ,,
+C3943,CP001486,الأمل بالله/ Al Amal Be Allah,,
+C3943,CP001488,الخالد / Al  Khald ,,
+C3943,CP001490,الأنعام / Al Anaam,,
+C3943,CP001491,المخزومي/ Al Makhzumie,,
+C3943,CP001553,Karm Alzyton(Haranbush) / كرم الزيتون(حرنبوش),,
+C3943,CP001554,Tal HadyaWadi Arab / تل حدية وادي عرب,,
+C3943,CP001555,Hyzan / حيزان,,
+C3943,CP001556,Shohadaa Mardikh / شهداء مرديخ,,
+C3943,CP001737,Qaryet Alkuweyt /  قريه الكويت,,
+C3943,CP001784,Maklaa Abo Hazem/ مقلع ابوحازم,,
+C3943,CP001939,Al Amal(Haranbush) / الأمل(حربنوش),,
+C3944,CP000695,Al Abbas(Almaher) / العباس(الماهر),,
+C3944,CP001095,خلف المجلس المحلي/Behind the local council ,,
+C3944,CP001096,الشفاء /Al_shefa'a,,
+C3944,CP001097,الدرويش /  Al darwish,,
+C3944,CP001101,Al Eithad(Hazano) / الاتحاد(حزانو),,
+C3944,CP001103,البلاط/ Al_Balat,,
+C3944,CP001105,أرض حكمت ليلى/Hekmat Laila Land,,
+C3944,CP001106,جامع معاذ/Moaz Mosque,,
+C3944,CP001107,شرق منظمة وطن/East Watan Organizations,,
+C3944,CP001108,جنوب الملعب الجديد/ South of the new stadium,,
+C3944,CP001276,Al Ziawi/ الزيعاوي,,
+C3944,CP001280,Othman Bin Affan (Hazano) / عثمان بن عفان(حزانو),,
+C3944,CP001281,Kaziet Badleh/ كازية بدلة,,
+C3944,CP001493,Basmat Nour(Al Tolol) / بسمة نور(التلول),,
+C3944,CP001926,ارض زكريا الزين/Ard Zkrya Alzin,,
+C3944,CP001927,Al Ikhlas(Hazano)/الإخلاص(حزانو),,
+C3944,CP001978,Defaa Madani / الدفاع المدني,,
+C3944,CP001979,Al Andalus(Hazano)/ الأندلس(حزانو),,
+C3944,CP001980,Al Shariaa/ الشرعية,,
+C3944,CP002005,Al Jisr(Hazano) / الجسر(حزانو),,
+C3945,CP001286,Wadi Ali/ وادي علي,,
+C3945,CP001559,Qorress Palace/ قصر قريص,,
+C3945,CP001560,School(Kafr Jales)/ المدرسة(كفرجالس),,
+C3945,CP001751,Al Mahata (Kafr Jales)/ المحطة(كفرجالس),,
+C3945,CP001752,مزرعة ادريس الغربي/Edres alghrabi,,
+C3945,CP001753,تجمع الروضة و الفرقة/Alrawda&alforqh,,
+C3945,CP001955,مخيم وطن النموذجي الثاني / WATAN second typical camp,,
+C3945,CP001959,Maram Kafr Jales / مرام كفرجالس,,
+C3946,CP000690,Murin Caps/ تجمع مخيمان مورين,,
+C3946,CP001418,مزرعة عطية / Ateyah Farm,,
+C3947,CP000691,Al Anwar (Maart Msrin)/ الانوار(معرة مصرين),,
+C3947,CP001006,Watan Reception Center/ مركز استقبال وطن,,
+C3947,CP001007,Al Cournesh / الكورنيش,,
+C3947,CP001008,Al Raay / الراعي,,
+C3947,CP001009,Markaz Eiwaa Maarat Musrin/ مركز إيواء معرة مصرين,,
+C3947,CP001010,madrast Al Foun/ مدرسة الفون,,
+C3947,CP001568,Tal Kursian/ تل كرسيان,,
+C3947,CP001569,Abyad/ أبيض,,
+C3947,CP001817,Al Dahroj / الدحروج,,
+C3947,CP001962,Ebd Alrahman(Ma'arrat Tamasrin) / عباد الرحمن(معر تمصرين),,
+C3948,CP000724,Kafr Nabi /كفر نبي,,
+C3949,CP000168,Al Majd/ المجد,,
+C3949,CP000570,Al-Rahma 1  / الرحمة 1,,
+C3949,CP000571,Al-Rahma 2  / الرحمة 2,,
+C3949,CP000572,Al-Rahma 3  / الرحمة 3,,
+C3949,CP000573,Al-Karkat  / الكركات,,
+C3949,CP000574,Alfarhan(Doyouf Almaara)  /الفرحان(ضيوف المعرة),,
+C3949,CP000577,Atta alkhair  / عطاء الخير,,
+C3949,CP000578,Ayadi  / أيادي,,
+C3949,CP000579,Barri 2  / باري 2,,
+C3949,CP000580,Barri / البري,,
+C3949,CP000581,Bilal / بلال,,
+C3949,CP000582,Ehsan(Kelly)  / إحسان(كللي),,
+C3949,CP000583,Faraj Allah  / فرج الله,,
+C3949,CP000584,Hamra / الحمرة,,
+C3949,CP000586,Karnaz  / كرناز,,
+C3949,CP000587,Kawkab  / كوكب,,
+C3949,CP000588,Khair  / خير,,
+C3949,CP000590,Mokhtar  / مختار,,
+C3949,CP000591,Muzun / مزن,,
+C3949,CP000592,Noor  / نور,,
+C3949,CP000593,Omneer(Kelly)  /أم نير (كللي),,
+C3949,CP000595,Rafe'en  / رافعين,,
+C3949,CP000596,Sokari  / السكري,,
+C3949,CP000598,Tawhid(Kelly)/  التوحيد(كللي),,
+C3949,CP000599,Tuqan  / طوقان,,
+C3949,CP000686,Al Faysal/ الفيصل,,
+C3949,CP000698,Shorleen  / شورلين,,
+C3949,CP000726,Tibat Alemam  / طيبة الامام,,
+C3949,CP000727,Atta alkhair2  / عطاء الخير 2,,
+C3949,CP000747,Kfrya  / كفريا,,
+C3949,CP000859,Al Sultan(Kelly)  /السلطان(كللي),,
+C3949,CP000969,Al Saleem/ السليم,,
+C3949,CP000970,Al Ainaa/ العيناء,,
+C3949,CP000972,Hish/ حيش,,
+C3949,CP000973,BeneKhuzaa/ بني خزاعة,,
+C3949,CP000974,Naseem Al Sjham/ نسيم الشام,,
+C3949,CP000975,Tajmae 'Ahl mork / تجمع أهل مورك,,
+C3949,CP000977,kfrewyd Al_mahaba/ كفر عويد المحبة,,
+C3949,CP000979,Ajaj/ عجاج,,
+C3949,CP000980,Abo Defna/ أبو دفنة,,
+C3949,CP000981,Al Audi1/ العودة1,,
+C3949,CP000982,Al Omareen/ العمرين,,
+C3949,CP000983,Marbelet/ معربليت,,
+C3949,CP000985,Al Kandosh/ الكندوش,,
+C3949,CP001148,سكيك/Sukek,,
+C3949,CP001149,ابو مكي/ Abo Makei,,
+C3949,CP001151,بنيان / Bonian,,
+C3949,CP001152,Al Makla'a (Kelly) / المقلع (كللي),,
+C3949,CP001153,Al Zaytoun(Kelly) / الزيتون(كللي),,
+C3949,CP001154,الخنساء/ Al Khansa'a ,,
+C3949,CP001158,الضياء 8/ Al_Diaa 8,,
+C3949,CP001159,Al Yamamah(Kelly) / اليمامة(كللي),,
+C3949,CP001160,شام 9 / Sham 9,,
+C3949,CP001161,سراقب / Saraqeb,,
+C3949,CP001162,Al Diaa 3(Kafruma) / الضياء 3(كفرومة),,
+C3949,CP001163,Jabal Kelly / جبل كللي,,
+C3949,CP001164,الصداقة(كللي)/ Al Sadaka(Kelly),,
+C3949,CP001165,Al Wifak / الوفاق,,
+C3949,CP001167,Al Darablah/ الدرابلة,,
+C3949,CP001169,Al Maasarah / المعصرة,,
+C3949,CP001290,Abad/ أباد,,
+C3949,CP001291,Abo Maki Arabbia/ أبو مكي عربية,,
+C3949,CP001292,Talmenes/ تلمنس,,
+C3949,CP001294,Ata Llah/ عطا لله,,
+C3949,CP001295,Ataa Alkhair3 / عطاء الخير 3,,
+C3949,CP001300,Yahya Kharzoum / يحيى خرزوم,,
+C3949,CP001411,Dar Aliman / دار الايمان,,
+C3949,CP001412,Al Salat / السلاط,,
+C3949,CP001513,Shqaiq Alnuman/ شقائق النعمان,,
+C3949,CP001515,Eido Ground/ ارض عيدو,,
+C3949,CP001516,Madajin Mustafa Albish / مداجن مصطفى البش,,
+C3949,CP001517,Al Bashir/ البشير,,
+C3949,CP001529,Tuba Alshmoukh / طوبى الشموخ,,
+C3949,CP001756,Kelly( Al Rayhan) / كللي(الريحان),,
+C3949,CP001757,الشلاش/Al Shlash,,
+C3949,CP001789,Dar Alkiram(Kelly) /دار الكرام(كللي),,
+C3949,CP001893,Al Wadi Alkhdar(Kelly) /الوادي الأخضر(كللي),,
+C3949,CP001925,Bayrakdar(kelly) / بيرقدار(كللي),,
+C3949,CP001930,Al Baidaa / البيداء,,
+C3949,CP001964,Al Taawun(Kelly) / التعاون(كللي),,
+C3949,CP001970,Kafr Sejna(Kelly)/كفر سجنة(كللي),,
+C3949,CP001971,Al Manara(Kelly)/ المنارة(كللي),,
+C3949,CP001972,Al Mashtal(Kelly) / المشتل(كللي),,
+C3949,CP002011,Sarmeen(Kelly)/ سرمين(كللي),,
+C3949,CP002270,Al ZohoorHuman appeal reception center,,Reception Center  
+C3950,CP000402,Maaret Elekhwan Transit/Reception Centre/ مركز استقبال معرة الاخوان ,,
+C3950,CP000528,Maaret Elekhwan / معارة الاخوان,,
+C3950,CP001002,Sikat Maart Elekhwan/ سكة معارة الإخوان,,
+C3950,CP001003,Al Khalifa/ الخليفة,,
+C3950,CP001173,القرية الطينية /Al Teneyh Village,,
+C3950,CP001175,Al Shaikh Ali / الشيخ علي,,
+C3950,CP001414,البيدر /Al Baydar,,
+C3950,CP001415,الحاسوب/ Computer,,
+C3950,CP001566,Diab/ دياب,,
+C3950,CP001622,Alghaba/ الغابة,,
+C3951,CP000513,Sham/شام,,
+C3951,CP000967,Al Manhal/ المنهل,,
+C3951,CP000968,Sham2 / شام2,,
+C3951,CP001410,Al Sirman / الصرمان,,
+C3951,CP001755,الشجرة/Al shjra,,
+C3951,CP001890,Al Kasir Alabyad / القصر الأبيض,,
+C3951,CP001919,Kaftin School / مدرسة كفتين,,
+C4114,CP001956,مخيم وطن النموذجي الأول / WATAN first typical camp,,
+C4115,CP000200,Alhai Aljanouby school/ مدرسة الحي الجولاني ,,
+C4115,CP000208,Alzeraah(Harim)/ الزراعة(حارم) ,,
+C4115,CP000210,Omahat Al Moumenien/ امهات المؤمنين ,,
+C4115,CP000258,Jabal Harim (Sabiroon)/ جبل حارم (صابرون) ,,
+C4115,CP000390,Al Madenh Monarh (Harim)/ المدينة المنورة (حارم),,
+C4115,CP000413,Al Azraq/ الأزرق,,
+C4115,CP000414,Dalama/ دلاما,,
+C4115,CP000446,Al Aman (Harim) /  (حارم) الأمان,,
+C4115,CP000943,Sok Almazot  / سوق المازوت,,
+C4115,CP001091, ابن تيمية / Ibn taymiea ,,
+C4115,CP001092, الفردان / Alfardan ,,
+C4115,CP001093, حياة كريمة / Hayat kareama ,,
+C4115,CP001557,Abnaa Almansoura/ أبناء المنصورة,,
+C4115,CP001786,Kansafra(Harim) / كنصفرة (حارم),,
+C4115,CP001864,Maarzaf / معرزاف,,
+C4115,CP001867,Al Maahad / المعهد,,
+C4115,CP001868,Sarjih / سرجة,,
+C4115,TEMP015,Al malaab RC,,Collective Center  
+C4115,TEMP016,Ommahat almominin RC,,Collective Center  
+C4116,CP001066, طريق المطار /  Tareek almatar ,,
+C4117,CP000284,Abna`a Al Ghab/ أبناء الغاب,,
+C4117,CP000450,Abna'a Al Ezza/أبناء العزة(تجمع العزة),,
+C4117,CP001141,مخيم كفرحوم الجنوبي/Kafarhom Aljanoby,,
+C4120,CP000377,Al Foqaraa (The Poor)/ الفقراء,,NWS sites
+C4120,CP000415,Al Ghoraba Homs/ غرباء حمص ,,NWS sites
+C4120,CP000441,Al Bo Fares/ البوفارس,,NWS sites
+C4120,CP000442,Al Seraj/ السراج,,NWS sites
+C4120,CP000552,Wadi Al-Teen / وادي التين,,
+C4120,CP000658,Wadi Haroon/ وادي هارون,,
+C4120,CP000659,Altheka / الثقة,,
+C4120,CP001282,Al Amal(Hezri) / الأمل (حزري),,NWS sites
+C4120,CP001392,Al Joub Alkabeer/الجب الكبير,,NWS sites
+C4120,CP001393,Ard Elmalab/ارض الملعب,,NWS sites
+C4120,CP001664,نبع الأمل/Nabe' Alamal,,NWS sites
+C4120,CP001689,Qariat Al Hanan / قرية الحنان,,NWS sites
+C4121,CP000060,Al Nahdha(Sarmada)/ النهضة(سرمدا),,NWS sites
+C4121,CP000063,Al Ummah/ الامة (عمر بن الخطاب),,
+C4121,CP000065,Ariha/ أريحا,,
+C4121,CP000071,Taiba City/ مدينه طيبه,,
+C4121,CP000196,Al Nouri/ النوري,,
+C4121,CP000197,Al Imdad/ الامداد,,
+C4121,CP000198,Khaled Bin Al Waleed(Sarmada)/ خالد بن الوليد(سرمدا),,
+C4121,CP000279,Al Khirba Al Muhasara (and extension) / (والتوسع )  الخربة المحاصرة,,
+C4121,CP000403,Al Faraj -Al Ghab/ الفرج-الغاب,,
+C4121,CP000404,Al Faroq Omar/ الفاروق,,
+C4121,CP000405,Al Fateh/ الفتح,,
+C4121,CP000445,Ghetaa Al Rahma2 (Al Kamouneh)/  (غطاء الرحمة2 (الكمونة,,
+C4121,CP000453,Islamuna 2/ إسلامنا 2,,
+C4121,CP000456,Al Sufara'a/ السفراء,,
+C4121,CP000514,Al Jabal (Sarmada) /(سرمدا)الجبل ,,
+C4121,CP000529,Al Mawada/ المودة,,
+C4121,CP000531,Ali Bin Abi Taleb (Sarmada) /  (سرمدا)علي بن ابي طالب,,
+C4121,CP000554,براعم ابي الفداء / Baraem Abi Alfedaa,,
+C4121,CP000564,Alwasitah /الوسيطه,,
+C4121,CP000660,khaa Homs/ إخاء حمص,,
+C4121,CP000662,Faheel Alez/ فحيل العز,,
+C4121,CP000663,Saad bin abi wakkas/سعد بن ابي وقاص,,
+C4121,CP000664,Sinjar Kahrabaa/ سنجار الكهرباء,,
+C4121,CP000687,Al Kalamoun/ القلمون,,
+C4121,CP000699,Al Diaa 2  / الضياء 2,,
+C4121,CP000733,Jabal Al-Hos  / جبل الحص,,
+C4121,CP000736,Sinjar  / سنجار,,
+C4121,CP000737,Um Neer Alsarount  / أم نير الساروت,,
+C4121,CP001020,Markaz Mattar  / مركز مطر,,
+C4121,CP001199,الأيتام / Al-Aytam,,
+C4121,CP001200,Al Khan/ الخان,,
+C4121,CP001201,Al Kurah/ القرى,,
+C4121,CP001313,Kastoun / قسطون,,
+C4121,CP001314,Al Othmanyah / العثمانية,,
+C4121,CP001346,Al Diaa9/ الضياء 9,,
+C4121,CP001423,Al Tayeb / الطيب,,
+C4121,CP001424,Al Twaim / التويم,,
+C4121,CP001530,Kukabah / كوكبة,,
+C4121,CP001531,New Alfaqiea / الفقيع الجديد,,
+C4121,CP001532,Qortubah 2 / قرطبة2,,
+C4121,CP001533,Kamorah / كمورة,,
+C4121,CP001574,Jabal Alzawya(Alkanjo)/جبل الزاوية (الكنجو),,
+C4121,CP001575,Biqulubina Nadfikum/ بقلوبنا ندفيكم,,
+C4121,CP001576,Al Gfran/ الغفران,,
+C4121,CP001634,Dalama(Sarmada)/ دلاما(سرمدا),,
+C4121,CP001637,Al Gadakah/ الغدقة,,
+C4121,CP001638,Ikhaa Hama/ إخاء حماة,,
+C4121,CP001639,Alpir(Sarmada)/ البير(سرمدا),,
+C4121,CP001640,Salah Aldin(Sarmada)/ صلاح الدين(سرمدا),,
+C4121,CP001769,Al Hakim / الحكيم,,
+C4121,CP001770,Othman Bin Afan - Ahl Kernaz / عثمان بن عفان- أهل كرناز,,
+C4121,CP001771,Alkhair 2(Sarmada) / الخير2(سرمدا),,
+C4121,CP001869,Shannan / شنان,,
+C4121,CP001911,تجمع السحارة /Tajamuaa Al Sahara ,,
+C4121,CP002020,Al Kuwaity(Sarmada) /الكويتي(سرمدا),,
+C4121,TEMP057,Al Kamuna Sarmada,مركز إيواء الكمونه  سرمدا,Collective Center  
+C4121,TEMP070,Yedi Basak Center,,Reception Center  
+C4122,CP000339,Tal Al Karama/ تل الكرامة(الأبيض),,NWS sites
+C4122,CP000461,Sons of Al Jazeera wa Al Furat/ ابناء الجزيرة والفرات,,
+C4122,CP000462,Al Gharbal/ الغربال,,
+C4122,CP000464,Ard Al Matar/ ارض المطار,,NWS sites
+C4122,CP000465,Ard Al Matar 2/ ارض المطار 2,,NWS sites
+C4122,CP000468,Defaf Al Furat/ ضفاف الفرات,,
+C4122,CP000469,Omar Al Faroq/ عمر الفاروق,,NWS sites
+C4122,CP000540,Al-Dwerat / الدويرات,,
+C4122,CP000546,Rabeaa / ربيعة,,
+C4122,CP000555,Tal Fakhar  / تل فخار,,NWS sites
+C4122,CP000876,Al Abyad Aljadeed / الأبيض الجديد,,NWS sites
+C4122,CP000892,Alzahra (Deir Hassan)  / الزهراء(دير حسان),,NWS sites
+C4122,CP001094,Hatya / هتيا,,
+C4122,CP001596,المثنى/AlMothana,,NWS sites
+C4122,CP001597,تجمع اللج/Tajmo. ALlij,,NWS sites
+C4122,CP001598,AlKadisya(Tal Alkarama)/ القادسية(تل الكرامة),,NWS sites
+C4122,CP001687,Zaaitoon /زيتون,,NWS sites
+C4123,CP000844,Al Hasoon(Selwa)  /الحسون(صلوة),,
+C4123,CP000846,Al Ard Altaybah  / الأرض الطيبة,,
+C4123,CP001051,Maarit Al Naasan / معارة النعسان,,NWS sites
+C4123,CP001202,السرايا / Al Saraya,,
+C4123,CP001327,Al Baraa (Selwa)/ البراء(صلوة),,
+C4123,CP001580,اهل الصبر / Ahl Al Saber,,
+C4123,CP001583,المقلع / Al Maklaa,,
+C4123,CP001587,حليمة / Halema,,
+C4123,CP001588,التوبات / Al Tubat,,
+C4123,CP001591,بيرقدار / Bayrakdar,,
+C4123,CP001592,اهل التح / Ahl Al Tih,,
+C4123,CP001593,معرة حرمة المحدث / Maarit Hurma Almuhdath,,
+C4123,CP001803,Selwa/صلوة,,NWS sites
+C4123,CP001985,Al Yasmeen/ الياسمين,,
+C4124,CP000702,Al Etisam / الاعتصام,,
+C4124,CP001214,المدرسة المحدثة/Al Madrasa Al Mohdatha,,
+C4124,CP001215,الحير / Al Heir,,
+C4124,CP001216,الدير/ Al Deir,,
+C4124,CP001429,الحراقات / Al- Harraqat,,
+C4124,CP001430,المزرعة /Al Mazraa,,
+C4124,CP001618,ضاحية الاندلس/ Andalus Suburb,,NWS sites
+C4124,CP001633,الريف الغربي/ Alreef Algharbi,,
+C4124,CP001900,Biet Al-Bab / بيت الباب,,
+C4124,CP001901,Al-Bayada / البياضة,,
+C4124,CP002071,"Al-Kawthar Shelter Center, next to Al-Salem camp",,Reception Center  
+C4125,CP000539,Tl Aldaman / مخيم تل الضمان,,
+C4125,CP001774,Al Atlal(Termanin)/ الأطلال(ترمانين),,
+C4125,CP001776,Alfadel(Termanin) / الفضل(ترمانين),,
+C4125,TEMP020,markaz 'iiwa' Termanin,مركز إيواء ترمانين,Reception Center  
+C4126,CP000045,Al Dana/ الدانا,,
+C4126,CP000703,Al Hijra  / الهجرة,,
+C4126,CP000885,Al Sarout(Dana)  / الساروت-دانا,,
+C4126,CP001480,Saraqib Aliz / سراقب العز,,
+C4126,CP001548,حير الصبي /Her Alsapy,,
+C4126,CP001641,المعتصم/AlMoutasim,,
+C4126,CP001642,الفارس/AlFares,,
+C4126,CP001643,تلال حلب/TilalHalab,,
+C4126,CP001655,Al Jamia(Dana)/ الجامعة(دانا),,
+C4126,CP001656,Al Ameen/ الأمين,,
+C4126,CP001728,البيرة/Al-Beera,,
+C4126,CP001730,Alnjmeh / النجمة,,
+C4126,CP001783,AlWahla / الوحلة,,
+C4126,CP001912,وادي العين / Wadi Alean,,
+C4127,CP000044,Aqrabat (Ahl Al-Athar)/ عقرباط (اهل الاثر) ,,
+C4127,CP000493,Al Sabah/ الصباح,,
+C4127,CP001037,Al Diaa 10 / الضياء 10,,
+C4127,CP001053,Al Mahabah (Aqrabat) / المحبة(عقربات),,
+C4127,CP001356,سنابل الغدفة / Sanabel Alghadfa,,
+C4127,CP001357,تجمع جبل الزاوية / Tajmuoa Gabal Alzawya,,
+C4127,CP001973,Kherbit bsartoun/ خربة بسرطون,,
+C4128,CP000735,Nor Alhoda(Sarmada)  / نور الهدى(سرمدا),,
+C4128,CP001671,Closed Burj Alnumra/ برج النمرة المغلق,,
+C4128,CP001782,Al Salam(Burj Elnumra) / السلام(برج النمرة),,
+C4128,CP001918,Al Jirf / الجرف,,
+C4129,CP000062,Al Sadaka/ الصدقة,,
+C4129,CP000273,Abu Obeida Ben Aljaraah/ أبو عبيدة بن الجراح,,NWS sites
+C4129,CP000274,Al Rahmah Lahl Al Gab (Al Qaqaa)/ الرحمة لأهل الغاب,,NWS sites
+C4129,CP000275,Ghetaa Al Rahma 1/ عطاء الرحمة,,NWS sites
+C4129,CP000276,Nasaem Al Khayr/ نسائم الخير,,NWS sites
+C4129,CP000277,Nour Al Houda/ نور الهدى,,NWS sites
+C4129,CP000328,Sons of Mehin (Abna Mehin)/ أبناء مهين,,NWS sites
+C4129,CP000333,Ahl Al Balad/ أهل البلد,,NWS sites
+C4129,CP000334,Al Nahda/ النهضة ,,NWS sites
+C4129,CP000335,Zamzam/ زمزم,,NWS sites
+C4129,CP000336,Ebtieen/ عبطين,,NWS sites
+C4129,CP000338,Reef Aleppo/ ريف حلب,,NWS sites
+C4129,CP000340,Al Wdhehee/ الوضيحي,,NWS sites
+C4129,CP000407,Al Bunian Al Kuwaite/ البنيان الكويتي,,NWS sites
+C4129,CP000409,Al Naief/ النايف,,NWS sites
+C4129,CP000410,Khan Toman/ خان طومان,,NWS sites
+C4129,CP000411,Qariat Al Iman / قرية الايمان,,NWS sites
+C4129,CP000436,Al Mazalem/ المظاليم,,NWS sites
+C4129,CP000437,Al Nour (Deir Hassan) /  (دير حسان) النور,,NWS sites
+C4129,CP000438,Lastom Wahdakom/ لستم وحدكم,,NWS sites
+C4129,CP000440,Nour Al Kheir/ نور الخير,,NWS sites
+C4129,CP000463,Kafr Obaid/ كفرعبيد,,NWS sites
+C4129,CP000466,Badelha / بدلها,,NWS sites
+C4129,CP000470,Al Iman/ الايمان,,NWS sites
+C4129,CP000471,Qyam/ قيم,,NWS sites
+C4129,CP000472,Nasaem Al Khayr 2/2 نسائم الخير,,NWS sites
+C4129,CP000473,Khan Sheikhon/ خان شيخون,,NWS sites
+C4129,CP000474,Halab Alshahba/ حلب الشهباء,,NWS sites
+C4129,CP000475,Babes/ بابز,,NWS sites
+C4129,CP000476,Al Shomaria/ الشومرية ,,NWS sites
+C4129,CP000489,Al Jesat/ الجيسات,,NWS sites
+C4129,CP000532,Al Safa wa Al Basher/ الصفا و البشير,,NWS sites
+C4129,CP000533,Al Khair / الخير,,
+C4129,CP000534,Wadi Alazeeb  / وادي العذيب,,NWS sites
+C4129,CP000541,Al-Baraka / البركة,,NWS sites
+C4129,CP000543,Al-Waleed-Der hassan / الوليد-دير حسان,,NWS sites
+C4129,CP000544,Al-Naeemiia / النعيمية,,NWS sites
+C4129,CP000545,Om Twaina / أم توينة,,NWS sites
+C4129,CP000547,Al-Ahmad / الأحمد,,NWS sites
+C4129,CP000548,Aldarraj / الدراج,,NWS sites
+C4129,CP000549,Tal alhattabat / تل الحطابات,,NWS sites
+C4129,CP000550,Om Qbaiba / أم قبيبة,,NWS sites
+C4129,CP000553,Abnaa alziara / أبناء الزيارة,,NWS sites
+C4129,CP000567,Al Fan Alshemali / الفان الشمالي,,NWS sites
+C4129,CP000568,Mulhak Nour Al Houda  / ملحق نور الهدى,,NWS sites
+C4129,CP000604,Qasr Bin Wardan/ قصر بن وردان,,NWS sites
+C4129,CP000605,Al Ameriah / العامرية,,NWS sites
+C4129,CP000606,Kafr Kar/ كفر كار,,NWS sites
+C4129,CP000607,Horan  /حوران,,NWS sites
+C4129,CP000886,Okhwat Aisha/أخوة عائشه,,NWS sites
+C4129,CP000887,مرج الزهور/Marj Al Zohor,,NWS sites
+C4129,CP000888,مورك العز/Morek Al-Ezz,,NWS sites
+C4129,CP000889,Morek Al-Ghorabaa / مورك الغرباء,,NWS sites
+C4129,CP000890,Morek Al-Somod  / مورك الصمود,,NWS sites
+C4129,CP000891,Halab Alshahba2/ حلب الشهباء 2,,NWS sites
+C4129,CP000893,أبناء مهين2/(Sons of Mehin2 (Abna Mehin,,NWS sites
+C4129,CP001072,شهرناز/Shahranaz,,NWS sites
+C4129,CP001073,شحشبو(ديرحسان)/Shahshabo(Deri Hassan),,NWS sites
+C4129,CP001254,Rieayat Altufula / رعاية الطفولة,,NWS sites
+C4129,CP001371,السبيل / Al Sabeil,,NWS sites
+C4129,CP001372,الخالدية / Al Khaldiya,,NWS sites
+C4129,CP001373,الوردة/ Al Warda,,NWS sites
+C4129,CP001374,الحرية/ Al Huriya,,NWS sites
+C4129,CP001375,Al Nahada Extension / ملحق النهضة,,NWS sites
+C4129,CP001376,Masaken Odah / مساكن عودة,,NWS sites
+C4129,CP001377,Bashaar Al Odeh/ بشائر العودة,,NWS sites
+C4129,CP001549,الصدقة الخيري/  Alsadaka Alkhayri,,NWS sites
+C4129,CP001550,هبيط الخير /Habiet Alkhier,,NWS sites
+C4129,CP001551,الصنوبر/ Alsanouber,,NWS sites
+C4129,CP001616,كهاتَين اريحا/  Khataien Ariha,,NWS sites
+C4129,CP001617,المهجرين/Al Muhajaren,,NWS sites
+C4129,CP001657,Al Tadamn(Deir Hassan)/ التضامن(ديرحسان),,NWS sites
+C4129,CP001658,Jai Almuhajreen / حي المهاجرين,,NWS sites
+C4129,CP001659,Al Qatari(Deir Hassan) / القطري(ديرحسان),,NWS sites
+C4129,CP001660,Bayt Alsalam /بيت السلام,,NWS sites
+C4129,CP001885,Al-Latamneh / اللطامنة,,NWS sites
+C4129,CP001987,Abnaa Alqsair/ أبناء القصير,,NWS sites
+C4130,CP000103,Ahel Al Sham/ أهل الشام,,NWS sites
+C4130,CP000104,Ahel Halep/ اهل حلب,,NWS sites
+C4130,CP000106,Al Ahrar/ الأحرار- عطاء المرأة الكويتية,,NWS sites
+C4130,CP000107,Al Aqsa/ الأقصى,,NWS sites
+C4130,CP000108,Al Asil/ الأصيل,,NWS sites
+C4130,CP000109,Al Ataa/ عطاء,,NWS sites
+C4130,CP000110,Al Fadel (Karama) /  ( كرامة)الفضل,,NWS sites
+C4130,CP000111,Al Faraj/ الفرج,,NWS sites
+C4130,CP000112,Al Faroq (Qah) /  (قاح)الفاروق,,
+C4130,CP000114,Al Haq/ الحق,,NWS sites
+C4130,CP000115,Al Hijaz/ الحجاز,,NWS sites
+C4130,CP000116,Al Ikhaa/ الإخاء,,NWS sites
+C4130,CP000117,Al Ikhlas(Karama)/الإخلاص(كرامة),,NWS sites
+C4130,CP000118,Al Karama/ الكرامة,,NWS sites
+C4130,CP000120,Al Mahabbah/ المحبة,,NWS sites
+C4130,CP000121,Al Manara/ المنارة,,NWS sites
+C4130,CP000122,Al Mustakbal/ المستقبل,,NWS sites
+C4130,CP000124,Al Safa wa Al Marwa/ الصفا والمروة,,NWS sites
+C4130,CP000125,Al Shuhada/ الشهداء,,NWS sites
+C4130,CP000127,Atfal Alghad/ أطفال الغد,,NWS sites
+C4130,CP000129,Al Doaa/ الدعاء,,NWS sites
+C4130,CP000130,"Al Resalah (extension of Doaa, Doaa & Saleh)/ الرسالة (توسعة دعاء ودعاء الصالحين)  ",,NWS sites
+C4130,CP000131,Doaat Al Kwait (Al Khayrat)/ دعاة الكويت والخيرات,,NWS sites
+C4130,CP000133,Al Harameen/ الحرمين,,NWS sites
+C4130,CP000135,Nour Al Mustafa/ نور المصطفى,,NWS sites
+C4130,CP000136,Nour Al Mustakbal/ نور المستقبل,,NWS sites
+C4130,CP000137,Nour Al Sham/ نور الشام,,NWS sites
+C4130,CP000139,Rajaa/ الرجاء,,NWS sites
+C4130,CP000140,Al Rawdah/ الروضة,,NWS sites
+C4130,CP000142,Salah Eldin (including Al Islah)/ صلاح الدين,,NWS sites
+C4130,CP000143,Sedik (Extension of Al Aqsa)/ الصديق,,NWS sites
+C4130,CP000144,Shaheid Saleh/ الشهيد صالح,,NWS sites
+C4130,CP000145,Shams Al Hurriya/ شمس الحرية,,NWS sites
+C4130,CP000148,Tabarak Al Rahman/ تبارك الرحمن,,NWS sites
+C4130,CP000149,Taibah/ طيبة,,NWS sites
+C4130,CP000151,Watasimu (including Tadamun and Sahl Al Ghab)/ واعتصموا,,NWS sites
+C4130,CP000152,Yasmeen Al Sham/ ياسمين الشام,,NWS sites
+C4130,CP000153,Zahrat Al Madaen/ زهرة المدائن,,NWS sites
+C4130,CP000255,Al Ghab Al Mankoub/ الغاب المنكوب,,NWS sites
+C4130,CP000269,Al Amal Bil Awdah/ الأمل بالعودة,,NWS sites
+C4130,CP000270,Al Eman Billah/ الايمان بالله ,,NWS sites
+C4130,CP000271,Al Nahda Al Eslamia/ النهضة الاسلامية ,,NWS sites
+C4130,CP000272,Nasret Al Mazloum/ نصرة المظلومين,,NWS sites
+C4130,CP000282,Sarkhat Tifl/ صرخة طفل ,,NWS sites
+C4130,CP000379,Al Ayade Al Baydaa/ الايادي البيضاء ,,NWS sites
+C4130,CP000380,Al Haneen/ الحنين ,,NWS sites
+C4130,CP000381,Al Jabal (Karama) / (كرامة) الجبل,,NWS sites
+C4130,CP000382,Al Karim Al Awsat/ الكريم الاوسط ,,NWS sites
+C4130,CP000383,Moatakalen Sahl Al Gab/ معتقلين سهل الغاب ,,NWS sites
+C4130,CP000384,Nour Hama/ نور حما ,,NWS sites
+C4130,CP000385,Shuhada Sahl Al Gab/ شهداء سهل الغاب ,,NWS sites
+C4130,CP000420,Khan Sheikhon Al Kemawi/ خان شيخون الكيماوي,,NWS sites
+C4130,CP000467,Al Ber Wa Al Taqwaa (Qah) /  (قاح)البر والتقوى,,
+C4130,CP000483,Al Zahra'/ الزهراء,,NWS sites
+C4130,CP000750,Um Al Shohada/ام الشهداء,,NWS sites
+C4130,CP000751,Al Jazeera/الجزيرة,,NWS sites
+C4130,CP000752,Maram/مرام,,NWS sites
+C4130,CP000753,Rama Allah/رام الله,,NWS sites
+C4130,CP000754,Al Arabiya/العربية,,NWS sites
+C4130,CP000755,Al Wahdah/الوحدة,,NWS sites
+C4130,CP000756,Al Wafaa/الوفاء,,NWS sites
+C4130,CP000757,Al Hiba/الهبة,,NWS sites
+C4130,CP000758,Al Ethad/الاتحاد,,NWS sites
+C4130,CP000759,Shaza Al Hurriya/شذا الحرية,,NWS sites
+C4130,CP000760,Al Anfal/الأنفال,,NWS sites
+C4130,CP000761,Al Fokaraa wa Al Mohtajeen/الفقراء والمحتاجين,,NWS sites
+C4130,CP000762,Orient/أورينت,,NWS sites
+C4130,CP000763,Al Forkan/الفرقان,,NWS sites
+C4130,CP000764,Al Bayan/البيان,,NWS sites
+C4130,CP000765,Ebad Allah/عباد الله,,NWS sites
+C4130,CP000766,Atfalona Tonashedokom/أطفالنا تناشدكم,,NWS sites
+C4130,CP000767,Al Khalil/الخليل,,NWS sites
+C4130,CP000768,Al Mountaser/المنتصر,,NWS sites
+C4130,CP000769,Al Farouk Omar/الفاروق عمر,,NWS sites
+C4130,CP000770,Qafelat Al Rahma/قافلة الرحمة,,NWS sites
+C4130,CP000771,Al Bara'/البراء,,NWS sites
+C4130,CP000772,Al Nada/الندى,,NWS sites
+C4130,CP000773,Saadona/ساعدونا,,NES sites
+C4130,CP000774,Al Ansar sector 2/الأنصار 2,,NES sites
+C4130,CP000775,Kafr Nabutha/كفرنبودة ,,NES sites
+C4130,CP000776,Al Ansar sector 1/الأنصار 1,,NES sites
+C4130,CP000777,Al Hassoun/الحسون,,NES sites
+C4130,CP000778,Al Amal/الأمل,,NES sites
+C4130,CP000779,Reef Hama Al Gharbi/ريف حماة الغربي,,NWS sites
+C4130,CP000780,Al Gaith/الغيث,,NWS sites
+C4130,CP000781,Saberoun/صابرون,,NWS sites
+C4130,CP000782,Moutawa 1/مطوع 1 ,,NWS sites
+C4130,CP000783,Al Qaryah/قرية حمد العمار,,NWS sites
+C4130,CP000784,Al Omar/العمر,,NWS sites
+C4130,CP000785,Moutawa 2/مطوع 2 ,,NWS sites
+C4130,CP000786,Al Ethar (New)/الإيثار,,NWS sites
+C4130,CP000787,Zamzam 2/زمزم 2,,NWS sites
+C4130,CP000788,Zamzam 1 sector 2/زمزم 1 قطاع 2,,NWS sites
+C4130,CP000789,Al Hamza/الحمزة,,NWS sites
+C4130,CP000790,Zamzam 1 sector 1/زمزم 1 قطاع 1,,NWS sites
+C4130,CP000791,Al Ber Wa Al Taqwaa/البر والتقوى,,NWS sites
+C4130,CP000792,Al Zouhour2 sector 2/الزهور 2 قطاع 2,,NWS sites
+C4130,CP000793,Al Yamama/اليمامة,,NWS sites
+C4130,CP000794,Abi Al Fidaa/أبي الفداء,,NWS sites
+C4130,CP000795,Souran/صوران,,NWS sites
+C4130,CP000796,Atshan/عطشان,,NWS sites
+C4130,CP000797,Yosuf and Noura/يوسف ونورا,,NWS sites
+C4130,CP000798,Al Majed Sector 1/المجد 1,,NWS sites
+C4130,CP000799,Al Zouhour1/الزهور 1,,NWS sites
+C4130,CP000800,Al Reeh Al Mursalah/الريح المرسلة ,,NWS sites
+C4130,CP000801,Al Zouhour2/الزهور 2 ,,NWS sites
+C4130,CP000802,Reef Hama Al Shamali/ريف حماة الشمالي,,NES sites
+C4130,CP000803,Al Majed Sector 3/المجد 3,,NWS sites
+C4130,CP000804,Al Fath Al Mobeen/الفتح المبين,,NWS sites
+C4130,CP000805,Al Majed Sector 2/المجد 2,,NWS sites
+C4130,CP000807,Al Tanmia/التنمية,,NWS sites
+C4130,CP000808,Al Resala/الرسالة,,NWS sites
+C4130,CP000809,Braeem Kfr Zeta/براعم كفر زيتا,,NWS sites
+C4130,CP000810,Al Andalus/الأندلس,,NWS sites
+C4130,CP000811,Ehsan 2 Sector 1/إحسان 2 قطاع 1,,NWS sites
+C4130,CP000812,Ehsas 2/احساس 2,,NWS sites
+C4130,CP000813,Ehsan 1/إحسان 1,,NWS sites
+C4130,CP000814,Ehsas 1/احساس 1,,NWS sites
+C4130,CP000815,Al Amana/الأمانة,,NWS sites
+C4130,CP000816,Al Hadeel/الهديل,,NWS sites
+C4130,CP000817,Al Zakat/الزكاة,,NWS sites
+C4130,CP000818,Yad Bi Yad/يد بيد,,NWS sites
+C4130,CP000819,Al Takaful/التكافل,,NWS sites
+C4130,CP000820,Reef Aleppo Al Janobi/ريف حلب الجنوبي,,NES sites
+C4130,CP000821,Al Arabiya1/العربية 1,,
+C4130,CP000822,Maan/معان,,
+C4130,CP000823,Ikraa/اقراء,,
+C4130,CP000824,Ahl Al Wafa/أهل الوفاء,,
+C4130,CP000825,Ref Hama Alsharqi/ريف حماه الشرقي,,
+C4130,CP000826,Al Huda/الهدى,,
+C4130,CP000827,Qaret Al Twarek/قرية الطوارئ,,
+C4130,CP000828,Al Ali/العلي,,
+C4130,CP000829,Ataa(Atmeh) 2/عطاء2(أطمة),,
+C4130,CP000830,Shohadaa Al Latamna/شهداء اللطامنة,,
+C4130,CP000831,Kafr Sejna/كفر سجنة,,
+C4130,CP000832,Al Montaser Bellah/المنتصر بالله,,
+C4130,CP000833,Al Majed/الماجد,,
+C4130,CP000834,Al Raghad/الرغد,,
+C4130,CP000835,Al Jabin/الجبين,,
+C4130,CP000836,Hasan Albanna/حسن البنا,,
+C4130,CP000837,Khaled ibn Al Walid/خالد بن الوليد,,
+C4130,CP000838,شحشبو/Shahshabo,,
+C4130,CP000839,Abdulbaset Al Sarout/عبد الباسط الساروت,,
+C4130,CP000840,Al Rahma/الرحمة,,
+C4130,CP000841,Al Rahil/الرحيل,,
+C4130,CP000842,Al Eido/ العيدو,,
+C4130,CP000843,Al Ekhlas Lellah/الإخلاص لله,,
+C4130,CP001042,الاصلاح / Al Islah,,
+C4130,CP001043,سهل الغاب / Sahl AlGhab,,
+C4130,CP001044,التضامن / Al Tadamun,,
+C4130,CP001435,Al Fadel / الفضل,,
+C4130,CP001436,Reef Halap Algharbi / ريف حلب الغربي,,
+C4130,CP001437,Al Reef Alshemali(homs) / الريف الشمالي (حمص),,
+C4130,CP001438,Al Adham / الادهم,,
+C4130,CP001439,Shohadaa Karfzita / شهداء كفر زيتا,,
+C4130,CP001609,Sufuhon/سفوهن,,
+C4130,CP001923,Al Ikhlas(Atma)/الإخلاص(أطمة),,
+C4130,CP001924,Al Kuwaity / الكويتي,,
+C4131,CP000123,Al Nour (Qah) /  (قاح) النور,,
+C4131,CP000126,Ataa 2 (Al Ansar)/ عطاء 2 - الأنصار,,
+C4131,CP000132,Reef Hama Mankouba/ ريف حماة المنكوب,,
+C4131,CP000134,Kura Mankouba/ قرى منكوبا ,,
+C4131,CP000138,Qadisiya/ القادسية,,
+C4131,CP000141,Sahl Al Ghab Alawal/ سهل الغاب الاول ,,
+C4131,CP000146,Sons of Homs (Abna Homs)/ أبناء حمص,,
+C4131,CP000154,Al Aasy/ العاصي,,
+C4131,CP000155,Al Nawaeer(Qah)/ النواعير(قاح),,
+C4131,CP000156,Children of Freedom Martyrs/ أطفال شهداء الحرية,,
+C4131,CP000158,Korayish-Al Khair/ قريش- الخير,,
+C4131,CP000159,Lan Narka`llla Lilah/ لا نركع الا لله,,
+C4131,CP000160,Liyajlikum/ لأجلكم,,
+C4131,CP000161,Qassioun/ قاسيون,,
+C4131,CP000162,Toyor Al Janna (Heaven Bird's)/ طيور الجنة,,
+C4131,CP000164,Abu Bakker Al Sidiq/ أبو بكر الصديق,,
+C4131,CP000165,Al Arbaeen/ الأربعين,,
+C4131,CP000166,Al Bayan (Qah) /  (قاح)البيان,,
+C4131,CP000167,Al Imam/ الإمام,,
+C4131,CP000169,Al Motasem/ المعتصم بالله ,,
+C4131,CP000170,Al Muhajreen/ المهاجرين,,
+C4131,CP000171,Al Rahmah (Qah) /  (قاح) الرحمة,,
+C4131,CP000172,Al Tawheed/ التوحيد,,
+C4131,CP000173,Al Waleed  / الوليد,,
+C4131,CP000174,Bab Al Hawa/ باب الهوى ,,
+C4131,CP000175,Bani Omiyet/ بني أمية,,
+C4131,CP000176,Ataa 1 (Hamad Al Ammar 1/Dar Al Riaya - Orphans)/ عطاء 1 - دار رعاية الأيتام,,
+C4131,CP000177,Hibat Allah/ هبة الله,,
+C4131,CP000178,Al Intisar/ الإنتصار,,
+C4131,CP000179,Madenh Monarh (Hmamiat)/ المدينة المنورة,,
+C4131,CP000180,Qah/ قاح,,
+C4131,CP000181,Ataa 5 (Shabab Al Khayr)/ عطاء 5 - شباب الخير 1,,
+C4131,CP000184,Shuhadaa Abdeen/ شهداء عابدين,,
+C4131,CP000186,Al Forkan(Qah)/ الفرقان(قاح),,
+C4131,CP000187,Al Jolan/ الجولان,,
+C4131,CP000188,Al Khalij Al Arabi/ الخليج العربي,,
+C4131,CP000189,Al Midan/ الميدان,,
+C4131,CP000190,Al Nasser (and extension) / (والتوسع ) النصر,,
+C4131,CP000191,Al Salam (Aqrabat) /  (عقربات)السلام,,
+C4131,CP000193,Dar Al Riaya - Disabled/ دار رعاية العجزة,,
+C4131,CP000195,Shams Al Izza (and extension) / (والتوسع )   شام العزة,,
+C4131,CP000256,Al Hurriya wa Adalah/ الحرية والعدالة ,,
+C4131,CP000265,Al Ahd Billah/ العهد بالله ,,
+C4131,CP000266,Kafr Nabutha Alsmoud/ كفر نبوذة الصمود ,,
+C4131,CP000268,Al Shrouk/ الشروق,,
+C4131,CP000301,Ain Jaloot/ عين جالوت ,,
+C4131,CP000302,Al Fateh Al Araby/ الفاتح العربي ,,
+C4131,CP000303,Al Ikhlas wa Al Taqua/ الاخلاص والتقوى ,,
+C4131,CP000304,Baraem Al Thawra/ براعم الثورة ,,
+C4131,CP000305,Farajak Yarab/ فرجك يارب ,,
+C4131,CP000306,Fateh Aleslam/ فتح الاسلام ,,
+C4131,CP000307,Afamya(Qah)/ افاميا(قاح),,
+C4131,CP000308,Ahbab Al Rasoul/ احباب الرسول ,,
+C4131,CP000309,Al Radwan/ الرضوان ,,
+C4131,CP000310,Alebaa/ الاباء ,,
+C4131,CP000311,Nasret Al Rasoul/ نصرة الرسول ,,
+C4131,CP000318,Abl Baydar/ قبل البيدر ,,
+C4131,CP000319,Al Goroub (and extension) / (والتوسع )  الغروب,,
+C4131,CP000320,Kafr Nabutha Alamal/ كفر نبوذه الامل ,,
+C4131,CP000321,Kafr Nabutha Alhora/ كفر نبوذة الحرة ,,
+C4131,CP000322,Muhajreen Al Gab/ مهاجرين الغاب ,,
+C4131,CP000323,Shuhada Kafr Nabutha/ شهداء كفر نبوذة ,,
+C4131,CP000324,Zahrat Al Jolan/ زهرة الجولان ,,
+C4131,CP000369,Act and Impact (Athar)/ افعل واترك أثر,,
+C4131,CP000386,Al Mutahaboun Bellah (and extension)/  (والتوسع ) المتحابون بالله,,
+C4131,CP000387,Al Awdah/ العودة ,,
+C4131,CP000412,Zahrat Al Khalij Al Arabi/ زهرة الخليج العربي,,
+C4131,CP000421,Al Rayan (Qah) /  (قاح) الريان,,
+C4131,CP000422,Shuhada Khan Sheikhon/ شهداء خان  شيخون,,
+C4131,CP000423,Mareiwdah/ المريودة,,
+C4131,CP000482,Al Hidaya Al Namouthajia/ الهداية النموذجية,,NWS sites
+C4131,CP000484,Fatih Halab/ الفتح العربي,,
+C4131,CP000485,Al Sharqia/ الشرقية,,
+C4131,CP000486,Al Badiah (Al Midan Extension) /  (ملحق الميدان)البادية,,
+C4131,CP000487,Al Qalaa/ القلعة,,
+C4131,CP000488,Al Shomoukh/ الشموخ,,
+C4131,CP000601,Al Atlal / الأطلال,,
+C4131,CP000602,Al Taibah / الطيبة -قاح,,
+C4131,CP000603,Molhaq Albaidar / ملحق البيدر,,
+C4131,CP000655,Shohadaa Alghab / شهداء الغاب,,
+C4131,CP000666,Al Akram/الأكرم,,
+C4131,CP000667,Wadi Alghazal/وادي الغزال,,
+C4131,CP000728,Shohdaa Maarit Hurma  / شهداء معرة حرمة,,
+C4131,CP000729,Act and Impact Extension  / ملحق افعل واترك أثر,,
+C4131,CP000847,Al Anadoul  / الأناضول,,
+C4131,CP000863,Kafr Nabutha Alhora Extension  / ملحق كفر نبوذة الحرة,,
+C4131,CP000869,Kafrnodeh Alawal  / كفرنبوذة الأول,,
+C4131,CP001014,Mulhaq Al Tawheed/ ملحق التوحيد,,
+C4131,CP001017,Jamiaat Sham Sharif/  جمعية شام شريف,,
+C4131,CP001018,Mulhaq Farajak Ya Rab/ ملحق فرجك يا رب,,
+C4131,CP001187,Mulk Llah / الملك لله,,
+C4131,CP001188,اهل الخير/Ahel Alkhier,,
+C4131,CP001189,اهل ترملا/Ahl Tarmala,,
+C4131,CP001191,Masaken Alsultan Abd Alhameed  / مساكن السلطان عبد الحميد,,
+C4131,CP001193,الأمل(قاح) / Alamal(Qah),,
+C4131,CP001194,ملحق الامل / Alamal extension,,
+C4131,CP001233,Fateh Halab/ فتح حلب,,
+C4131,CP001329,Umm Al Qura / أم القرى,,
+C4131,CP001331,Shuhadaa Maarhurma Extension / ملحق شهداء معرةحرمة,,
+C4131,CP001332,Muhajari Ma'aret Hurmah / مهجري معرةحرمة,,
+C4131,CP001333,Nazhi Kafr Nabl / نازحي كفرنبل ,,
+C4131,CP001340,Shohadaa Tarmla/ شهداء ترملا,,
+C4131,CP001419,ملحق الملك لله / Mulhaq Almulk llah,,
+C4131,CP001420,ضاحية الخليل / Dahyiat Alkhalel,,
+C4131,CP001572,Dar AlKhair/ دار الخير لرعاية الارامل والايتام,,
+C4131,CP001628,Arinba/ ارينبة,,
+C4131,CP001629,Mohamad Alqadour/ الشهيد محمد القدور,,
+C4131,CP001676,Al Abdullah(Qah) / العبدلله(قاح),,
+C4131,CP001677,Nour halab / نور حلب,,
+C4131,CP001984,Al Kariah Altabiqia alsakaniah/ القرية الطابقية السكنية,,
+C4131,TEMP001,Iqraa Center,,Planned Camp  
+C4132,CP000656,Kafr Deryan/  كفر دريان,,
+C4132,CP000956,Al Naqier / النقير,,
+C4132,CP000962,Al Sakhour/ الصاخور,,
+C4132,CP001134,Al Radwan (Kfr Arouq)/ الرضوان(كفرعروق) ,,
+C4132,CP001402, أبو حبة / Abo Habba,,
+C4132,CP001404,الكسيبية / Alksebia,,
+C4132,CP001743,إيواء الايتام/Ewa'a alaytam,,
+C4132,CP001745,Al-Tawba/التوبة,,
+C4132,CP001746,Madjant Khaled / مدجنة خالد,,
+C4132,CP001747,Al Midan - Tal Maraq/الميدان- تل مرق,,
+C4132,CP001917,Al Waleed(Kafr Deryan)  / الوليد(كفر دريان),,
+C4132,CP001936,Jajamaaa Mohamad Dieb / تجمع محمد ديب,,
+C4132,CP001988,Kinnisrin/ قنسرين,,
+C4132,CP002008,Om Jalal / ام جلال,,
+C4132,CP002009,Tajmuue aljanoub / تجمع الجنوب,,
+C4132,CP002010,Al-Jefal / الجفال,,
+C4132,CP002013,Kafr Deryan Shemali/ كفر دريان شمالي,,
+C4132,CP002014,Tajmuaa Alez/تجمع العز,,
+C4132,CP002022,Kafr Deryan Janobi/ كفر دريان جنوبي,,
+C4133,CP001612,Al Salihyah/ الصالحية,,
+C4133,CP001704,Abu Talha/ابو طلحة,,
+C4134,CP000560,Alhamziyeh School / مدرسة الحمزية,,
+C4136,CP001076,Khayrat / خيرات,,
+C4136,CP001310,Haj Jumaa(Salqin) / حاج جمعة(سلقين),,
+C4137,CP001217,كرم الزيتون/ Karm Alzayton,,
+C4137,CP001218,Tlul/التلول,,
+C4140,CP000280,Al Safsafa/ الصفصافه,,
+C4140,CP001145,Souq Alhal/ سوق الهال,,
+C4140,CP001146,Aqadimi/ اكاديمي,,
+C4140,CP001311,Al Jamiaa / الجمعية,,
+C4140,CP001798,Madrast Alsina'a / مدرسة الصناعة,,
+C4140,CP002065,Al Ajami,العجمي,Planned Camp  
+C4140,TEMP004,Hadikat al kaser Center,,Collective Center  
+C4140,TEMP005,Alallani Group,,Collective Center  
+C4140,TEMP006,Dar al oahi,,Collective Center  
+C4140,TEMP007,Soq alhal Center,,Collective Center  
+C4140,TEMP012,Abu Talhah - Al nour,,Collective Center  
+C4140,TEMP014,Ataa Al khair,عطاء الخير,Collective Center  
+C4140,TEMP055,Al-Basatine Stadium,,Collective Center  
+C4140,TEMP056,Al Fida Shelter Center Mall,,Collective Center  
+C4141,CP000073,Aidoun(Salqin)/ عائدون(سلقين),,
+C4141,CP000075,Samidoon/ صامدون,,
+C4141,CP000558,Alwadi / الوادي,,
+C4141,Cp000559,Alrahman(Hir Jamus) / الرحمن (حير جاموس),,
+C4141,CP000731,Rafateh  / الرفعاتية,,
+C4141,CP001068,زمار/ Zamar,,
+C4141,CP001249,Al Khairat / الخيرات,,
+C4141,CP001546,Al Hasan/ الحسن,,
+C4142,CP001227,Allani/العلاني,,
+C4143,CP001047,Al Rahma(Azmarin) / الرحمة(عزمارين),,
+C4143,CP001234,Souq alhal(Azmarin) / سوق الهال عزمارين,,
+C4143,CP001779,Racha / راشا,,
+C4143,CP001934,Ibn Sariaa / ابن سريع,,
+C4143,N/A,Aiz marin al oroba Center,مركز عزمارين العروبة,Collective Center  
+C4143,N/A,Soq alhal Center,مركز سوق الهال,Collective Center  
+C4143,TEMP009,Almalab,,Reception Center  
+C4143,TEMP013,Karm A lZaytoon,,Collective Center  
+C4145,CP001077,Alqaws(Salqin)  /القوس(سلقين),,
+C4146,CP000281,"Al Taakhi/ التآخي
+",,
+C4147,CP001866,Abd Alghani / عبد الغني,,
+C4148,TEMP010,Ain tibaa,,Reception Center  
+C4151,CP001749,Tareeq Alalani Aljadded / طريق العلاني الجديد,,
+C4151,CP001750,Bayt Alkhateeb / بيت الخطيب,,
+C4151,CP001787,Al Baydar(Kafr Hind) / البيدر(كفرهند),,
+C4151,CP001788,Al Murabet / المرابط,,
+C4155,CP000873,Serghaya  / سرغايا,,NWS sites
+C4157,CP000964,Aljabal Alsharki/ الجبل الشرقي,,
+C4157,CP000965,Al Sina'a/ الصناعة,,
+C4157,CP001288,Ahl Aleaaz/ أهل العز,,
+C4157,CP001670,Talmenes(Ard Aljameh)/تلمنس (أرض الجمعية),,
+C4157,CP001865,Tareeq Aldwuila / طريق الدويلة,,
+C4161,CP001110,Htan/حتان,,
+C4161,CP001876,Kafr Amim- Aldurgham / كفرعميم - الدرغام,,
+C4164,CP001058, كفرنوران / Kafarnouran ,,
+C4164,CP001059,مخيم المدينة المنورة ( باريشا )/ Almadina almonawara ( barisha),,
+C4164,CP001060, المزار / Almazar ,,
+C4164,CP001364,Shahed / شهد,,
+C4164,CP001478,Shaikh Abdullah / الشيخ عبدلله,,
+C4164,CP001542,Al Kherba(Barisha) / الخربة(باريشا),,
+C4164,CP001543,Al Sheikh Ali( Barisha) / الشيخ علي(باريشا),,
+C4164,CP001544, الوردة الشامية / Alwarda Alshmeia,,
+C4166,CP000883,Bashaar Al Khair  / بشائر الخير,,
+C4166,CP001069,Biliun / بليون,,
+C4167,CP001804,Koknaya/كوكنايا,,
+C4168,CP000730,Al Salam (Rabeeta)  / السلام (ربعيتا),,
+C4168,CP001422,Al Rahhal / الرحال,,
+C4169,CP001197,Radwa /رضوة,,
+C4169,CP001935,Abu Daw / أبو ضو,,
+C4170,CP001029,Janat Al Qura/ جنة القرى,,
+C4170,CP001602, أبناء صوران / Abnaa Sran,,
+C4170,CP001603,المقص /Almakas,,
+C4170,CP001604, بليون العثمان / Balion Alothman,,
+C4171,CP001308,Al Nabaa / النبع,,
+C4172,CP000506,Kafr Aruq/كفرعروق,,
+C4172,CP001283,Huwayer Alees/ حوير العيس,,
+C4172,CP001401,حميمات الداير / Hmemat Aldaer,,
+C4172,CP001666,Alsalihyah(Kafr Arouq)/ الصالحية(كفرعروق),,
+C4172,CP001667,Shekh Idres / الشيخ ادريس,,
+C4172,CP001668,Al Mahabbah(Qourqeena) /المحبة(قورقينا),,
+C4172,CP001741,Um Jaran / ام جرن,,
+C4172,CP001870,Aldof / الدوف,,
+C4174,CP001341,Saraqep Alez 3/ سراقب العز 3,,
+C4174,CP001793,Ruiha / الرويحة,,
+C4174,CP001794,Al Tagtiah / التغطية,,
+C4174,CP001795,Sayar / السيار,,
+C4174,CP001796,Shbeb / شبيب,,
+C4175,CP001265,Al Gharbal(Ghafar)/ الغربال(الغفر),,NWS sites
+C4175,CP001886,Sambleta/ سنمبلتة,,NWS sites
+C4176,CP000874,Alrayan (Armanaz)  /الريان(أرمناز),,NWS sites
+C4176,CP001040,Zamar(Armanaz)/ زمار (أرمناز),,NWS sites
+C4176,CP001041,Al Kordy / الكردي,,NWS sites
+C4176,CP001228,Alqaws/ القوس,,NWS sites
+C4176,CP001229,Alkazia(Armanaz)/ الكازية(أرمناز),,NWS sites
+C4176,CP001230,Ayin Laruz/ عين لاروز,,NWS sites
+C4176,CP001231,Kuweires/ كويرس,,NWS sites
+C4176,CP001706,Al Balat(Armanaz) / البلاط(أرمناز),,NWS sites
+C4176,CP001707,مزرعة المثقال/Mazraat Mathqa,,NWS sites
+C4176,CP001708,تجمع مسجد عمر/Masjed Omar,,NWS sites
+C4176,CP001709,Serghaya(Armanaz)  / سرغايا(أرمناز),,NWS sites
+C4176,CP001710,kharajiah / الخراجية,,NWS sites
+C4176,CP002003,Maasaret Hababat / معصرة حبابات,,NWS sites
+C4176,TEMP052,Omari shelter center,,Reception Center  
+C4177,CP001421,Al Madjana / المدجنة,,NWS sites
+C4179,CP001206,Al Salam/ السلام,,NWS sites
+C4179,CP001207,تجمع الشيخ يوسف /Tagammoa Alsheikh Yousef,,NWS sites
+C4179,CP001773,حرش بسيليا/Hersh bslea,,NWS sites
+C4180,CP000880,Al Jabal(Armanaz) / الجبل (أرمناز),,NWS sites
+C4180,CP001724,Alsafa(Armanaz) / الصفا(أرمناز),,NWS sites
+C4180,CP001725,تجمع مدراسة شيخ بدر مع المستودع/Madrast sheikh bdr,,NWS sites
+C4180,CP001726,الحرية(بيرة أرمناز)/ Al Huriya(Beirt Armanaz),,NWS sites
+C4180,CP001727,تجمع بشير مع سنان/Tajmae bashir mae snan,,NWS sites
+C4183,CP001171, كوارو / Kwaro ,,NWS sites
+C4183,CP001762,عبدو حمجو/Abdo Hamjo,,NWS sites
+C4183,CP001763,محمد باشا/Mohammed Basha,,NWS sites
+C4183,CP001764,فرن الناجي/Firin Al Naji,,NWS sites
+C4184,CP001894,Tajamuee Kenan Jabas / تجمع كنان جبس,,NWS sites
+C4184,CP001895,Tajamuee Hasan Thabet Tafash / تجمع حسن ثابت طفاش,,NWS sites
+C4184,CP001896,Tajamuee Ahmad Alakram / تجمع أحمد الأكرم,,NWS sites
+C4184,CP001897,Tjamuee Adel Tafash 2 / تجمع عادل طفاش 2,,NWS sites
+C4184,CP001898,Al Madrasah(Milis) / المدرسة(ملس),,NWS sites
+C4184,CP001983,Al Masbah/ المسبح,,NWS sites
+C4185,CP000743,Kabtah  / كبته,,NWS sites
+C4185,CP001739,Al Firin(Kabta) / الفرن(كبته),,NWS sites
+C4223,CP001264,Bekseria / بكسريا,,
+C4228,CP000259,Al Hanbushiyeh/ الحنبوشية ,,
+C4228,CP000909,Al Salata / السلاطة,,
+C4228,CP000910,Al Madrasah  / المدرسة,,
+C4228,CP000911,Al Talah  / التلة,,
+C4228,CP000912,Al Makbarah(Badama)/المقبرة (بداما),,
+C4228,CP000913,Kharmash/ خرماش,,
+C4228,CP001454,Rami-Habib/رامي حبيب,,
+C4229,CP000326,Ein Al Bayda/ عين البيضاء ,,
+C4229,CP000505,Al Ziyara/الزيارة,,
+C4229,CP000523,Badama 2/2 بداما,,
+C4229,CP000894,Aneen Al Sahel  / أنين الساحل,,
+C4229,CP000895,Al Najeih  / الناجية,,
+C4229,CP001301,Almashfaand Al Firin/ المشفى و الفرن,,
+C4231,CP000113,Salah Alden (Kherbet Eljoz)/ صلاح الدين(خربة الجوز),,
+C4231,CP000325,Ataa Al Kheir(Kherbet Eljoz)/عطاء الخير (خربة الجوز),,
+C4231,CP000327,Omar/ عمر,,
+C4231,CP000332,Al Fateha/ الفاتحة,,
+C4231,CP000683,Bayt Soufan/ بيت صوفان,,
+C4231,CP000898,Shoquz  / شقز,,
+C4231,CP000899,Mezgileh  / مزغلة,,
+C4231,CP000903,Kalaat Al Sendian  / قلعة السنديان,,
+C4231,CP000904,Al Khair 2 / الخير2,,
+C4231,CP000986,Shouhadaa Syria1/ شهداء سوريا1,,
+C4231,CP000987,Kateaa Al Naher1/ قاطع النهر1,,
+C4231,CP000988,Salma2/ سلمى2,,
+C4231,CP000989,Aidoun/ عائدون,,
+C4231,CP000990,Salama1/ سلمى1,,
+C4231,CP000991,Kateaa Al Naher 2/ قاطع النهر2,,
+C4231,CP000992,Almanshara-Shouhadaa Syria2/ المنشرة-شهداء سورية2,,
+C4231,CP000993,Al Itkan/ الإتقان,,
+C4231,CP000995,Al Taawun/ التعاون,,
+C4231,CP000996,Abo Badea/ أبو بديع,,
+C4231,CP000997,Adam/ أدم,,
+C4231,CP000998,Ahl A l Quran/ أهل القرءان,,
+C4231,CP000999,Insan/ إنسان,,
+C4231,CP001302,Ataa 3(Kherbet Eljoz) / عطاء 3(خربة الجوز),,
+C4231,CP001303,Ataa 7(Kherbet Eljoz) / عطاء 7(خربة الجوز),,
+C4231,CP001455,Abdin/عابدين,,
+C4231,CP001456,Abo-Hasan/ابو حسن,,
+C4231,CP001457,Alkhandaq/الخندق,,
+C4231,CP001458,Aljesriya/الجسرية,,
+C4231,CP001459,Alfajr/الفجر,,
+C4231,CP001461,Alkfair/الكفير,,
+C4231,CP001462,Almagharba/المغاربة,,
+C4231,CP001463,Jabal-Alakrad/جبل الاكراد,,
+C4231,CP001467,Beshlamon/بشلامون,,
+C4231,CP001468,Alzayton/الزيتون,,
+C4231,CP001469,Bdama/بداما,,
+C4231,CP001564,Al Iman(Kherbet Aljoz)/الإيمان(خربة الجوز),,
+C4234,CP000901,Astara  / أسطرة,,
+C4238,CP000432,Al Wafa (Darkosh) /  (دركوش) الوفاء,,
+C4238,CP000448,Al Aman (Darkosh) /  (دركوش) الأمان,,
+C4238,CP000866,Alraiat Albaydaa  / الرايات البيضاء,,
+C4238,CP001465,Ref Halab(Darkosh)/ ريف حلب(دركوش),,
+C4238,CP001525,Tayba(Zarzur) / طيبة(زرزور),,
+C4238,CP001605,Basmat Amal(Zarzur)/ بسمة أمل(زرزور),,
+C4238,CP001606,Al Shaheed Maher Kujak/ الشهيد ماهر كوجاك,,
+C4238,CP001607,Omran/ عمران,,
+C4240,CP000908,Alghazala / الغزالة,,
+C4240,CP001552,Al Hayat/ الحياة,,
+C4241,CP001473,Al Jameleea/الجميلية,,
+C4247,CP001522,Syria Charity / سوريا الخيرية,,
+C4247,CP001601,Al Mansoura(Thahr)/ المنصورة(الظهر),,
+C4249,CP000329,Othman Bin Affan (Darkosh) /  (دركوش) عثمان بن عفان,,
+C4249,CP000341,Ali Bin Abi Taleb (Dorriyeh) /  (الدرية)علي بن ابي طالب,,
+C4249,CP000424,Al Bonyan/ البنيان,,
+C4249,CP000481,Al Faroq (Darkosh) /  (دركوش)  الفاروق,,
+C4249,CP001074,Al Sad / السد,,
+C4249,CP001255,Omahat Al Moumenien(Dorriyeh)/ امهات المؤمنين(الدرية) ,,
+C4249,CP001472,Abo-Baker/أبو بكر,,
+C4251,CP001464,Al Aramel/الارامل,,
+C4251,CP001471,Al Hammam(Sheikh Essa)/الحمام(الشيخ عيسى),,
+C4253,CP000447,Aleppo 3/ حلب 3,,
+C4253,CP000459,Aleppo 1/ حلب 1,,
+C4253,CP000460,Aleppo 2/ حلب 2,,
+C4254,CP000238,Meriamen/ ميرامين ,,
+C4254,CP001440,Engineers 1 / المهندسين 1,,
+C4254,CP001624,Al Khazan(mrimin)/ الخزان(مريمين),,
+C4254,CP001625,Aytam Alsham/أيتام الشام,,
+C4258,CP001324,Wata Kaekon / وطى قيقون ,,
+C4259,CP001570,Barda/ بردا,,
+C4263,CP000300,Az-Zawf 2 (Sadaka Tashi)/ الزواف 2 ( صدقة ),,
+C4263,CP000330,Az-Zawf 1 (Sham)/ الزواف 1 ( الشام) ,,
+C4263,CP000684,Kafilt Alkhair/ قافلة الخير,,
+C4263,CP000896,Jinan/ جنان,,
+C4263,CP000897,Katea Jinan  / قاطع جنان,,
+C4263,CP000900,kafr Dlbeh  / كفر دلبه,,
+C4263,CP000902,Al Shaikh Saiah / الشيخ صياح,,
+C4263,CP000905,Al Amal(Zuf)/ الأمل(الزوف),,
+C4263,CP001466,Ashwaee-Zawf1/عشوائي الزوف1,,
+C4263,CP001470,Al Wafaa(Zuf)/الوفاء (الزوف),,
+C4263,CP001474,Ashwaee-Ekhaa ( عشوائي الاخاء ) - Zawf cluster,,
+C4267,CP001021,Oion Aara/  عيون عارة,,
+C4267,CP001205,Newdi/ نيودي,,
+C4267,CP001381,Al Masbah (Ahl Saraqeb) / المسبح(أهل سراقب),,
+C4267,CP001382,Tareek Alhamam / طريق الحمام,,
+C4267,CP001383,Ahl Al Ez(Al Matar) / أهل العز)المطار),,
+C4267,CP001384,Ain Alsaleeb(Al Janubeih) / عين الصليب (الجنوبية),,
+C4269,CP001627,Alqamue/ القاموع,,
+C4269,CP002021,Aya/ أية,,
+C4278,CP001536,المحدثة / Al Muhdatheh,,
+C4312,CP001309,Eudwan / عدوان,,
+C6333,CP001811,Istaro/أستارو,,NWS sites
+C6333,CP001812,Kubila/كوبيلا,,NWS sites
+C6333,CP001813,Tal Al Taweel/تل الطويل,,NWS sites
+C6389,CP000067,Shahba'1 (Bab Al Hawa Lower/1)/ الشهبا 1,,NWS sites
+C6389,CP000194,Damaet Nazeh/ دمعة نازحة - الشهباء,,NWS sites
+C6389,CP000435,Al Mansour/ المنصور,,NWS sites
+C6389,CP000451,Umut / أمل,,NWS sites
+C6389,CP000452,Yalniz Degilsiniz 2/ أنت لست وحدك 2,,NWS sites
+C6389,CP000454,Al Farja/ الفرجة,,NWS sites
+C6389,CP000455,Al Qunetrat/ القنيطرات,,NWS sites
+C6389,CP000491,Khattab/ خطاب,,NWS sites
+C6389,CP000503,Saed 1 (Kafr Lusin) /(كفرلوسين كامب),,NWS sites
+C6389,CP000504,Nahn Omaa/ نحن أمة,,NWS sites
+C6389,CP000510,Kelbit/كلبيت,,
+C6389,CP000566,Badr Alhus / بدر الحص ,,NWS sites
+C6389,CP000575,Aljihad  / الجهاد,,NWS sites
+C6389,CP000700,Halap labeih / حلب لبيه,,NWS sites
+C6389,CP000744,Al Nasr 2  / النصر 2,,NWS sites
+C6389,CP000875,Muhajari Kansafar / مهجري كنصفرة,,NWS sites
+C6389,CP001048,البناء الأخضر/ Al-binaa Alakhder,,NWS sites
+C6389,CP001049,افاميا / Afamya,,NWS sites
+C6389,CP001050,القلعة 1 / Al-qalaa1,,NWS sites
+C6389,CP001235,Bardakli Aljaded2/ البردقلي الجديد 2,,NWS sites
+C6389,CP001237,Shohadaa Aljanoub 1-2/شهداء الجنوب 1-2,,NWS sites
+C6389,CP001360,Basames / بسامس,,NWS sites
+C6389,CP001362,Ktyan / كتيان,,NWS sites
+C6389,CP001527,Serjableh Al Qatari/ سرجبلة القطري,,NWS sites
+C6389,CP001537,أرنبة/Arnaba,,NWS sites
+C6389,CP001538,الأقربون /AlAkraboon,,NWS sites
+C6389,CP001539,Al Etihad(Bab Alhawa) / الإتحاد(باب الهوى),,NWS sites
+C6389,CP001540,ساعد1/Saeed1,,NWS sites
+C6389,CP001647,طيبه الاكرام/Taybt AlEkram,,NWS sites
+C6389,CP001648,السلطان/Al Sultan,,NWS sites
+C6389,CP001649,الإمام 2/AlEMAM2,,NWS sites
+C6389,CP001714,Nahn Maeaan / نحن معا,,NWS sites
+C6389,CP001715,Sanabil Alkheir / سنابل الخير,,NWS sites
+C6389,CP001780,Nasaem Alrahma / نسائم الرحمة,,NWS sites
+C6389,CP001929,Sawad Al Ekhaa / سواعد الإخاء,,NWS sites
+C6389,CP001974,Al Farouq(Bab Alhawa) / الفاروق(باب الهوى),,NWS sites
+C6389,CP001975,شهداء الكرامه /Shohdaa AlKarama,,NWS sites
+C6394,CP001905,Muarset Khateeb/معرستة الخطيب,,NWS sites
+C6402,CP001857,مقابل شيخ بلال/ Mukabil Shaikh Bilal,,NWS sites
+C6424,CP001269,Al Bashakum/ البشاكم,,NWS sites
+C6619,CP000074,Kadimoon/ قادمون,,
+C6619,CP001260,Al Tarahum/ التراحم,,
+C6619,CP001261,Faroukiyeh/الفاروقية,,
+C6619,CP001262,Maamal Faroukiyeh/معمل الفاروقية,,
+C6619,N/A,Alfarokia school,مدرسة الفاروقية,Collective Center  
+C6619,TEMP054,Al-Rahma Shelter Center - Al-Maghara,,Collective Center  
+C6631,CP000689,Al Karamah(Shekh Bahr)/ الكرامة(الشيخ بحر),,
+C6631,CP001024,Nasseam Al-kheer(Shekh Bahr)/ نسائم الخير(الشيخ بحر),,
+C6631,CP001026,Al Zaytoun(Shekh Bahr) / الزيتون(الشيخ بحر),,
+C6631,CP001208,العمران/Al-Omran,,
+C6631,CP001209,Al Rahma 1 (Sheikh Bahr) / الرحمة 1(الشيخ بحر),,
+C6631,CP001210,القاهرة/Al Qqaheraa,,
+C6631,CP001212,Al Sader/ الصدر,,
+C6631,CP001348,Al Doaa(Shekh Bahr) / الدعاء(الشيخ بحر),,
+C6631,CP001520,Al Bayan(Shekh Bahr) / البيان(شيخ بحر),,
+C6631,CP001805,South Shekh Bahr/جنوبي الشيخ بحر,,
+C6631,CP001938,جبل الشيخ بحر/Jabal Alshekh Bahr,,
+C6631,CP001958,Maram Shekh Bahr / مرام الشيخ بحر,,
+C6631,CP001986,Saed Shekh Bahr / ساعد الشيخ بحر,,
+C6631,CP002023,Shekh Bahr Reception  Center / مركز استقبال الشيخ بحر,,
+C6632,CP001084,Maryam/ مريم,,
+C6632,CP001378,الحايك /Al Hayek,,
+C6669,CP001475,Al Jisr / الجسر,,NWS sites
+C6669,CP001476, السفيرة سجو / Asafira Sujjo,,NWS sites
+C6690,CP000725,Kafr tanor /كفر تنور,,
+C6690,CP001506,التل /  Al Tal,,
+C6690,CP001508,تجمع الراحمون/Tajamua Al Rahimoun,,
+C6692,CP000337,Al Mashhad/ المشهد,,NWS sites
+C6692,CP000443,Al Hadaba Al Khadra/ الهضبة الخضراء,,NWS sites
+C6692,CP000444,Al Hader/ الحاضر,,NWS sites
+C6692,CP001571,Sarmeen/ سرمين,,NWS sites
+C6692,CP001765,ملحق المشهد الارامل/Mulhaq almashhad Alaramel,,NWS sites
+C6692,CP001766,Ahal Maara / اهل المعره,,NWS sites
+C6692,CP001790,Kinnisrin(Alis) / قنسرين(العيس),,NWS sites
+C6692,CP001791,Mashhad Ruhin (Al Rawdah)/ مشهد روحين(الروضة),,NWS sites
+C6692,CP001989,Affad/ أفاد,,NWS sites
+C6692,CP001990, ساعد(مشهد روحين) / Saed(Mashhad Ruhin),,NWS sites
+C6692,CP001991, قرية إسماعيل آغا / Esmail agha,,NWS sites
+C6692,CP001992,Al Hanan(Mashhad Ruhin)/ الحنان(مشهد روحين),,NWS sites
+C6693,CP000434,Al Bardakli/ البردقلي,,NWS sites
+C6693,CP000519,Al Nashmi/النشمي,,
+C6693,CP000535,Al Salam (Deir Hassan) / السلام- دير حسان,,NWS sites
+C6693,CP000565,Al Wdahee- Sarmada / الوضيحي - سرمدا ,,
+C6693,CP001236,Al Faterah/ الفطيرة,,NWS sites
+C6693,CP001361,Touba / طوبا,,NWS sites
+C6693,CP001801,Burdaqly (Al Marj)/ بردقلي(المرج),,NWS sites
+C6693,CP001977,Maarrat Dibsah(Burdaqly)/ معردبسة(بردقلي),,NWS sites
+C6693,CP002015,السلوى /Al Salwa,,NWS sites
+C6693,TEMP021,Bardakli School RC,,Reception Center  
+C6695,CP001075,Dweila/الدويلة,,NWS sites
+C6724,CP001226,Al Mahata/ المحطة,,NWS sites
+C6731,CP001325,Altal Al'akhdar / التل الأخضر,,
+C6731,CP001326,Alrbye / الريبع,,
+C6732,CP001547,Wady Boayba/وادي بعيبعة,,
+C6737,CP000508,Darbella/الدربلا,,
+C6741,CP001872,Riaya / الرعاية,,NWS sites
+C6750,CP001067, القسطل / Alkastal ,,
+C6755,CP000512,Al Mahabbah(Babisqa)/ المحبة(بابيسقا),,
+C6755,CP000569,Al Diaa  / الضياء,,NWS sites
+C6755,CP000732,Aisha um Almumneen  / عائشة أم المؤمنين,,
+C6755,CP000845,Al Manara(Babisqa)  / المنارة (بابيسقا),,NWS sites
+C6755,CP000878,Muhajari Kafr Zita / مهجري كفرزيتا,,NWS sites
+C6755,CP001054,الموسى/ Al-Mousa,,NWS sites
+C6755,CP001055,Baskala  / بسقلا,,NWS sites
+C6755,CP001056,عباد الرحمن / Ebad Alrahman ,,NWS sites
+C6755,CP001057,شير مغار / Sheer Mghar,,NWS sites
+C6755,CP001238,Tal Almansour/ تل المنصور,,NWS sites
+C6755,CP001239,Al Job(Babisqa) / الجب(بابيسقا),,NWS sites
+C6755,CP001363,Hish Alsomoud / حيش الصمود,,NWS sites
+C6755,CP001477,Zahrat Alshamal/زهرة الشمال,,NWS sites
+C6755,CP001541,Midan Ghazal / ميدان غزال,,NWS sites
+C6755,CP001651,Al Dayah-Alaqsa / الضيعة - الاقصى,,NWS sites
+C6755,CP001652,Al Sindyanah / السنديانة,,NWS sites
+C6755,CP001716,كفرنبل/kfrnbil,,NWS sites
+C6755,CP002016,Al Sedik(Babisqa)/ الصديق(بابيسقا),,NWS sites
+C6755,CP002017,Al Aqsa(Babisqa)/ الأقصى(بابيسقا),,NWS sites
+C6755,CP002018,Salah Aldin(babisqa)/ صلاح الدين(بابيسقا),,NWS sites
+C6755,CP002019,Al Ber(babisqa)/ البر(بايسقا),,NWS sites
+C6766,CP001678,Al Bayara / البيارة ,,NWS sites
+C6766,CP001679,Wadi Albalat / وادي البلاط,,NWS sites
+C6766,CP001680,Baram / برام,,NWS sites
+C6766,CP001681,Kalouk / كالوك,,NWS sites
+C6766,CP001682,Al Hamdi / الحامضي,,NWS sites
+C6766,CP001683,Wadi Alnumer/ وادي النمر,,NWS sites
+C6766,CP001684,Wadi Alshater / وادي الشاطر,,NWS sites
+C6766,CP001685,Hameed/ حميد,,NWS sites
+C6766,CP001686,Badleh/ بدلة,,NWS sites
+C7466,CP001035,Al Tareek Al Azrak/ الطريق الأزرق ,,NWS sites
+C7509,CP001183,Mazraat Shwyhnah/ مزرعة شويحنة,,NWS sites
+C7515,CP001946, Jumaliyah 3/جميلة 3,,NWS sites
+C7598,CP002002,Al Tafiliyah/الطفيلية,,NWS sites
+C8014,CP001079,اليمان/Al-Yaman,,
+C8116,CP001222,Muhajari Babis/ مهجري بابيص,,NWS sites
+C8156,TEMP107,Balfor,بافلور,Informal Site  
+C8156,TEMP117,MolhakBalforAljadid,محلق بافلور الجديد  ,Informal Site  
+C8160,TEMP071,Agele Reception Center ),)مركز استقبال أغجلة,Reception Center  
+C8196,CP000449,Al Bab Transit/Reception Centre/ مركز استقبال الباب,,NWS sites
+C8196,CP000600,Tarheen / ترحين,,NWS sites
+C8196,CP001631,Tal Shafra/ تل شفرة,,NWS sites
+C8199,CP001184,Batajek / بتاجك,,NWS sites
+C8209,CP000870,Zagrous  / زاغروس,,NWS sites
+C8209,CP001829,Maamel beren Kifo / معامل البيرين كيفو,,NWS sites
+C8209,CP001947,Talha / طلحة,,NWS sites
+C8209,CP001948,Near Salat Zagrous / جانب صالة زاغروس,,NWS sites

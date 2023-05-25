@@ -1,0 +1,479 @@
+---
+title: "FSL and CBR export "
+date: '2023-04-10'
+output:
+  html_document:
+    code_download: yes
+    theme: readable
+    toc: yes
+    toc_depth: 4
+    toc_float: yes
+    number_sections: no
+    collapsed: no
+always_allow_html: yes
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.width=9, message = FALSE, warning=FALSE)
+library(tidyverse)
+library(readxl)
+library(lubridate)
+library(stringi)
+library(janitor)
+library(scales)
+library(magrittr)
+library(viridis)
+library(here)
+library(sf)
+library(googlesheets4)
+library(flextable)
+library(writexl)
+library(naniar)
+library(anytime)
+
+theme_set(theme_light())
+
+# disabling scientific notation
+options(scipen = 100)
+
+# This should just be an R function
+`%out%` <- Negate(`%in%`)
+
+# function for transposing df
+transpose_df <- function(df) {
+  t_df <- data.table::transpose(df)
+  colnames(t_df) <- rownames(df)
+  rownames(t_df) <- colnames(df)
+  t_df <- t_df %>%
+    tibble::rownames_to_column(.data = .) %>%
+    tibble::as_tibble(.)
+  return(t_df)
+}
+
+# function beneficiary summaries
+sum_ben <- function(df, column_var){
+  
+  column_var <- enquo(column_var)
+  
+  df %>%
+    group_by(!!column_var) %>% # must add bang-bang
+    summarise(beneficiaries = sum(new_beneficiaries, na.rm = TRUE)) %>% 
+    arrange(desc(beneficiaries))
+    
+}
+
+# function beneficiary summaries, 2 grouped variables
+sum_ben2 <- function(df, column_var1, column_var2){
+  
+  column_var1 <- enquo(column_var1)
+  column_var2 <- enquo(column_var2)
+  
+  df %>%
+    group_by(!!column_var1, !!column_var2) %>% # must add bang-bang
+    summarise(beneficiaries = sum(new_beneficiaries, na.rm = TRUE), .groups = "drop")
+    
+}
+
+# scaling functions 
+range01 <- function(x){(x-min(x))/(max(x)-min(x))}
+range_wna <- function(x){(x-min(x, na.rm = TRUE))/(max(x, na.rm = TRUE)-min(x, na.rm = TRUE))}
+
+#mode function 
+mode <- function(x) {
+  ux <- unique(x)
+  ux[which.max(tabulate(match(x, ux)))]
+}
+
+locations <- read_excel("./data/Locations.xlsx") %>% 
+  clean_names()
+
+pop <- read_excel("./data/monthly_displacement_northen_syria_november_2022.xlsx") %>% 
+  clean_names() %>% 
+  # You really need to remember how to do this
+  rename_all(
+    funs(
+      str_replace_all(., "id_ps", "idps") %>%
+        str_replace_all(., "h_hs", "hhs"))) %>% 
+  mutate(total_pop = population_individuals + idps_individuals)
+
+pcode3_shape <- 
+  st_read("./data/syr_admbnda_uncs_unocha_20201217/syr_admbnda_adm3_uncs_unocha_20201217.shp")
+
+camps <- read_csv("./data/camp_pcodes.csv") %>% clean_names()
+
+# This file does not exist in this repository. 
+# This is a private file only accesible by the Cash IMO
+# partner_names <- read_csv("./data/partner_names_20230512.csv") %>% 
+#   rename(implementing_partner = name)
+```
+
+
+# CBR
+
+```{r export-cbr}
+
+# This is the reason this repository is now private. So you can play to your heart's content with confidential data
+
+# You're going to have to change this since you're cleaning out the partner names 
+
+
+# Do not use your personal authentication for a public document. For the time being, read in fsl in the cleaning_script and write in a csv
+
+# Perhaps it is best to abandon reading in from the live sheet, since it is so hard to correct errors over `googlesheets4`. Errors in data entry in googlesheets, unlike in Excel, end up producing a list, especially if the column is a mix of characters and numbers
+
+cbr_names <- c("hub",
+           "intervention_type", 
+           "donor", 
+           "report_date", 
+           "end_date", 
+           "planned_implemented", 
+           "implementing_partner", 
+           "activity", 
+           "regularity", 
+           "duration_assistance", 
+           "quantity", 
+           "unit", 
+           "families", 
+           "beneficiaries", 
+           "rapid_assessment", 
+           "governorate", 
+           "district", 
+           "sub_district", 
+           "community", 
+           "village_camps",
+           "camp_name", 
+           "reception_centre_name")
+
+cbr <- read_sheet("https://docs.google.com/spreadsheets/d/1KGqt-3YDh2k8qNCksOJAndRPO56Gq6pGs6esEQtIFIw/edit#gid=1890981115", 
+                  sheet = 1) %>% 
+  setNames(cbr_names) %>% 
+  left_join(locations %>% 
+              select(admin1pcode, 
+                     admin2pcode, 
+                     admin3pcode, 
+                     admin4pcode, 
+                     location_name_en), 
+            by = c("community" = "location_name_en")) %>% 
+  left_join(locations %>% 
+              select(longitude_x, latitude_y, admin4pcode), 
+            by = "admin4pcode") %>% 
+  left_join(camps %>% 
+              select(location_pcode, location_name_en), 
+            by = c("camp_name" = "location_name_en")) %>% 
+  mutate(activity = case_when(activity == "Cash Response" & quantity < 100 ~ "Cash Response Low", 
+                              TRUE ~ activity)) %>% 
+  mutate(governorate = ifelse(governorate == "idleb", "Idleb", governorate),
+         district = ifelse(district == "idleb", "Idleb", district)) %>%
+  filter(activity == "Cash Response") %>%
+  # mutate(implementing_partner = 
+  #          recode(implementing_partner,
+  #                 "GOAL" = "GOAL (GOAL)",
+  #                 "Mercy Without Limits (MWL)" = "Mercy Without Limits",
+  #                 "Ihsan for Relief and Development (IRD)" = "Ihsan for Relief and Development", 
+  #                 "Syria Relief (SR)" = "Syria Relief")) %>% 
+  mutate(district = recode(district, 
+                           "Azaz" = "A'zaz", 
+                           "Albab" = "Al Bab"), 
+         start_date = end_date) %>% 
+  mutate(governorate = ifelse(governorate == "Azaz", "Aleppo", governorate)) %>% 
+  # This will not work, partner_names will not be in this repository
+  # left_join(
+  #   read_csv("./data/partner_names_20230512.csv") %>% 
+  #     select(name, abbreviation, partner_code),
+  #   by = c("implementing_partner" = "name")) %>% 
+  # The two lines below are only so that the code will run 
+  # However, please just get the actual file from the Cash IMO 
+  # This script is meant more as a reference
+  mutate(abbreviation = implementing_partner, 
+         partner_code = implementing_partner) %>% 
+  mutate(source = "fsl_tracker")
+
+# save a copy
+
+cbr %>% 
+  write_csv(paste0("./data/cbr", format(Sys.Date(), "%Y%m%d"), ".csv"))
+
+```
+
+### After the tracker is closed
+
+```{r}
+
+# If the earthquake tracker is closed, then we can use this as 
+# the last version of the tracker
+cbr <- read_csv("./data/cbr2023-05-19.csv") 
+```
+
+
+#  4Ws
+
+```{r 4ws, message=FALSE}
+
+names_4ws <- c(
+  "partner_code",
+  "reporting_organisation",
+  "donor",
+  "project_status",
+  "governorate",
+  "district",
+  "sub_district",
+  "community",
+  "neighbourhood",
+  "camp_name",
+  "admin1pcode",
+  "admin2pcode",
+  "admin3pcode",
+  "admin4pcode",
+  "neighbourhood_pcode",
+  "admin5pcode",
+  "location_other",
+  "village_or_camps",
+  "latitude_x",
+  "longitude_y",
+  "cluster",
+  "response_type",
+  "families",
+  "female_headed_hh",
+  "beneficiaries",
+  "men_18_60",
+  "women_18_60",
+  "boys_18",
+  "girls_18",
+  "elderly_males_60",
+  "elderly_females_60",
+  "idps",
+  "host_communities", 
+  "returnees",
+  "pwds",
+  "previously_assisted",
+  "newly_assisted",
+  "conditionality",
+  "restrictions",
+  "cash_delivery_mechanism",
+  "voucher_delivery_mechanism",
+  "currency",
+  "transfer_value",
+  "transfer_frequency",
+  "num_payments",
+  "fx_rate",
+  "total_value_per_hh",
+  "total_usd",
+  "targeting_criteria", 
+  "start_date",
+  "end_date",
+  "comments",
+  "contact_person",
+  "position",
+  "email",
+  "phone",
+  "month_of_activity"
+)
+
+read_4ws <- function(file) {
+  read_excel(file, 
+             sheet = "data_entry", 
+             skip = 3) %>% 
+    setNames(names_4ws) %>% 
+    filter(!is.na(partner_code)) %>% 
+    mutate_at(vars(start_date, 
+                   end_date, 
+                   month_of_activity), 
+              ~  as.Date(.)) %>% 
+    mutate_at(vars(start_date, 
+                   end_date, 
+                   month_of_activity), 
+              ~  anydate(.)) %>%
+    mutate(partner_code = 
+             paste0("CBRTWG", str_sub(partner_code, start = -4))) %>%
+    # This will not work -- this is a public version and will not 
+    # have access to the partner codes
+    # left_join(partner_names %>% 
+    #             select(abbreviation, implementing_partner, partner_code), 
+    #           by = "partner_code") %>% 
+    # Replacement for the lines above
+    mutate(abbrebiation = partner_code, 
+           implementing_partner = partner_code)
+    mutate(activity = "Cash Response", 
+           source = "4ws", 
+           previously_assisted = as.character(previously_assisted)) %>% 
+    # Using "No" as the default
+    replace_na(list(previously_assisted = "No"))
+}
+
+
+# Change the folder to the correct one
+file_list <- list.files(path = "C:/Users/seanywng/OneDrive/Cloud_Docs/Syria/may10_4Ws", 
+                        recursive = TRUE, 
+                        pattern = "\\.xlsx$", 
+                        full.names = TRUE)
+
+# Ok, got the for loop to work
+
+cbr_4ws <- data.frame()
+
+for (i in 1:length(file_list)) {
+  cbr_4ws_i <- read_4ws(file_list[i])
+  cbr_4ws <- rbind(cbr_4ws, cbr_4ws_i)
+}
+
+```
+
+
+
+# Combining 4Ws and FSL data 
+
+Still some manual work needs to be done, especially filtering out the names from the FSL tracker. 
+
+
+```{r combining-4ws-fsl}
+
+# Selector function
+cbr_col_select <- function(tbl) {
+  tbl %>% 
+    select(
+      start_date,
+      end_date,
+      implementing_partner,
+      abbreviation,
+      partner_code,
+      donor, 
+      project_status = planned_implemented,
+      currency = unit,
+      transfer_value = quantity,
+      transfer_frequency = duration_assistance, 
+      families,
+      beneficiaries,
+      governorate,
+      district,
+      sub_district,
+      community,
+      admin1pcode,
+      admin2pcode,
+      admin3pcode,
+      admin4pcode,
+      camp_name, 
+      village_camps,
+      longitude_x,
+      latitude_y, 
+      total_usd, 
+      response_type = intervention_type,
+      source
+    ) %>% 
+    mutate(previously_assisted = NA_character_, 
+           admin5pcode = NA_character_, 
+           cluster = "Multipurpose Cash")
+}
+
+# Binding fsl and 4Ws together
+cbr_com <- rbind(
+  cbr %>% 
+    mutate(planned_implemented = 
+             recode(planned_implemented, 
+                    "Implemented" = "Completed"), 
+           total_usd = families * quantity) %>% 
+    filter(
+      implementing_partner %out% c(
+        # Removing Orange because they said it was not MPC
+        "Orange Organisation (OO)",
+        # Same for Takaful Al Sham
+        "Takaful Al Sham (TAS)",
+        "Ataa Humanitarian Relief Association (ATAA)",
+        "Mercy Without Limits (MWL)",
+        "People in Need (PIN)", 
+        "Pepole in need", 
+        "Shafak Organization (SO)", 
+        "International Rescue Committee (IRC)",
+        "GOAL (GOAL)",
+        "World Vision International (WVI)",
+        "Elaf for Relief and Development (ELAF)", 
+        "MASRRAT", 
+        "The Syrian Est. for Human Care and Development (Massrat)",
+        "Mercy-USA for Aid and Development (MUSA)", 
+        "Hand in Hand for Aid and Development", 
+        "Hand in Hand For Syria (HIHFS)",
+        "Uluslararasi Insani Yardimlasma Dernegi (IYD)", 
+        "Ihsan for Relief and Development",
+        "Ihsan for Relief and Development (IRD)",
+        "Syria Relief", 
+        "Syria Relief (SR)",
+        "Violet Organization (VO)", 
+        "Global Communities (GC)", 
+        "Binaa for Development (BINAA)", 
+        "Social Development International (SDI)", 
+        "Agency for Technical Cooperation and Development (ACTED)", 
+        "Norwegian Refugee Council (NRC)",
+        "Syrian Association for Relief and Development (SARD)"
+        )) %>%
+    cbr_col_select(),
+  
+  # Another exception for Shafak, since they haven't been able to 
+  # submit data for January or February in the 4Ws, 
+  # but did so in the FSL tracker 
+   cbr %>% 
+    mutate(planned_implemented = 
+             recode(planned_implemented, 
+                    "Implemented" = "Completed"), 
+           total_usd = families * quantity) %>% 
+    filter(
+      implementing_partner %in% c(
+        "Shafak Organization (SO)") & end_date < "2023-03-01") %>%
+    cbr_col_select(),
+  
+  cbr_4ws %>%
+    select(start_date, 
+           end_date,
+           implementing_partner, 
+           abbreviation, 
+           partner_code,
+           donor, 
+           project_status, 
+           currency, 
+           transfer_value, 
+           transfer_frequency,
+           families, 
+           beneficiaries, 
+           governorate, 
+           district, 
+           sub_district, 
+           community, 
+           admin1pcode, 
+           admin2pcode, 
+           admin3pcode, 
+           admin4pcode, 
+           admin5pcode, 
+           camp_name, 
+           village_camps = village_or_camps, 
+           longitude_x = longitude_y, 
+           latitude_y = latitude_x, 
+           total_usd, 
+           response_type, 
+           previously_assisted, 
+           cluster,
+           source)
+  
+) %>% 
+  mutate(transfer_frequency = as.numeric(transfer_frequency), 
+         village_camps = recode(village_camps, 
+                                "Camp" = "camp", 
+                                "In the Camp" = "camp", 
+                                "In the Village" = "village", 
+                                "Village" = "village", 
+                                "Village & Camps" = NA_character_)) %>% 
+  # Using "No" as the default
+  # Quite the assumption to make
+  replace_na(list(previously_assisted = "No")) %>% 
+  # Specific case where Shafak reported no beneficiaries, only families reached
+  mutate(beneficiaries = ifelse(is.na(beneficiaries) & !is.na(families), 
+                                families * 5, 
+                                beneficiaries))
+  
+
+```
+
+```{r}
+# I suggest not running this. Please get the actual data from the CWG instead
+cbr_com %>% write_csv(paste0("./data/cbr", format(Sys.Date(), "%Y%m%d", ".csv")))
+```
+
+
+
+
