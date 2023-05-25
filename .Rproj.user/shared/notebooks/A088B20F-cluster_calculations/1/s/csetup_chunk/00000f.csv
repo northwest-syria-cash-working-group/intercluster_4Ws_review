@@ -1,12 +1,59 @@
 "0","knitr::opts_chunk$set(echo = TRUE, fig.width=9, message = FALSE, warning=FALSE)"
 "0","library(tidyverse)"
+"2","-- [1mAttaching core tidyverse packages[22m ---------------------------------------------------------- tidyverse 2.0.0 --
+[32mv[39m [34mdplyr    [39m 1.1.1     [32mv[39m [34mreadr    [39m 2.1.4
+[32mv[39m [34mforcats  [39m 1.0.0     [32mv[39m [34mstringr  [39m 1.5.0
+[32mv[39m [34mggplot2  [39m 3.4.2     [32mv[39m [34mtibble   [39m 3.2.1
+[32mv[39m [34mlubridate[39m 1.9.2     [32mv[39m [34mtidyr    [39m 1.2.1
+[32mv[39m [34mpurrr    [39m 1.0.1     "
+"2","-- [1mConflicts[22m ---------------------------------------------------------------------------- tidyverse_conflicts() --
+[31mx[39m [34mdplyr[39m::[32mfilter()[39m masks [34mstats[39m::filter()
+[31mx[39m [34mdplyr[39m::[32mlag()[39m    masks [34mstats[39m::lag()
+[36mi[39m Use the ]8;;http://conflicted.r-lib.org/conflicted package]8;; to force all conflicts to become errors"
 "0","library(readxl)"
 "0","library(lubridate)"
 "0","library(stringi)"
 "0","library(pander)"
 "0","library(janitor)"
+"2","
+Attaching package: ‘janitor’
+
+"
+"2","The following objects are masked from ‘package:stats’:
+
+    chisq.test, fisher.test
+
+"
 "0","library(scales)"
+"2","
+Attaching package: ‘scales’
+
+"
+"2","The following object is masked from ‘package:purrr’:
+
+    discard
+
+"
+"2","The following object is masked from ‘package:readr’:
+
+    col_factor
+
+"
 "0","library(magrittr)"
+"2","
+Attaching package: ‘magrittr’
+
+"
+"2","The following object is masked from ‘package:purrr’:
+
+    set_names
+
+"
+"2","The following object is masked from ‘package:tidyr’:
+
+    extract
+
+"
 "0","library(viridis)"
 "2","Loading required package: viridisLite
 "
@@ -32,11 +79,6 @@ Attaching package: ‘viridis’
 Attaching package: ‘plotly’
 
 "
-"2","The following objects are masked from ‘package:flextable’:
-
-    highlight, style
-
-"
 "2","The following object is masked from ‘package:ggplot2’:
 
     last_plot
@@ -53,6 +95,20 @@ Attaching package: ‘plotly’
 
 "
 "0","library(flextable)"
+"2","
+Attaching package: ‘flextable’
+
+"
+"2","The following objects are masked from ‘package:plotly’:
+
+    highlight, style
+
+"
+"2","The following object is masked from ‘package:purrr’:
+
+    compose
+
+"
 "0","library(ggrepel)"
 "0","library(magrittr)"
 "0","library(readxlsb)"
@@ -76,7 +132,7 @@ Attaching package: ‘plotly’
 [31mx[30m [34mmagrittr[30m::[32mset_names()[30m masks [34mpurrr[30m::set_names()
 [31mx[30m [34myardstick[30m::[32mspec()[30m     masks [34mreadr[30m::spec()
 [31mx[30m [34mrecipes[30m::[32mstep()[30m       masks [34mstats[30m::step()
-[34m*[30m Dig deeper into tidy modeling with R at [32mhttps://www.tmwr.org[30m[39m
+[34m*[30m Learn how to get started at [32mhttps://www.tidymodels.org/start/[30m[39m
 "
 "0","library(widyr)"
 "0","library(googlesheets4)"
@@ -136,14 +192,4 @@ Attaching package: ‘plotly’
 "0","         total_pop = final_est_of_total_pop_may_2022, "
 "0","         avg_family_size = family_avg_size_total_pop)"
 "0",""
-"0","consolidation_cols <- function(tbl) {"
-"0","  "
-"0","  tbl %>% "
-"0","    select(admin1pcode, admin2pcode, admin3pcode, admin4pcode, "
-"0","           admin5pcode, camp_name, "
-"0","           activity, beneficiaries, "
-"0","           month, project_status, cluster, "
-"0","           delivery_modality, "
-"0","           transfer_value, total_usd)"
-"0","}"
 "0",""

@@ -146,7 +146,16 @@ eq <- read_excel("./data/syria-earthquake-impact-20-march-2023.xlsx",
 
 
 
-# 1. Reading in data
+# 1. Reading in data and preliminary cleaning
+
+All 4Ws to be cleaned should be placed in the same folder. Pay attention to which 4Ws are cumulative (all months in the same file) and which 4Ws are monthly. 
+
+The intention of the cleaning in this first section is to make the data in each of the datasets readable whilst maintaining the same basic structure as each of the files they originated from. 
+
+It could all be combined into one giant section, with the data being cleaned and combined, but I left it as two separate steps because there were cases where I wanted to check the original 4W data. This is because the `com` dataset is necessarily reduced, only having the columns that each cluster has in common. 
+
+
+
 
 
 ### Cash
@@ -161,6 +170,8 @@ cash <- read_csv("./data/read/cbr_com_20230519.csv") %>%
 
 
 ### WASH
+
+This maintains the basic structure of the WASH dataset. However, when combining into the consolidated dataset, the data needs to be pivoted so that all activities are in one column. 
 
 ```{r read-wash, warning=FALSE}
 
@@ -277,6 +288,7 @@ shelter_select <- function(tbl){
     mutate(total_usd = transfer_value * families)
 }
 
+# SNFI is read in twice per month, once for the Shelter sheet and once for the NFI sheet 
 
 snfi <- read_excel("./data/read/2023_WoS_SNFI_XBHub_4Ws_March_2023.xlsx", 
                    sheet = "Shelter 4Ws") %>% 
@@ -614,7 +626,7 @@ Incidentally, several of these columns are also present in the intercluster 4Ws 
 
 # 2. Consolidation
 
-Maybe you want to try sub-cluster/aor as well. Especially 
+This first section reads in the cleaned CSVs that were written in the previous section. 
 
 ```{r}
 
@@ -849,6 +861,8 @@ com %>% write_csv(paste0("./data/com", format(Sys.Date(), "%Y%m%d"), ".csv"))
 
 
 # 3. Calculations for OCHA reporting 
+
+This section is mostly outdated. Please refer to the rmd `cluster_calculations` for the documentation.  
 
 ### Monthly
 
@@ -1129,20 +1143,10 @@ snfi %>%
   
   {sum(.$beneficiaries, na.rm = TRUE)}
 
-snfi %>% glimpse()
 ```
 
 
 
-
-```{r}
-
-
-glimpse(snfi)
-  
-```
-
-<br> 
 
 The Shelter/NFI 4Ws are almost interoperable with the CWG 4Ws, containing columns on the delivery modality (cash, in-kind and voucher), cash conditionality, the transfer value per household and the cash delivery mechanism. However, payment frequency is missing. 
 
