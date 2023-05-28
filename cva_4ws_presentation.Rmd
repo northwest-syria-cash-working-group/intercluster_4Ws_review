@@ -1412,6 +1412,6 @@ All [code](https://github.com/northwest-syria-cash-working-group/multisector_4Ws
 
 Aggregated dataset at [community level](https://github.com/northwest-syria-cash-working-group/multisector_4Ws_review/blob/main/data/admin4_prioritisation.csv).  
 
-[Interactive version of community-level maps](interactive_maps.html).
+[Interactive version of community-level maps](https://northwest-syria-cash-working-group.github.io/multisector_4Ws_review/interactive_maps.html).
 
 

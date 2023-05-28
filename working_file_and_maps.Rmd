@@ -312,6 +312,184 @@ check <- com %>%
 
 ```
 
+
+# Admin3 stuff --- think carefully about how you want to present this part
+ 
+ 
+```{r}
+com %>% 
+  filter(activity != "ISIMM" & project_status %in% c("Completed", "Ongoing")) %>% 
+  group_by(admin3pcode) %>% 
+  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE)) %>% 
+  left_join(pop %>% 
+              group_by(admin3pcode) %>% 
+              summarise(total_pop = sum(total_pop, na.rm = TRUE)), 
+            by = "admin3pcode") %>% 
+  mutate(pc_ben = beneficiaries / sum(beneficiaries), 
+         pc_pop = total_pop / sum(total_pop, na.rm = TRUE)) %>% 
+  rename(ben_frequencies = beneficiaries) %>% 
+  mutate(`coverage%` = round(ben_frequencies / total_pop * 100, digits = 2)) %>% 
+  arrange(desc(`coverage%`)) %>% 
+  left_join(locations %>% 
+              distinct(admin3pcode, 
+                       district = admin3name_en, 
+                       sub_district = admin3name_en) %>% 
+              select(admin3pcode, district, sub_district), 
+            by = "admin3pcode") %>% 
+  select(district, 
+         sub_district, 
+         ben_frequencies, 
+         total_pop, 
+         `coverage%`)  
+  filter(is.na(total_pop)) %>% 
+    
+  pull(sub_district)
+  
+  flextable() %>% 
+  theme_zebra() %>% 
+  set_caption("Top 20 communities with the highest number of beneficiary frequencies") %>% 
+  set_table_properties(layout = "autofit", width = .99) %>% 
+  fontsize(size = 10, j = 1:6, part = "header") %>% 
+  fontsize(size = 9, j = 1:6)
+  
+pop %>% 
+  distinct(admin3name_en)
+  filter(admin3name_en == "Ras Al Ain")
+  
+locations %>% 
+  filter(admin3name_en %in% c("Ras Al Ain", "Tell Abiad", "Suluk", "Ein Issa")) %>% 
+  distinct(admin3pcode) %>% 
+  pull(admin3pcode)
+```
+ 
+
+```{r}
+com %>% glimpse()
+  left_join(locations %>% 
+              select(admin4pcode, 
+                     district = admin2name_en, 
+                     sub_district = admin3name_en,
+                     community = location_name_en), 
+            by = "admin4pcode") %>% 
+  filter(activity != "ISIMM" & project_status %in% c("Completed", "Ongoing")) %>%
+  filter(cluster == "FSL" & !is.na(beneficiaries) & beneficiaries > 0) %>% 
+  group_by(admin4pcode) %>% 
+  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE)) %>%
+  left_join(com %>% 
+              filter(activity != "ISIMM" & project_status %in% c("Completed", "Ongoing")) %>%
+              group_by(admin4pcode) %>% 
+              summarise(clusters = n_distinct(cluster)), 
+            by = "admin4pcode") %>% 
+  arrange(desc(beneficiaries)) %>%
+  mutate(pc_ben = round(beneficiaries / sum(beneficiaries) * 100, digits = 2), 
+         cum_pc = cumsum(pc_ben)) %>% 
+  ggplot(aes(area = beneficiaries, fill = clusters)) + 
+  geom_treemap() +
+  geom_treemap_text(aes(label = admin4pcode), colour = "white", place = "centre", grow = TRUE) + 
+  scale_fill_viridis_c(option = "mako", direction = -1,
+                       breaks = c(1, 3, 6, 9)) + 
+  theme(plot.caption = element_text(hjust = .5)) + 
+  labs(title = "% of FSL beneficiary frequencies per community", 
+       subtitle = "The top 10 communities form 45% of all beneficiary allocations", 
+       caption = "Each tile is a single community. The larger the tile, the higher the share of beneficiary allocations.")
+  
+com %>% 
+  filter(activity != "ISIMM" & project_status %in% c("Completed", "Ongoing")) %>%
+  group_by(admin3pcode) %>% 
+  summarise(beneficiaries = sum(beneficiaries), 
+            clusters = n_distinct(cluster)) %>% 
+  left_join(pop %>% 
+              group_by(admin3pcode, sub_district = admin3name_en) %>% 
+              summarise(total_pop = sum(total_pop, na.rm = TRUE), 
+                        .groups = "drop"),
+            by = "admin3pcode") %>% 
+  mutate(pc_reached = beneficiaries / total_pop) %>%
+  ggplot(aes(area = beneficiaries, fill = pc_reached)) + 
+  geom_treemap() + 
+  geom_treemap_text(aes(label = sub_district), 
+                    colour = "white", 
+                    place = "centre", 
+                    grow = TRUE) + 
+  scale_fill_viridis(labels = percent, 
+                     breaks = c(1, 10, 20)) +
+  theme(legend.position = "bottom") + 
+  labs(fill = "% reached", 
+       title = "Frequencies by sub-district") + 
+
+com %>% 
+  filter(activity != "ISIMM" & project_status %in% c("Completed", "Ongoing")) %>%
+  group_by(admin3pcode) %>% 
+  summarise(beneficiaries = sum(beneficiaries), 
+            clusters = n_distinct(cluster)) %>% 
+  left_join(pop %>% 
+              group_by(admin3pcode, sub_district = admin3name_en) %>% 
+              summarise(total_pop = sum(total_pop, na.rm = TRUE), 
+                        .groups = "drop"),
+            by = "admin3pcode") %>% 
+  mutate(pc_reached = beneficiaries / total_pop) %>%
+  ggplot(aes(area = total_pop, fill = pc_reached)) + 
+  geom_treemap() + 
+  geom_treemap_text(aes(label = sub_district), 
+                    colour = "white", 
+                    place = "centre", 
+                    grow = TRUE) + 
+  scale_fill_viridis(labels = percent, 
+                     breaks = c(1, 10, 20)) +
+  theme(legend.position = "bottom") + 
+  labs(fill = "% reached", 
+       title = "Population by sub-district") 
+
+
+```
+
+
+```{r}
+
+com %>% 
+  filter(activity != "ISIMM" & project_status %in% c("Completed", "Ongoing")) %>%
+  group_by(admin3pcode) %>% 
+  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE), 
+            clusters = n_distinct(cluster)) %>% 
+  left_join(pop %>% 
+              group_by(admin3pcode) %>% 
+              summarise(total_pop = sum(total_pop)), 
+            by = "admin3pcode") %>% 
+  left_join(eq %>% 
+              left_join(locations %>% 
+                          distinct(admin3pcode, admin4pcode), 
+                        by = "admin4pcode") %>% 
+              group_by(admin3pcode) %>% 
+              summarise(wounded_dead = sum(wounded_dead), 
+                        damaged_houses = sum(damaged_houses), 
+                        .groups = "drop"), 
+            by = "admin3pcode") %>% 
+  mutate(wounded_dead_100k = round(wounded_dead / total_pop * 100000, digits = 2), 
+         damaged_houses_100k = round(damaged_houses / total_pop * 100000, digits = 2), 
+         pc_reached = beneficiaries / total_pop) %>%
+  left_join(locations %>% 
+              distinct(admin3pcode, admin3name_en), 
+            by = "admin3pcode") %>% 
+  rename(sub_district = admin3name_en) %>% 
+  ggplot(aes(x = damaged_houses_100k, y = wounded_dead_100k)) + 
+  geom_point(aes(size = beneficiaries, 
+                 colour = pc_reached)) +
+  geom_text_repel(aes(label = sub_district),
+                   point.padding = .5, 
+                   segment.color = "grey50", size = 3) +
+  scale_x_log10(labels = comma) + 
+  scale_y_log10(labels = comma) + 
+  scale_colour_viridis(labels = percent, trans = "log") +
+  #scale_size(breaks = c(0, 100, 500, 1000, 3000)) + 
+  labs(x = "Number of damaged houses", 
+       y = "Number of wounded and dead", 
+       title = "Magnitude of earthquake impacts by sub-district", 
+       subtitle = "Size shows intensity (wounded/dead per 100k) and colour shows beneficiaries", 
+       size = "Wounded/dead\nper 100k", 
+       colour = "Beneficiaries", 
+       caption = "Data from CWG, FSL and ACU")
+```
+
+
 ```{r}
 com %>% 
   group_by(admin3pcode) %>% 
