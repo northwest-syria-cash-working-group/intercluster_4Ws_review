@@ -1,0 +1,512 @@
+left_join(locations %>%
+rename(sub_district = admin3name_en) %>%
+distinct(admin3pcode, admin4pcode, sub_district)
+eq %>%
+eq %>%
+left_join(locations %>%
+rename(sub_district = admin3name_en) %>%
+distinct(admin3pcode, admin4pcode, sub_district),
+by = "admin4pcode")
+eq %>%
+left_join(locations %>%
+rename(sub_district = admin3name_en) %>%
+distinct(admin3pcode, admin4pcode, sub_district),
+by = "admin4pcode") %>%
+group_by(admin3pcode) %>%
+summarise(wounded_dead = sum(wounded_dead),
+damaged_houses = sum(damaged_houses))
+com %>%
+filter(activity != "ISIMM" & project_status %in% c("Completed", "Ongoing")) %>%
+group_by(admin3pcode) %>%
+summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE),
+clusters = n_distinct(cluster)) %>%
+left_join(pop %>%
+group_by(admin3pcode) %>%
+summarise(total_pop = sum(total_pop)),
+by = "admin3pcode") %>%
+left_join(eq %>%
+left_join(locations %>%
+rename(sub_district = admin3name_en) %>%
+distinct(admin3pcode, admin4pcode, sub_district),
+by = "admin4pcode") %>%
+group_by(admin3pcode) %>%
+summarise(wounded_dead = sum(wounded_dead),
+damaged_houses = sum(damaged_houses)),
+by = "admin3pcode") %>%
+mutate(wounded_dead_100k = round(wounded_dead / total_pop * 100000, digits = 2),
+damaged_houses_100k = round(damaged_houses / total_pop * 100000, digits = 2)) %>%
+ggplot(aes(x = damaged_houses, y = wounded_dead)) +
+geom_point(aes(size = wounded_dead_100k,
+colour = beneficiaries))
+com %>%
+filter(activity != "ISIMM" & project_status %in% c("Completed", "Ongoing")) %>%
+group_by(admin3pcode) %>%
+summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE),
+clusters = n_distinct(cluster)) %>%
+left_join(pop %>%
+group_by(admin3pcode) %>%
+summarise(total_pop = sum(total_pop)),
+by = "admin3pcode") %>%
+left_join(eq %>%
+left_join(locations %>%
+rename(sub_district = admin3name_en) %>%
+distinct(admin3pcode, admin4pcode, sub_district),
+by = "admin4pcode") %>%
+group_by(admin3pcode) %>%
+summarise(wounded_dead = sum(wounded_dead),
+damaged_houses = sum(damaged_houses)),
+by = "admin3pcode") %>%
+mutate(wounded_dead_100k = round(wounded_dead / total_pop * 100000, digits = 2),
+damaged_houses_100k = round(damaged_houses / total_pop * 100000, digits = 2)) %>%
+ggplot(aes(x = damaged_houses, y = wounded_dead)) +
+geom_point(aes(size = wounded_dead_100k,
+colour = beneficiaries)) +
+geom_text_repel(aes(label = sub_district),
+point.padding = .5,
+segment.color = "grey50", size = 3) +
+scale_x_log10(labels = comma) +
+scale_y_log10(labels = comma) +
+scale_colour_viridis(option = "mako", direction = -1,
+labels = comma) +
+scale_size(breaks = c(0, 100, 500, 1000, 3000))
+com %>%
+filter(activity != "ISIMM" & project_status %in% c("Completed", "Ongoing")) %>%
+group_by(admin3pcode) %>%
+summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE),
+clusters = n_distinct(cluster)) %>%
+left_join(pop %>%
+group_by(admin3pcode) %>%
+summarise(total_pop = sum(total_pop)),
+by = "admin3pcode") %>%
+left_join(eq %>%
+left_join(locations %>%
+rename(sub_district = admin3name_en) %>%
+distinct(admin3pcode, admin4pcode, sub_district),
+by = "admin4pcode") %>%
+group_by(admin3pcode) %>%
+summarise(wounded_dead = sum(wounded_dead),
+damaged_houses = sum(damaged_houses)),
+by = "admin3pcode") %>%
+mutate(wounded_dead_100k = round(wounded_dead / total_pop * 100000, digits = 2),
+damaged_houses_100k = round(damaged_houses / total_pop * 100000, digits = 2)) %>%
+ggplot(aes(x = damaged_houses, y = wounded_dead)) +
+geom_point(aes(size = wounded_dead_100k,
+colour = beneficiaries)) +
+geom_text_repel(aes(label = sub_district),
+point.padding = .5,
+segment.color = "grey50", size = 3) +
+scale_x_log10(labels = comma) +
+scale_y_log10(labels = comma) +
+scale_colour_viridis(option = "mako", direction = -1,
+labels = comma)
+com %>%
+filter(activity != "ISIMM" & project_status %in% c("Completed", "Ongoing")) %>%
+group_by(admin3pcode) %>%
+summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE),
+clusters = n_distinct(cluster)) %>%
+left_join(pop %>%
+group_by(admin3pcode) %>%
+summarise(total_pop = sum(total_pop)),
+by = "admin3pcode") %>%
+left_join(eq %>%
+left_join(locations %>%
+rename(sub_district = admin3name_en) %>%
+distinct(admin3pcode, admin4pcode, sub_district),
+by = "admin4pcode") %>%
+group_by(admin3pcode) %>%
+summarise(wounded_dead = sum(wounded_dead),
+damaged_houses = sum(damaged_houses)),
+by = "admin3pcode") %>%
+mutate(wounded_dead_100k = round(wounded_dead / total_pop * 100000, digits = 2),
+damaged_houses_100k = round(damaged_houses / total_pop * 100000, digits = 2))
+com %>%
+filter(activity != "ISIMM" & project_status %in% c("Completed", "Ongoing")) %>%
+group_by(admin3pcode) %>%
+summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE),
+clusters = n_distinct(cluster)) %>%
+left_join(pop %>%
+group_by(admin3pcode) %>%
+summarise(total_pop = sum(total_pop)),
+by = "admin3pcode") %>%
+left_join(eq %>%
+left_join(locations %>%
+rename(sub_district = admin3name_en) %>%
+distinct(admin3pcode, admin4pcode, sub_district),
+by = "admin4pcode") %>%
+group_by(admin3pcode, sub_district) %>%
+summarise(wounded_dead = sum(wounded_dead),
+damaged_houses = sum(damaged_houses),
+.groups = "drop"),
+by = "admin3pcode") %>%
+mutate(wounded_dead_100k = round(wounded_dead / total_pop * 100000, digits = 2),
+damaged_houses_100k = round(damaged_houses / total_pop * 100000, digits = 2)) %>%
+ggplot(aes(x = damaged_houses, y = wounded_dead)) +
+geom_point(aes(size = wounded_dead_100k,
+colour = beneficiaries)) +
+geom_text_repel(aes(label = sub_district),
+point.padding = .5,
+segment.color = "grey50", size = 3) +
+scale_x_log10(labels = comma) +
+scale_y_log10(labels = comma) +
+scale_colour_viridis(option = "mako", direction = -1,
+labels = comma) +
+scale_size(breaks = c(0, 100, 500, 1000, 3000)) +
+labs(x = "Number of damaged houses",
+y = "Number of wounded and dead",
+title = "Magnitude of earthquake impacts by sub-district",
+subtitle = "Size shows intensity (wounded/dead per 100k) and colour shows beneficiaries",
+size = "Wounded/dead\nper 100k",
+colour = "Beneficiaries",
+caption = "Data from CWG, FSL and ACU")
+com %>%
+filter(activity != "ISIMM" & project_status %in% c("Completed", "Ongoing")) %>%
+group_by(admin3pcode) %>%
+summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE),
+clusters = n_distinct(cluster)) %>%
+left_join(pop %>%
+group_by(admin3pcode) %>%
+summarise(total_pop = sum(total_pop)),
+by = "admin3pcode") %>%
+left_join(eq %>%
+left_join(locations %>%
+rename(sub_district = admin3name_en) %>%
+distinct(admin3pcode, admin4pcode, sub_district),
+by = "admin4pcode") %>%
+group_by(admin3pcode, sub_district) %>%
+summarise(wounded_dead = sum(wounded_dead),
+damaged_houses = sum(damaged_houses),
+.groups = "drop"),
+by = "admin3pcode") %>%
+mutate(wounded_dead_100k = round(wounded_dead / total_pop * 100000, digits = 2),
+damaged_houses_100k = round(damaged_houses / total_pop * 100000, digits = 2))
+com %>%
+filter(activity != "ISIMM" & project_status %in% c("Completed", "Ongoing")) %>%
+group_by(admin3pcode) %>%
+summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE),
+clusters = n_distinct(cluster)) %>%
+left_join(pop %>%
+group_by(admin3pcode) %>%
+summarise(total_pop = sum(total_pop)),
+by = "admin3pcode") %>%
+left_join(eq %>%
+left_join(locations %>%
+distinct(admin3pcode, admin4pcode),
+by = "admin4pcode") %>%
+group_by(admin3pcode) %>%
+summarise(wounded_dead = sum(wounded_dead),
+damaged_houses = sum(damaged_houses),
+.groups = "drop"),
+by = "admin3pcode") %>%
+mutate(wounded_dead_100k = round(wounded_dead / total_pop * 100000, digits = 2),
+damaged_houses_100k = round(damaged_houses / total_pop * 100000, digits = 2)) %>%
+left_join(locations %>%
+distinct(admin3pcode, admin3name_en),
+by = "admin3pcode") %>%
+rename(sub_district = admin3name_en) %>%
+ggplot(aes(x = damaged_houses, y = wounded_dead)) +
+geom_point(aes(size = wounded_dead_100k,
+colour = beneficiaries)) +
+geom_text_repel(aes(label = sub_district),
+point.padding = .5,
+segment.color = "grey50", size = 3) +
+scale_x_log10(labels = comma) +
+scale_y_log10(labels = comma) +
+scale_colour_viridis(option = "mako", direction = -1,
+labels = comma) +
+scale_size(breaks = c(0, 100, 500, 1000, 3000)) +
+labs(x = "Number of damaged houses",
+y = "Number of wounded and dead",
+title = "Magnitude of earthquake impacts by sub-district",
+subtitle = "Size shows intensity (wounded/dead per 100k) and colour shows beneficiaries",
+size = "Wounded/dead\nper 100k",
+colour = "Beneficiaries",
+caption = "Data from CWG, FSL and ACU")
+com %>%
+filter(activity != "ISIMM" & project_status %in% c("Completed", "Ongoing")) %>%
+group_by(admin3pcode) %>%
+summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE),
+clusters = n_distinct(cluster)) %>%
+left_join(pop %>%
+group_by(admin3pcode) %>%
+summarise(total_pop = sum(total_pop)),
+by = "admin3pcode") %>%
+left_join(eq %>%
+left_join(locations %>%
+distinct(admin3pcode, admin4pcode),
+by = "admin4pcode") %>%
+group_by(admin3pcode) %>%
+summarise(wounded_dead = sum(wounded_dead),
+damaged_houses = sum(damaged_houses),
+.groups = "drop"),
+by = "admin3pcode") %>%
+mutate(wounded_dead_100k = round(wounded_dead / total_pop * 100000, digits = 2),
+damaged_houses_100k = round(damaged_houses / total_pop * 100000, digits = 2)) %>%
+left_join(locations %>%
+distinct(admin3pcode, admin3name_en),
+by = "admin3pcode") %>%
+rename(sub_district = admin3name_en) %>%
+ggplot(aes(x = damaged_houses, y = wounded_dead)) +
+geom_point(aes(size = wounded_dead_100k,
+colour = beneficiaries)) +
+geom_text_repel(aes(label = sub_district),
+point.padding = .5,
+segment.color = "grey50", size = 3) +
+scale_x_log10(labels = comma) +
+scale_y_log10(labels = comma) +
+scale_colour_viridis(labels = comma) +
+scale_size(breaks = c(0, 100, 500, 1000, 3000)) +
+labs(x = "Number of damaged houses",
+y = "Number of wounded and dead",
+title = "Magnitude of earthquake impacts by sub-district",
+subtitle = "Size shows intensity (wounded/dead per 100k) and colour shows beneficiaries",
+size = "Wounded/dead\nper 100k",
+colour = "Beneficiaries",
+caption = "Data from CWG, FSL and ACU")
+com %>%
+filter(activity != "ISIMM" & project_status %in% c("Completed", "Ongoing")) %>%
+group_by(admin3pcode) %>%
+summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE),
+clusters = n_distinct(cluster)) %>%
+left_join(pop %>%
+group_by(admin3pcode) %>%
+summarise(total_pop = sum(total_pop)),
+by = "admin3pcode") %>%
+left_join(eq %>%
+left_join(locations %>%
+distinct(admin3pcode, admin4pcode),
+by = "admin4pcode") %>%
+group_by(admin3pcode) %>%
+summarise(wounded_dead = sum(wounded_dead),
+damaged_houses = sum(damaged_houses),
+.groups = "drop"),
+by = "admin3pcode") %>%
+mutate(wounded_dead_100k = round(wounded_dead / total_pop * 100000, digits = 2),
+damaged_houses_100k = round(damaged_houses / total_pop * 100000, digits = 2)) %>%
+left_join(locations %>%
+distinct(admin3pcode, admin3name_en),
+by = "admin3pcode") %>%
+rename(sub_district = admin3name_en) %>%
+ggplot(aes(x = damaged_houses, y = wounded_dead)) +
+geom_point(aes(size = wounded_dead_100k,
+colour = beneficiaries)) +
+geom_text_repel(aes(label = sub_district),
+point.padding = .5,
+segment.color = "grey50", size = 3) +
+scale_x_log10(labels = comma) +
+scale_y_log10(labels = comma) +
+scale_colour_viridis(labels = comma, trans = "log") +
+scale_size(breaks = c(0, 100, 500, 1000, 3000)) +
+labs(x = "Number of damaged houses",
+y = "Number of wounded and dead",
+title = "Magnitude of earthquake impacts by sub-district",
+subtitle = "Size shows intensity (wounded/dead per 100k) and colour shows beneficiaries",
+size = "Wounded/dead\nper 100k",
+colour = "Beneficiaries",
+caption = "Data from CWG, FSL and ACU")
+com %>%
+filter(activity != "ISIMM" & project_status %in% c("Completed", "Ongoing")) %>%
+group_by(admin3pcode) %>%
+summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE),
+clusters = n_distinct(cluster)) %>%
+left_join(pop %>%
+group_by(admin3pcode) %>%
+summarise(total_pop = sum(total_pop)),
+by = "admin3pcode") %>%
+left_join(eq %>%
+left_join(locations %>%
+distinct(admin3pcode, admin4pcode),
+by = "admin4pcode") %>%
+group_by(admin3pcode) %>%
+summarise(wounded_dead = sum(wounded_dead),
+damaged_houses = sum(damaged_houses),
+.groups = "drop"),
+by = "admin3pcode") %>%
+mutate(wounded_dead_100k = round(wounded_dead / total_pop * 100000, digits = 2),
+damaged_houses_100k = round(damaged_houses / total_pop * 100000, digits = 2)) %>%
+left_join(locations %>%
+distinct(admin3pcode, admin3name_en),
+by = "admin3pcode") %>%
+rename(sub_district = admin3name_en) %>%
+ggplot(aes(x = damaged_houses, y = damaged_houses_100k)) +
+geom_point(aes(size = wounded_dead_100k,
+colour = beneficiaries)) +
+geom_text_repel(aes(label = sub_district),
+point.padding = .5,
+segment.color = "grey50", size = 3) +
+scale_x_log10(labels = comma) +
+scale_colour_viridis(labels = comma, trans = "log") +
+scale_size(breaks = c(0, 100, 500, 1000, 3000)) +
+labs(x = "Number of damaged houses",
+y = "Number of wounded and dead",
+title = "Magnitude of earthquake impacts by sub-district",
+subtitle = "Size shows intensity (wounded/dead per 100k) and colour shows beneficiaries",
+size = "Wounded/dead\nper 100k",
+colour = "Beneficiaries",
+caption = "Data from CWG, FSL and ACU")
+scale_y_log10(labels = comma) +
+com %>%
+filter(activity != "ISIMM" & project_status %in% c("Completed", "Ongoing")) %>%
+group_by(admin3pcode) %>%
+summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE),
+clusters = n_distinct(cluster)) %>%
+left_join(pop %>%
+group_by(admin3pcode) %>%
+summarise(total_pop = sum(total_pop)),
+by = "admin3pcode") %>%
+left_join(eq %>%
+left_join(locations %>%
+distinct(admin3pcode, admin4pcode),
+by = "admin4pcode") %>%
+group_by(admin3pcode) %>%
+summarise(wounded_dead = sum(wounded_dead),
+damaged_houses = sum(damaged_houses),
+.groups = "drop"),
+by = "admin3pcode") %>%
+mutate(wounded_dead_100k = round(wounded_dead / total_pop * 100000, digits = 2),
+damaged_houses_100k = round(damaged_houses / total_pop * 100000, digits = 2)) %>%
+left_join(locations %>%
+distinct(admin3pcode, admin3name_en),
+by = "admin3pcode") %>%
+rename(sub_district = admin3name_en) %>%
+ggplot(aes(x = damaged_houses, y = damaged_houses_100k)) +
+geom_point(aes(size = wounded_dead_100k,
+colour = beneficiaries)) +
+geom_text_repel(aes(label = sub_district),
+point.padding = .5,
+segment.color = "grey50", size = 3) +
+scale_x_log10(labels = comma) +
+scale_y_log10(labels = comma) +
+scale_colour_viridis(labels = comma, trans = "log") +
+scale_size(breaks = c(0, 100, 500, 1000, 3000)) +
+labs(x = "Number of damaged houses",
+y = "Number of wounded and dead",
+title = "Magnitude of earthquake impacts by sub-district",
+subtitle = "Size shows intensity (wounded/dead per 100k) and colour shows beneficiaries",
+size = "Wounded/dead\nper 100k",
+colour = "Beneficiaries",
+caption = "Data from CWG, FSL and ACU")
+com %>%
+filter(activity != "ISIMM" & project_status %in% c("Completed", "Ongoing")) %>%
+group_by(admin3pcode) %>%
+summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE),
+clusters = n_distinct(cluster)) %>%
+left_join(pop %>%
+group_by(admin3pcode) %>%
+summarise(total_pop = sum(total_pop)),
+by = "admin3pcode") %>%
+left_join(eq %>%
+left_join(locations %>%
+distinct(admin3pcode, admin4pcode),
+by = "admin4pcode") %>%
+group_by(admin3pcode) %>%
+summarise(wounded_dead = sum(wounded_dead),
+damaged_houses = sum(damaged_houses),
+.groups = "drop"),
+by = "admin3pcode") %>%
+mutate(wounded_dead_100k = round(wounded_dead / total_pop * 100000, digits = 2),
+damaged_houses_100k = round(damaged_houses / total_pop * 100000, digits = 2)) %>%
+left_join(locations %>%
+distinct(admin3pcode, admin3name_en),
+by = "admin3pcode") %>%
+rename(sub_district = admin3name_en) %>%
+ggplot(aes(x = damaged_houses, y = damaged_houses_100k)) +
+geom_point(aes(size = wounded_dead_100k,
+colour = beneficiaries)) +
+geom_text_repel(aes(label = sub_district),
+point.padding = .5,
+segment.color = "grey50", size = 3) +
+scale_x_log10(labels = comma) +
+scale_y_log10(labels = comma) +
+scale_colour_viridis(labels = comma, trans = "log") +
+scale_size(breaks = c(0, 100, 500, 1000, 3000)) +
+labs(x = "Number of damaged houses",
+y = "Number of wounded and dead",
+title = "Magnitude of earthquake impacts by sub-district",
+subtitle = "Size shows intensity (wounded/dead per 100k) and colour shows beneficiaries",
+size = "Wounded/dead\nper 100k",
+colour = "Beneficiaries",
+caption = "Data from CWG, FSL and ACU")
+com %>%
+filter(activity != "ISIMM" & project_status %in% c("Completed", "Ongoing")) %>%
+group_by(admin3pcode) %>%
+summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE),
+clusters = n_distinct(cluster)) %>%
+left_join(pop %>%
+group_by(admin3pcode) %>%
+summarise(total_pop = sum(total_pop)),
+by = "admin3pcode") %>%
+left_join(eq %>%
+left_join(locations %>%
+distinct(admin3pcode, admin4pcode),
+by = "admin4pcode") %>%
+group_by(admin3pcode) %>%
+summarise(wounded_dead = sum(wounded_dead),
+damaged_houses = sum(damaged_houses),
+.groups = "drop"),
+by = "admin3pcode") %>%
+mutate(wounded_dead_100k = round(wounded_dead / total_pop * 100000, digits = 2),
+damaged_houses_100k = round(damaged_houses / total_pop * 100000, digits = 2),
+pc_reached = beneficiaries / total_pop) %>%
+left_join(locations %>%
+distinct(admin3pcode, admin3name_en),
+by = "admin3pcode") %>%
+rename(sub_district = admin3name_en) %>%
+ggplot(aes(x = damaged_houses_100k, y = wounded_dead_100k)) +
+geom_point(aes(size = beneficiaries,
+colour = total_pop)) +
+geom_text_repel(aes(label = sub_district),
+point.padding = .5,
+segment.color = "grey50", size = 3) +
+scale_x_log10(labels = comma) +
+scale_y_log10(labels = comma) +
+scale_colour_viridis(labels = comma, trans = "log") +
+#scale_size(breaks = c(0, 100, 500, 1000, 3000)) +
+labs(x = "Number of damaged houses",
+y = "Number of wounded and dead",
+title = "Magnitude of earthquake impacts by sub-district",
+subtitle = "Size shows intensity (wounded/dead per 100k) and colour shows beneficiaries",
+size = "Wounded/dead\nper 100k",
+colour = "Beneficiaries",
+caption = "Data from CWG, FSL and ACU")
+com %>%
+filter(activity != "ISIMM" & project_status %in% c("Completed", "Ongoing")) %>%
+group_by(admin3pcode) %>%
+summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE),
+clusters = n_distinct(cluster)) %>%
+left_join(pop %>%
+group_by(admin3pcode) %>%
+summarise(total_pop = sum(total_pop)),
+by = "admin3pcode") %>%
+left_join(eq %>%
+left_join(locations %>%
+distinct(admin3pcode, admin4pcode),
+by = "admin4pcode") %>%
+group_by(admin3pcode) %>%
+summarise(wounded_dead = sum(wounded_dead),
+damaged_houses = sum(damaged_houses),
+.groups = "drop"),
+by = "admin3pcode") %>%
+mutate(wounded_dead_100k = round(wounded_dead / total_pop * 100000, digits = 2),
+damaged_houses_100k = round(damaged_houses / total_pop * 100000, digits = 2),
+pc_reached = beneficiaries / total_pop) %>%
+left_join(locations %>%
+distinct(admin3pcode, admin3name_en),
+by = "admin3pcode") %>%
+rename(sub_district = admin3name_en) %>%
+ggplot(aes(x = damaged_houses_100k, y = wounded_dead_100k)) +
+geom_point(aes(size = beneficiaries,
+colour = pc_reached)) +
+geom_text_repel(aes(label = sub_district),
+point.padding = .5,
+segment.color = "grey50", size = 3) +
+scale_x_log10(labels = comma) +
+scale_y_log10(labels = comma) +
+scale_colour_viridis(labels = percent, trans = "log") +
+#scale_size(breaks = c(0, 100, 500, 1000, 3000)) +
+labs(x = "Number of damaged houses",
+y = "Number of wounded and dead",
+title = "Magnitude of earthquake impacts by sub-district",
+subtitle = "Size shows intensity (wounded/dead per 100k) and colour shows beneficiaries",
+size = "Wounded/dead\nper 100k",
+colour = "Beneficiaries",
+caption = "Data from CWG, FSL and ACU")

@@ -100,7 +100,7 @@ This document summarises how reporting indicators are calculated for each of the
 
 Run the file `cleaning_script` first. 
 
-```{r}
+```{r echo=FALSE}
 
 # Reading these all in so that your computer doesn't 
 # commit suicide when cleaning them in and combining them
@@ -108,6 +108,7 @@ Run the file `cleaning_script` first.
 cash <- read_csv("./data/read/cbr_com_20230519.csv") %>% 
   filter(str_detect(cluster, "Multipurpose")) %>% 
   # Resolving a stupid problem with Shafak
+  # This will not be necessary in the future
   mutate(beneficiaries = ifelse(is.na(beneficiaries) & !is.na(families), 
                                 families * 5, 
                                 beneficiaries))
@@ -139,7 +140,7 @@ erl <- read_csv("./data/read/erl.csv")
 
 <br>
 
-```{r eval=FALSE}
+```{r}
 # Total beneficiaries for cash
 # Cash is lacking an ongoing option 
 cash %>% 

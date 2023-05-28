@@ -1,0 +1,18 @@
+"0","check %>% 
+  select(access_score, frequencies) %>% 
+      cor(method = ""spearman"", 
+          use = ""pairwise.complete.obs"") 
+"
+"1","            "
+"1"," access_score"
+"1"," frequencies"
+"1","
+access_score"
+"1","    1.0000000"
+"1","  -0.2678278"
+"1","
+frequencies "
+"1","   -0.2678278"
+"1","   1.0000000"
+"1","
+"
