@@ -94,8 +94,9 @@ nw_pcode3 <- read_excel("./data/2023HNO_PiN_Severity_detailedAoI_FORSHARE 150320
                   sheet = 1) %>%
   clean_names() %>% 
   filter(ao_c == "NW") %>% 
-  pull(admin3pcode) %>% 
-  append(list("SY080400", "SY110202", "SY110200", "SY110201"))
+   pull(admin3pcode) 
+# %>% 
+#   append(list("SY080400", "SY110202", "SY110200", "SY110201"))
 
 locations <- read_csv("./data/locations_aoc.csv")
 
