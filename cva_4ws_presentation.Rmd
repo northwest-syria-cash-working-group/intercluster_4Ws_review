@@ -54,6 +54,15 @@ library(mdepriv)
 
 theme_set(theme_light())
 
+# Installation of mdepriv package
+# install package devtools if not yet installed
+#   install.packages("devtools")
+
+# install fast from GitHub without vignettes 
+#   devtools::install_github("a-benini/mdepriv", build_vignettes = FALSE
+
+# Alternatively, follow the instructions here: https://a-benini.github.io/mdepriv/
+
 # disabling scientific notation
 options(scipen = 100)
 
@@ -617,9 +626,14 @@ com %>%
   labs(title = paste0("The 20 communities, within the yellow box, have received ",
                       top_20 %>% pull(pc_ben), 
                       "% of all beneficiary allocations"),
+       subtitle = paste0("The humanitarian community is working in ", 
+                         com %>% filter(!is.na(admin4pcode) & activity != "ISIMM") %>% {n_distinct(.$admin4pcode)},
+                         " communities"),
        x = "Population", 
        y = "Beneficiary frequencies", 
        size = "Beneficiaries")
+
+# ggsave("./img/fair_allocation.png", dpi = 300, height = 8.27, width = 11.69, units = "in")  
 
 ```
 
@@ -900,7 +914,7 @@ rbind(
   com %>% filter(cluster == "Nutrition") %>% 
     check_slice(), 
   
-  com %>% filter(cluster == "Cash") %>% 
+  com %>% filter(cluster == "CWG") %>% 
     check_slice(), 
   
   com %>% filter(cluster == "Education") %>% 
@@ -1109,12 +1123,7 @@ com %>%
                        TRUE, FALSE)) %>% 
   filter(food_basket > 0 & both == TRUE)
            
-           
-216 / 286
 
-216 / 496
-
-562 mpc or food_basket
 ```
 
 
@@ -1341,11 +1350,11 @@ com %>%
   theme_void() + 
   theme(plot.background = element_rect(fill = "white", colour = NA)) + 
   labs(title = "Map of beneficiary frequencies", 
-       subtitle = "Excludes persons reached by Health",
+       subtitle = "All Clusters, except Health",
        colour = "% Reached", 
        size = "Frequencies")
 
-
+# ggsave("./img/reached_map_admin4.png", dpi = 300, height = 8.27, width = 11.69, units = "in")  
 ```
 
 [Interactive version](https://northwest-syria-cash-working-group.github.io/multisector_4ws_maps/#summary-map-of-beneficiary-frequencies)

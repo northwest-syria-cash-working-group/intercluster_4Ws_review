@@ -64,6 +64,15 @@ library(mdepriv)
 
 theme_set(theme_light())
 
+# Installation of mdepriv package
+# install package devtools if not yet installed
+#   install.packages("devtools")
+
+# install fast from GitHub without vignettes 
+#   devtools::install_github("a-benini/mdepriv", build_vignettes = FALSE
+
+# Alternatively, follow the instructions here: https://a-benini.github.io/mdepriv/
+
 # Hopefully this allows the DT to show up
 options(htmltools.preserve.raw = FALSE)
 

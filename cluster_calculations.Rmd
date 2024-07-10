@@ -100,10 +100,10 @@ This document summarises how reporting indicators are calculated for each of the
 
 Run the file `cleaning_script` first. 
 
-```{r echo=FALSE}
+```{r data, echo=FALSE}
 
 # Reading these all in so that your computer doesn't 
-# commit suicide when cleaning them in and combining them
+# crash when cleaning them in and combining them
 
 cash <- read_csv("./data/read/cbr_com_20230519.csv") %>% 
   filter(str_detect(cluster, "Multipurpose")) %>% 
@@ -134,6 +134,7 @@ erl <- read_csv("./data/read/erl.csv")
 ```
 
 
+\newpage
 
 
 ### Cash
@@ -146,7 +147,7 @@ erl <- read_csv("./data/read/erl.csv")
 cash %>% 
   filter(project_status == "Completed" & 
            previously_assisted == "No") %>% 
-  {sum(.$beneficiaries, na.rm = TRUE}
+  {sum(.$beneficiaries, na.rm = TRUE)}
 
 ```
 
@@ -199,8 +200,7 @@ fsl %>%
 # Monthly for livelihoods
 # How does this work with ERL? 
 fsl %>% 
-  mutate(month = case_when(reporting_month == "January" ~ "jan", 
-                           TRUE ~ NA_character_)) %>% 
+  mutate(month = str_to_lower(str_sub(reporting_month, start = 1L, end = 3L))) %>%
   filter(activity %in% c("Agricultural inputs",
                          "Animal treatment/vaccination",
                          "Income-generating activities (IGAs)", 
@@ -216,8 +216,7 @@ fsl %>%
 
 # Cumulative beneficiaries for livelihoods
 fsl %>% 
-  mutate(month = case_when(reporting_month == "January" ~ "jan", 
-                           TRUE ~ NA_character_)) %>% 
+  mutate(month = str_to_lower(str_sub(reporting_month, start = 1L, end = 3L))) %>%
   filter(activity %in% c("Agricultural inputs",
                          "Animal treatment/vaccination",
                          "Income-generating activities (IGAs)", 

@@ -1,0 +1,55 @@
+"0","com %>% 
+  filter(activity != ""ISIMM"" & project_status %in% c(""Completed"", ""Ongoing"")) %>% 
+  group_by(admin4pcode) %>% 
+  summarise(beneficiaries = sum(beneficiaries, na.rm = TRUE), 
+            clusters = n_distinct(cluster), na.rm = TRUE) %>% 
+  right_join(pop %>% select(total_pop, admin4pcode, 
+                            sub_district = admin3name_en, 
+                            admin3pcode, 
+                            governorate = admin1name_en, 
+                            community = location_name_en), 
+            by = ""admin4pcode"") %>%
+  left_join(locations %>% 
+              select(longitude_x, latitude_y, admin4pcode), 
+            by = ""admin4pcode"") %>% 
+  left_join(eq_score$data %>% 
+              select(eq_score, admin4pcode), 
+            by = ""admin4pcode"") %>% 
+  mutate(total_pop = ifelse(beneficiaries > 0 & total_pop == 0, 
+                            beneficiaries, 
+                            total_pop)) %>% 
+  filter(total_pop > 0) %>% 
+  mutate(beneficiaries = ifelse(is.na(beneficiaries), 0, beneficiaries),
+         pc_reached = beneficiaries / total_pop, 
+         pc_reached_scale = ifelse(pc_reached > 10, 10, pc_reached)) %>% 
+  right_join(pcode3_shape, 
+             by = c(""admin3pcode"" = ""ADM3_PCODE"")) %>% 
+  filter(ADM1_PCODE %in% c(""SY02"", ""SY07"", ""SY11"") & 
+           admin4pcode %in% (pop %>% pull(admin4pcode)) & 
+           admin3pcode != ""SY020500"") %>% 
+  st_as_sf() %>% 
+  ggplot() +
+  geom_sf(size = .1, colour = ""grey70"") + 
+  geom_point(aes(size = beneficiaries, colour = pc_reached_scale, 
+                 x = longitude_x, y = latitude_y, 
+                 text = paste0(""sub_district: "", sub_district, ""\n"", 
+                               ""community: "", community, ""\n"", 
+                               ""admin4pcode: "", admin4pcode, ""\n"", 
+                               ""population: "", format(total_pop, big.mark = "",""), ""\n"", 
+                               ""ben_freq: "", format(beneficiaries, big.mark = "",""), ""\n"", 
+                               ""clusters: "", clusters, ""\n"",  
+                               ""%reached: "", round(pc_reached * 100, digits = 2), ""%"")), 
+             alpha = .5) + 
+  # setting NA value will not do anything if they won't even appear
+  scale_colour_viridis_c(option = ""plasma"", na.value = ""grey25"",  
+                         labels = percent) + 
+  scale_size_continuous(labels = comma, 
+                        breaks = c(0, 100, 1000, 10000, 100000, 1000000, 2000000)) +
+  theme_void() + 
+  theme(plot.background = element_rect(fill = ""white"", colour = NA)) + 
+  labs(title = ""Map of beneficiary frequencies"", 
+       subtitle = ""All Clusters, except Health"",
+       colour = ""% Reached"", 
+       size = ""Frequencies"")
+"
+"2","Warning: [38;5;238mIgnoring unknown aesthetics: [32mtext[38;5;238m[39m"
